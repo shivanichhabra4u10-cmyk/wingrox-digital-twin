@@ -31,14 +31,18 @@ export default async function LoginPage({ searchParams }: LoginPageProps) {
       <div className="mx-auto grid w-full max-w-6xl gap-6 md:grid-cols-2">
         <section className="rounded-xl border border-slate-200 bg-slate-950 p-8 text-slate-100">
           <p className="text-xs uppercase tracking-[0.18em] text-amber-300">WinGroX AI</p>
-          <h1 className="mt-3 text-3xl font-semibold leading-tight">Individual Growth Intelligence System</h1>
+          <h1 className="mt-3 text-3xl font-semibold leading-tight">Your personal growth journey, guided end to end</h1>
           <p className="mt-4 text-sm leading-6 text-slate-300">
-            Production stack: Next.js + Supabase Auth + Postgres + Storage. This is the secure runtime replacing prototype local data.
+            WinGroX AI is an individual growth intelligence system that takes you from self-discovery to a coached, 12-week growth journey — with a digital twin that evolves as you do.
           </p>
-          <ul className="mt-6 space-y-2 text-sm text-slate-300">
-            <li>Role-based access: Participant, Architect, Coach, Sponsor, Admin</li>
-            <li>Workflow persistence for all 7 stages</li>
-            <li>Secure document storage with privacy controls</li>
+          <ul className="mt-6 space-y-3 text-sm text-slate-300">
+            <li className="flex gap-2"><span className="text-amber-300 font-semibold shrink-0">01 · Profile</span><span>Build your baseline — who you are, where you are, and what matters most.</span></li>
+            <li className="flex gap-2"><span className="text-amber-300 font-semibold shrink-0">02 · Persona Discovery</span><span>A deep pre-immersion analysis followed by a live immersion call to uncover your values, strengths and blind spots.</span></li>
+            <li className="flex gap-2"><span className="text-amber-300 font-semibold shrink-0">03 · Validation</span><span>Review and confirm your persona with your Growth Sprint Architect before anything moves forward.</span></li>
+            <li className="flex gap-2"><span className="text-amber-300 font-semibold shrink-0">04 · Growth Diagnostic</span><span>50 structured questions that map your pain areas, behaviour patterns and growth dimensions into a Navigator report.</span></li>
+            <li className="flex gap-2"><span className="text-amber-300 font-semibold shrink-0">05 · Growth Mirror</span><span>Your digital twin — a living view of your capital, blockages, career options, opportunity scorecard and 5-year roadmap.</span></li>
+            <li className="flex gap-2"><span className="text-amber-300 font-semibold shrink-0">06 · Coach Activation</span><span>Meet shortlisted coaches, run a chemistry call, choose your match and receive a personalised coaching plan.</span></li>
+            <li className="flex gap-2"><span className="text-amber-300 font-semibold shrink-0">07 · Growth Journey</span><span>A structured 12-week sprint with weekly check-ins, tracked milestones and a monthly review cycle.</span></li>
           </ul>
         </section>
 
