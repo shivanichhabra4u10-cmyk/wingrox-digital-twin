@@ -5639,19 +5639,23 @@ function exportJSON(){
 
 /* -------------------------------- init ----------------------------------- */
 async function initApp(){
-  /* Render immediately from localStorage so the user never waits */
-  loadState();
+  var app = document.getElementById("app");
+  if(app) app.innerHTML = '<main class="wrap"><div class="card"><h2>Loading workspace</h2><p class="muted">Restoring your saved workflow from the secure app backend.</p></div></main>';
+  try{
+    await loadRemoteState();
+  }catch(err){
+    loadState();
+    if(!DB || !DB.session){
+      DB = defaultDB();
+    }
+    if(DB && !DB.session){
+      DB.session = {u:"user", role:"participant", name:"User", pid:Object.keys(DB.participants||{})[0]||"p_dipti", aid:""};
+      bindState();
+    }
+  }
   if(!S.ui) S.ui = {stage:1, tab:{}, qIndex:1, notifOpen:false, demoOpen:false};
   if(!S.ui.tab) S.ui.tab = {};
   render();
-
-  /* Background sync with remote — update silently if successful */
-  try{
-    await loadRemoteState();
-    render(); /* re-render with fresh remote data */
-  }catch(err){
-    /* Remote unavailable — local state already rendered, continue */
-  }
 }
 void initApp();
 window.addEventListener("resize", function(){
