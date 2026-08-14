@@ -3693,13 +3693,7 @@ function foreign(x,y,w,txt){
 }
 
 function personaReport(){
-  if(!S.persona.released){
-    return '<div class="card"><div class="empty"><h3>Report not ready</h3>'+
-      '<p>The Persona Discovery report appears after the immersion call is completed and the Architect releases it.</p>'+
-      '<div class="btnrow" style="justify-content:center"><button class="btn sec" data-act="tab" data-stage="2" data-k="schedule">Go to scheduling</button>'+
-      '<button class="btn sec" data-act="demoOpen">Open Workflow Controls</button></div></div></div>';
-  }
-  if(!S.persona.reportOpened){ S.persona.reportOpened = true; notify("Persona Discovery is ready."); saveState(); }
+  if(!S.persona.reportOpened){ S.persona.reportOpened = true; saveState(); }
   return '<div class="card"><div style="text-align:center;padding:48px 24px">'+
     '<div class="eyebrow" style="color:#C79A4E;margin-bottom:14px">Step 2 · Persona Discovery</div>'+
     '<h2 style="font-size:1.6rem;margin:0 0 12px">'+esc(S.profile.fullName||"Dipti M")+'</h2>'+
