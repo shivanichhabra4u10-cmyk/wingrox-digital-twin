@@ -2066,13 +2066,21 @@ function buildRemoteDB(data){
   return db;
 }
 async function loadRemoteState(){
-  var res = await fetch("/api/prototype/state", {cache:"no-store", credentials:"same-origin"});
-  if(!res.ok) throw new Error("Unable to load workspace state.");
-  var data = await res.json();
-  DB = buildRemoteDB(data);
-  bindState();
-  remoteReady = true;
-  try{ if(storageOK) window.localStorage.setItem(KEY, JSON.stringify(DB)); }catch(e){}
+  var ctrl = new AbortController();
+  var tid = window.setTimeout(function(){ ctrl.abort(); }, 5000);
+  try{
+    var res = await fetch("/api/prototype/state", {cache:"no-store", credentials:"same-origin", signal:ctrl.signal});
+    window.clearTimeout(tid);
+    if(!res.ok) throw new Error("Unable to load workspace state.");
+    var data = await res.json();
+    DB = buildRemoteDB(data);
+    bindState();
+    remoteReady = true;
+    try{ if(storageOK) window.localStorage.setItem(KEY, JSON.stringify(DB)); }catch(e){}
+  }catch(e){
+    window.clearTimeout(tid);
+    throw e;
+  }
 }
 async function persistRemoteStateNow(){
   if(!remoteReady || !DB || !DB.session) return;
