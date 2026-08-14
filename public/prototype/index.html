@@ -3700,9 +3700,11 @@ function personaReport(){
       '<button class="btn sec" data-act="demoOpen">Open Workflow Controls</button></div></div></div>';
   }
   if(!S.persona.reportOpened){ S.persona.reportOpened = true; notify("Persona Discovery is ready."); saveState(); }
+  window.open('/prototype/dipti-persona-discovery.html', '_blank');
   return '<div class="card rpt"><div class="rptcover">'+
     '<div class="eyebrow" style="color:#C79A4E">Step 2 report</div>'+
     '<h2 style="margin:0 0 3px">Persona Discovery</h2>'+
+    '<p class="notice blue" style="margin-top:12px">Your Persona Discovery report has opened in a new tab. If it did not open, <a href="/prototype/dipti-persona-discovery.html" target="_blank">click here</a>.</p>'+
     '<p style="margin:0;opacity:.8;font-size:.9rem">'+esc(S.profile.fullName||"Dipti M")+' &middot; '+esc(S.profile.role||"VP Strategy and Client Engagement")+'</p>'+
     '<div class="rptmeta"><span>Prepared by the Growth Sprint Architect</span><span>Released '+fmtDate(S.persona.releasedOn||todayISO())+'</span>'+
     '<span>Confidential to Dipti</span></div></div>'+
@@ -4011,11 +4013,17 @@ function reviewView(){
    protoNote()+'</div>';
 }
 function diagnosticReport(){
-  if(!S.diagnostic.reportOpened){ S.diagnostic.reportOpened = true; saveState(); }
-  return '<div class="card"><div class="hd"><h2>Growth Diagnostic — My Report</h2>'+
-   '<div class="btnrow no-print" style="margin:0"><button class="btn blue sm" data-act="goStage" data-n="5">Open the Growth Mirror</button></div></div>'+
-   '<iframe src="dipti-persona-discovery.html" style="width:100%;height:90vh;border:none;border-radius:6px;display:block;margin-top:8px" title="Persona Discovery Report"></iframe>'+
-   '</div>';
+  if(!S.diagnostic.released){
+    return '<div class="card"><div class="empty"><h3>Report not ready</h3>'+
+     '<p>The Navigator report appears after all 50 answers are submitted and the Architect releases it.</p>'+
+     '<div class="btnrow" style="justify-content:center"><button class="btn sec" data-act="tab" data-stage="4" data-k="questions">Continue the questionnaire</button>'+
+    '<button class="btn sec" data-act="demoOpen">Open Workflow Controls</button></div></div></div>';
+  }
+  if(!S.diagnostic.reportOpened){ S.diagnostic.reportOpened = true; notify("Your Growth Diagnostic report is ready."); saveState(); }
+  return '<div class="card"><div class="hd"><h2>Growth Diagnostic Navigator</h2>'+
+   '<div class="btnrow no-print" style="margin:0"><button class="btn sec sm" data-act="print" data-report="diagnostic">'+icon("print")+' Print or save as PDF</button>'+
+   '<button class="btn blue sm" data-act="goStage" data-n="5">Open the Growth Mirror</button></div></div>'+
+   diagnosticBody(true)+'</div>';
 }
 function diagnosticBody(editable){
   return '<h3>Top pain areas</h3><ol>'+PAIN_AREAS.map(function(p){return '<li>'+esc(p)+'</li>';}).join("")+'</ol>'+
