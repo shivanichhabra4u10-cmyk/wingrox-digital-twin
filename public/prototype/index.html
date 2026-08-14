@@ -3700,30 +3700,18 @@ function personaReport(){
       '<button class="btn sec" data-act="demoOpen">Open Workflow Controls</button></div></div></div>';
   }
   if(!S.persona.reportOpened){ S.persona.reportOpened = true; notify("Persona Discovery is ready."); saveState(); }
-  window.open('/prototype/dipti-persona-discovery.html', '_blank');
-  return '<div class="card rpt"><div class="rptcover">'+
-    '<div class="eyebrow" style="color:#C79A4E">Step 2 report</div>'+
-    '<h2 style="margin:0 0 3px">Persona Discovery</h2>'+
-    '<p class="notice blue" style="margin-top:12px">Your Persona Discovery report has opened in a new tab. If it did not open, <a href="/prototype/dipti-persona-discovery.html" target="_blank">click here</a>.</p>'+
-    '<p style="margin:0;opacity:.8;font-size:.9rem">'+esc(S.profile.fullName||"Dipti M")+' &middot; '+esc(S.profile.role||"VP Strategy and Client Engagement")+'</p>'+
-    '<div class="rptmeta"><span>Prepared by the Growth Sprint Architect</span><span>Released '+fmtDate(S.persona.releasedOn||todayISO())+'</span>'+
-    '<span>Confidential to Dipti</span></div></div>'+
-    '<div class="hd" style="margin-top:14px">'+
-    '<p class="muted" style="margin:0;max-width:46ch;font-size:.9rem">A working view built from the immersion call and the documents shared. Every statement is labelled so you can challenge it.</p>'+
-    '<div class="btnrow no-print" style="margin:0">'+
-     '<button class="btn blue sm" data-act="openPdf" data-key="persona">'+icon("doc")+' Download the PDF</button>'+
-     '<button class="btn sec sm" data-act="savePdf" data-report="persona">Save this page as PDF</button>'+
-     '<button class="btn sec sm" data-act="print" data-report="persona">'+icon("print")+' Print</button>'+
-     '<button class="btn sec sm" data-act="addPersonaNote">Add a note</button>'+
-     '<button class="btn sec sm" data-act="requestCorrection">Request correction</button>'+
-     '<button class="btn blue sm" data-act="goStage" data-n="3">Continue to Validation</button></div></div>'+
-    pdfPanel("persona","Persona Discovery report")+
-    personaBody()+
-    (S.persona.participantNotes.length? '<div class="sep"></div><h4>Your notes</h4><ul class="list">'+
-      S.persona.participantNotes.map(function(n){return '<li>'+esc(n.t)+' <span class="muted" style="font-size:.82rem">'+fmtDate(n.date)+'</span></li>';}).join("")+'</ul>':'')+
-    (S.persona.corrections.length? '<h4>Corrections requested</h4><ul class="list">'+
-      S.persona.corrections.map(function(n){return '<li>'+esc(n.t)+' <span class="tag a">Sent to Architect (simulated)</span></li>';}).join("")+'</ul>':'')+
-    '</div>';
+  return '<div class="card"><div style="text-align:center;padding:48px 24px">'+
+    '<div class="eyebrow" style="color:#C79A4E;margin-bottom:14px">Step 2 · Persona Discovery</div>'+
+    '<h2 style="font-size:1.6rem;margin:0 0 12px">'+esc(S.profile.fullName||"Dipti M")+'</h2>'+
+    '<p style="color:#57617A;max-width:38ch;margin:0 auto 28px;font-size:.93rem;line-height:1.55">'+
+      'Your Persona Discovery report is ready. It opens in a new window so you can keep your workflow open alongside it.'+
+    '</p>'+
+    '<a href="/prototype/dipti-persona-discovery.html" target="_blank" rel="noopener noreferrer" '+
+      'style="display:inline-flex;align-items:center;gap:8px;background:#246BCE;color:#fff;border:0;padding:12px 28px;border-radius:6px;font-family:var(--mono,monospace);font-size:12px;font-weight:600;letter-spacing:.08em;text-transform:uppercase;text-decoration:none;cursor:pointer">'+
+      icon("doc")+'Open Persona Discovery Report'+
+    '</a>'+
+    '<p style="margin-top:16px;font-size:.82rem;color:#9AA0B4">Opens in a new tab &mdash; released '+fmtDate(S.persona.releasedOn||todayISO())+'</p>'+
+  '</div></div>';
 }
 function personaBody(){
   return '<h3>A. Dipti in one line</h3><p class="notice blue">'+esc(PERSONA.oneLine)+'</p>'+
