@@ -27,82 +27,105 @@ export default async function LoginPage({ searchParams }: LoginPageProps) {
   }
 
   return (
-    <main className="min-h-screen bg-slate-100 px-4 py-10">
-      <div className="mx-auto grid w-full max-w-6xl gap-6 md:grid-cols-2">
-        <section className="rounded-xl border border-slate-200 bg-slate-950 p-8 text-slate-100">
-          <p className="text-xs uppercase tracking-[0.18em] text-amber-300">WinGroX AI</p>
-          <h1 className="mt-3 text-3xl font-semibold leading-tight">Your personal growth journey, guided end to end</h1>
-          <p className="mt-4 text-sm leading-6 text-slate-300">
-            WinGroX AI is an individual growth intelligence system that takes you from self-discovery to a coached, 12-week growth journey — with a digital twin that evolves as you do.
+    <main className="min-h-screen bg-[#0f0f14] flex items-center justify-center px-4 py-12">
+      <div className="mx-auto grid w-full max-w-5xl gap-8 lg:grid-cols-[1fr_420px]">
+
+        {/* ── Left: Brand panel ── */}
+        <section className="flex flex-col justify-center py-4">
+          <p className="text-[11px] font-semibold uppercase tracking-[0.22em] text-amber-400">WinGroX AI</p>
+          <h1 className="mt-3 text-4xl font-bold leading-[1.1] text-white">
+            Your personal growth<br />journey, guided end to end
+          </h1>
+          <p className="mt-4 max-w-md text-[15px] leading-relaxed text-slate-400">
+            An individual growth intelligence system that takes you from self-discovery to a coached 12-week journey — with a digital twin that evolves as you do.
           </p>
-          <ul className="mt-6 space-y-3 text-sm text-slate-300">
-            <li className="flex gap-2"><span className="text-amber-300 font-semibold shrink-0">01 · Profile</span><span>Build your baseline — who you are, where you are, and what matters most.</span></li>
-            <li className="flex gap-2"><span className="text-amber-300 font-semibold shrink-0">02 · Persona Discovery</span><span>A deep pre-immersion analysis followed by a live immersion call to uncover your values, strengths and blind spots.</span></li>
-            <li className="flex gap-2"><span className="text-amber-300 font-semibold shrink-0">03 · Validation</span><span>Review and confirm your persona with your Growth Sprint Architect before anything moves forward.</span></li>
-            <li className="flex gap-2"><span className="text-amber-300 font-semibold shrink-0">04 · Growth Diagnostic</span><span>50 structured questions that map your pain areas, behaviour patterns and growth dimensions into a Navigator report.</span></li>
-            <li className="flex gap-2"><span className="text-amber-300 font-semibold shrink-0">05 · Growth Mirror</span><span>Your digital twin — a living view of your capital, blockages, career options, opportunity scorecard and 5-year roadmap.</span></li>
-            <li className="flex gap-2"><span className="text-amber-300 font-semibold shrink-0">06 · Coach Activation</span><span>Meet shortlisted coaches, run a chemistry call, choose your match and receive a personalised coaching plan.</span></li>
-            <li className="flex gap-2"><span className="text-amber-300 font-semibold shrink-0">07 · Growth Journey</span><span>A structured 12-week sprint with weekly check-ins, tracked milestones and a monthly review cycle.</span></li>
-          </ul>
+
+          <div className="mt-8 grid gap-px overflow-hidden rounded-xl border border-white/10">
+            {[
+              ["01", "Profile",           "Build your baseline — who you are, where you are, and what matters most."],
+              ["02", "Persona Discovery", "Pre-immersion analysis + live immersion call to surface your values, strengths and blind spots."],
+              ["03", "Validation",        "Review and confirm your persona with your Growth Sprint Architect before moving forward."],
+              ["04", "Growth Diagnostic", "50 structured questions mapping your pain areas and behaviour patterns into a Navigator report."],
+              ["05", "Growth Mirror",     "Your digital twin — capital, blockages, career options, opportunity scorecard and 5-year roadmap."],
+              ["06", "Coach Activation",  "Meet shortlisted coaches, run a chemistry call, choose your match and get a personalised plan."],
+              ["07", "Growth Journey",    "A structured 12-week sprint with weekly check-ins, tracked milestones and monthly reviews."],
+            ].map(([num, title, desc]) => (
+              <div key={num} className="flex gap-4 bg-white/[0.03] px-5 py-4 hover:bg-white/[0.06] transition-colors">
+                <span className="mt-0.5 shrink-0 text-[11px] font-bold tabular-nums text-amber-400/70">{num}</span>
+                <div>
+                  <p className="text-[13px] font-semibold text-amber-300">{title}</p>
+                  <p className="mt-0.5 text-[13px] leading-snug text-slate-400">{desc}</p>
+                </div>
+              </div>
+            ))}
+          </div>
         </section>
 
-        <section className="grid gap-6">
+        {/* ── Right: Auth forms ── */}
+        <section className="flex flex-col gap-5">
           {error ? (
-            <div className="rounded-xl border border-rose-200 bg-rose-50 p-4 text-sm text-rose-900">
+            <div className="rounded-xl border border-rose-400/30 bg-rose-950/40 px-4 py-3 text-sm text-rose-300">
               {error}
             </div>
           ) : null}
 
-          <form action={signInAction} className="rounded-xl border border-slate-200 bg-white p-6 shadow-sm">
-            <h2 className="text-xl font-semibold text-slate-900">Sign in</h2>
-            <p className="mt-1 text-sm text-slate-600">Use your existing account credentials.</p>
-            <div className="mt-4 grid gap-3">
-              <label className="grid gap-1 text-sm font-medium text-slate-800">
+          <form action={signInAction} className="rounded-2xl border border-white/10 bg-white/[0.05] p-7 backdrop-blur">
+            <h2 className="text-lg font-semibold text-white">Sign in</h2>
+            <p className="mt-1 text-sm text-slate-400">Welcome back. Enter your credentials to continue.</p>
+            <div className="mt-5 grid gap-4">
+              <label className="grid gap-1.5 text-sm font-medium text-slate-300">
                 Email
-                <input name="email" type="email" required className="rounded-lg border border-slate-300 px-3 py-2" />
+                <input name="email" type="email" required placeholder="you@example.com"
+                  className="rounded-lg border border-white/10 bg-white/5 px-3 py-2.5 text-sm text-white placeholder:text-slate-600 focus:border-amber-400/50 focus:outline-none focus:ring-1 focus:ring-amber-400/30" />
               </label>
-              <label className="grid gap-1 text-sm font-medium text-slate-800">
+              <label className="grid gap-1.5 text-sm font-medium text-slate-300">
                 Password
-                <input name="password" type="password" required minLength={8} className="rounded-lg border border-slate-300 px-3 py-2" />
+                <input name="password" type="password" required minLength={8} placeholder="••••••••"
+                  className="rounded-lg border border-white/10 bg-white/5 px-3 py-2.5 text-sm text-white placeholder:text-slate-600 focus:border-amber-400/50 focus:outline-none focus:ring-1 focus:ring-amber-400/30" />
               </label>
             </div>
-            <button type="submit" className="mt-5 rounded-lg bg-slate-900 px-4 py-2 text-sm font-semibold text-white hover:bg-slate-800">
+            <button type="submit"
+              className="mt-5 w-full rounded-lg bg-amber-400 px-4 py-2.5 text-sm font-semibold text-slate-950 hover:bg-amber-300 transition-colors">
               Sign in
             </button>
           </form>
 
-          <form action={signUpAction} className="rounded-xl border border-slate-200 bg-white p-6 shadow-sm">
-            <h2 className="text-xl font-semibold text-slate-900">Create account</h2>
-            <p className="mt-1 text-sm text-slate-600">Create an account and assign a workflow role.</p>
-            <div className="mt-4 grid gap-3">
-              <label className="grid gap-1 text-sm font-medium text-slate-800">
+          <form action={signUpAction} className="rounded-2xl border border-white/10 bg-white/[0.05] p-7 backdrop-blur">
+            <h2 className="text-lg font-semibold text-white">Create account</h2>
+            <p className="mt-1 text-sm text-slate-400">New here? Set up your account and role to begin.</p>
+            <div className="mt-5 grid gap-4">
+              <label className="grid gap-1.5 text-sm font-medium text-slate-300">
                 Full name
-                <input name="fullName" type="text" required minLength={2} className="rounded-lg border border-slate-300 px-3 py-2" />
+                <input name="fullName" type="text" required minLength={2} placeholder="Your full name"
+                  className="rounded-lg border border-white/10 bg-white/5 px-3 py-2.5 text-sm text-white placeholder:text-slate-600 focus:border-amber-400/50 focus:outline-none focus:ring-1 focus:ring-amber-400/30" />
               </label>
-              <label className="grid gap-1 text-sm font-medium text-slate-800">
+              <label className="grid gap-1.5 text-sm font-medium text-slate-300">
                 Email
-                <input name="email" type="email" required className="rounded-lg border border-slate-300 px-3 py-2" />
+                <input name="email" type="email" required placeholder="you@example.com"
+                  className="rounded-lg border border-white/10 bg-white/5 px-3 py-2.5 text-sm text-white placeholder:text-slate-600 focus:border-amber-400/50 focus:outline-none focus:ring-1 focus:ring-amber-400/30" />
               </label>
-              <label className="grid gap-1 text-sm font-medium text-slate-800">
+              <label className="grid gap-1.5 text-sm font-medium text-slate-300">
                 Password
-                <input name="password" type="password" required minLength={8} className="rounded-lg border border-slate-300 px-3 py-2" />
+                <input name="password" type="password" required minLength={8} placeholder="Min 8 characters"
+                  className="rounded-lg border border-white/10 bg-white/5 px-3 py-2.5 text-sm text-white placeholder:text-slate-600 focus:border-amber-400/50 focus:outline-none focus:ring-1 focus:ring-amber-400/30" />
               </label>
-              <label className="grid gap-1 text-sm font-medium text-slate-800">
+              <label className="grid gap-1.5 text-sm font-medium text-slate-300">
                 Role
-                <select name="role" required className="rounded-lg border border-slate-300 px-3 py-2">
+                <select name="role" required
+                  className="rounded-lg border border-white/10 bg-white/5 px-3 py-2.5 text-sm text-white focus:border-amber-400/50 focus:outline-none focus:ring-1 focus:ring-amber-400/30">
                   {USER_ROLES.map((role) => (
-                    <option key={role} value={role}>
-                      {role}
-                    </option>
+                    <option key={role} value={role} className="bg-slate-900">{role}</option>
                   ))}
                 </select>
               </label>
             </div>
-            <button type="submit" className="mt-5 rounded-lg bg-emerald-700 px-4 py-2 text-sm font-semibold text-white hover:bg-emerald-600">
+            <button type="submit"
+              className="mt-5 w-full rounded-lg border border-amber-400/40 bg-transparent px-4 py-2.5 text-sm font-semibold text-amber-300 hover:bg-amber-400/10 transition-colors">
               Create account
             </button>
           </form>
         </section>
+
       </div>
     </main>
   );
