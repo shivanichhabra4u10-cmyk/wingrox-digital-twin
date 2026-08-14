@@ -1,0 +1,1876 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Persona Discovery — Dipti M · WinGrox AI</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500;12..96,700;12..96,800&family=Newsreader:ital,opsz,wght@0,6..72,300;0,6..72,400;0,6..72,500;0,6..72,600;1,6..72,400&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+:root{
+  --ink:#191320;
+  --plum:#432A4C;
+  --plum-deep:#2C1B33;
+  --paper:#EFEDF1;
+  --paper-2:#F7F6F8;
+  --line:#D6D2DC;
+  --line-soft:#E3E0E7;
+  --muted:#6B6478;
+  --viridian:#176B57;
+  --viridian-bg:#E2EFEA;
+  --ochre:#A76310;
+  --ochre-bg:#F6EBDC;
+  --grey:#6E6B78;
+  --grey-bg:#E7E5EA;
+  --rose:#A32F4E;
+  --shadow:0 1px 0 rgba(25,19,32,.04), 0 12px 28px -18px rgba(25,19,32,.35);
+  --d:'Bricolage Grotesque',"Helvetica Neue",Arial,sans-serif;
+  --b:'Newsreader',Georgia,'Times New Roman',serif;
+  --m:'IBM Plex Mono',ui-monospace,SFMono-Regular,Menlo,monospace;
+  --nav-w:264px;
+}
+
+*{box-sizing:border-box}
+html{scroll-behavior:smooth}
+@media (prefers-reduced-motion:reduce){html{scroll-behavior:auto}*{animation:none!important;transition:none!important}}
+body{
+  margin:0;background:var(--paper);color:var(--ink);
+  font-family:var(--b);font-size:17px;line-height:1.62;
+  -webkit-font-smoothing:antialiased;
+}
+h1,h2,h3,h4{font-family:var(--d);font-weight:700;letter-spacing:-.02em;line-height:1.08;margin:0}
+p{margin:0 0 .85em}
+p:last-child{margin-bottom:0}
+a{color:var(--plum)}
+:focus-visible{outline:2.5px solid var(--rose);outline-offset:3px;border-radius:2px}
+
+/* ---------- layout ---------- */
+.shell{display:flex;min-height:100vh}
+.nav{
+  width:var(--nav-w);flex:0 0 var(--nav-w);background:var(--plum-deep);color:#E8E2EC;
+  position:sticky;top:0;height:100vh;overflow-y:auto;padding:26px 0 40px;
+}
+.main{flex:1;min-width:0;padding:0 0 120px}
+.wrap{max-width:940px;margin:0 auto;padding:0 32px}
+
+/* ---------- nav ---------- */
+.brandmark{padding:0 22px 22px;border-bottom:1px solid rgba(255,255,255,.1);margin-bottom:16px}
+.brandmark .bm-1{font-family:var(--m);font-size:10.5px;letter-spacing:.18em;text-transform:uppercase;color:#B49BC0}
+.brandmark .bm-2{font-family:var(--d);font-size:26px;font-weight:800;letter-spacing:-.03em;margin-top:6px;color:#fff}
+.brandmark .bm-3{font-family:var(--m);font-size:10.5px;color:#9C86A8;margin-top:4px}
+.navgroup{font-family:var(--m);font-size:9.5px;letter-spacing:.2em;text-transform:uppercase;color:#8C769A;padding:18px 22px 7px}
+.nav a{
+  display:flex;gap:11px;align-items:baseline;padding:7px 22px;color:#DDD3E3;text-decoration:none;
+  font-family:var(--d);font-size:14.5px;font-weight:500;letter-spacing:-.005em;border-left:3px solid transparent;
+}
+.nav a:hover{background:rgba(255,255,255,.06);color:#fff}
+.nav a.on{background:rgba(255,255,255,.09);border-left-color:#D9A441;color:#fff}
+.nav a .n{font-family:var(--m);font-size:10.5px;color:#9C86A8;flex:0 0 18px}
+.nav a.on .n{color:#D9A441}
+.navfoot{padding:20px 22px 0;margin-top:18px;border-top:1px solid rgba(255,255,255,.1);font-size:12.5px;line-height:1.5;color:#9C86A8;font-family:var(--d);font-weight:500}
+
+.mobilebar{display:none}
+
+/* ---------- hero ---------- */
+.hero{background:var(--plum-deep);color:#F1EAF4;padding:0 0 6px;position:relative;overflow:hidden}
+.hero::after{content:"";position:absolute;inset:0;background:
+  radial-gradient(900px 380px at 78% -12%, rgba(217,164,65,.16), transparent 62%),
+  radial-gradient(600px 320px at 8% 108%, rgba(23,107,87,.22), transparent 60%);pointer-events:none}
+.hero .wrap{position:relative;z-index:1;padding-top:64px;padding-bottom:56px}
+.eyebrow{font-family:var(--m);font-size:11px;letter-spacing:.22em;text-transform:uppercase;color:#C6A7D2}
+.hero h1{font-size:clamp(44px,7vw,82px);font-weight:800;letter-spacing:-.045em;margin:14px 0 0;color:#fff}
+.hero .sub{font-family:var(--m);font-size:12px;letter-spacing:.1em;color:#A98EB6;margin-top:10px;text-transform:uppercase}
+.thesis{
+  margin:38px 0 0;padding:26px 0 0;border-top:1px solid rgba(255,255,255,.14);
+  font-family:var(--b);font-size:clamp(21px,2.7vw,30px);line-height:1.34;font-weight:400;color:#F3ECF6;max-width:26ch;
+}
+.thesis em{font-style:normal;color:#F0C46B;font-weight:500}
+.thesis .sm{display:block;font-size:15px;color:#B49BC0;margin-top:16px;max-width:52ch;line-height:1.6}
+.herostats{display:flex;flex-wrap:wrap;gap:10px;margin-top:30px}
+.hstat{background:rgba(255,255,255,.07);border:1px solid rgba(255,255,255,.13);border-radius:2px;padding:9px 13px;font-family:var(--m);font-size:11px;letter-spacing:.03em;color:#E4D8EA}
+.hstat b{color:#fff;font-weight:600}
+
+/* ---------- sections ---------- */
+.sec{padding:76px 0 8px;scroll-margin-top:8px}
+.sec-head{margin-bottom:30px}
+.sec-num{font-family:var(--m);font-size:11px;letter-spacing:.2em;color:var(--muted);text-transform:uppercase}
+.sec-head h2{font-size:clamp(30px,4.4vw,44px);margin:9px 0 0;font-weight:800;letter-spacing:-.035em}
+.sec-head .lede{font-size:19px;color:#4C4453;margin-top:14px;max-width:62ch;line-height:1.55}
+.rule{height:1px;background:var(--line);margin:0}
+h3.blk{font-size:22px;margin:44px 0 16px;letter-spacing:-.025em}
+h3.blk::before{content:"";display:block;width:32px;height:3px;background:var(--plum);margin-bottom:12px}
+h4.mini{font-family:var(--d);font-size:15px;font-weight:700;letter-spacing:-.01em;margin:0 0 7px}
+
+/* ---------- status chips (signature) ---------- */
+.status{
+  display:inline-flex;align-items:center;gap:6px;font-family:var(--m);font-size:9.5px;font-weight:600;
+  letter-spacing:.13em;text-transform:uppercase;padding:3.5px 8px;border-radius:2px;white-space:nowrap;vertical-align:2px;
+}
+.status::before{content:"";width:6px;height:6px;border-radius:50%;flex:0 0 6px}
+.status.obs{background:var(--viridian-bg);color:var(--viridian)}
+.status.obs::before{background:var(--viridian)}
+.status.hyp{background:var(--ochre-bg);color:var(--ochre)}
+.status.hyp::before{background:var(--ochre);border-radius:0}
+.status.unk{background:var(--grey-bg);color:var(--grey)}
+.status.unk::before{background:transparent;border:1.5px solid var(--grey)}
+
+/* ---------- cards ---------- */
+.card{
+  background:var(--paper-2);border:1px solid var(--line-soft);border-radius:3px;padding:22px 24px;
+  box-shadow:var(--shadow);margin:0 0 16px;
+}
+.card > .status{margin-bottom:10px}
+.card h4{font-family:var(--d);font-size:18px;font-weight:700;letter-spacing:-.02em;margin:0 0 9px}
+.card p, .card li{font-size:16.2px}
+.card.tint-o{border-left:3px solid var(--viridian)}
+.card.tint-h{border-left:3px solid var(--ochre)}
+.card.tint-u{border-left:3px solid var(--grey)}
+.grid{display:grid;gap:16px}
+.g2{grid-template-columns:repeat(2,minmax(0,1fr))}
+.g3{grid-template-columns:repeat(3,minmax(0,1fr))}
+.grid .card{margin:0}
+
+ul.tick{list-style:none;padding:0;margin:0}
+ul.tick li{position:relative;padding-left:19px;margin-bottom:5px;font-size:16px}
+ul.tick li::before{content:"";position:absolute;left:0;top:.62em;width:7px;height:1.5px;background:var(--plum);opacity:.55}
+ul.tick.tight li{margin-bottom:2px}
+
+.kv{font-family:var(--m);font-size:10.5px;letter-spacing:.14em;text-transform:uppercase;color:var(--muted);margin:0 0 6px}
+
+.pull{
+  border-left:3px solid #D9A441;padding:4px 0 4px 22px;margin:26px 0;
+  font-size:22px;line-height:1.44;font-weight:400;max-width:44ch;
+}
+.pull span{display:block;font-family:var(--m);font-size:10.5px;letter-spacing:.16em;text-transform:uppercase;color:var(--muted);margin-top:12px}
+
+.q{font-family:var(--d);font-weight:600;font-size:17.5px;letter-spacing:-.015em;line-height:1.4}
+
+/* ---------- table ---------- */
+.tblwrap{overflow-x:auto;border:1px solid var(--line-soft);border-radius:3px;background:var(--paper-2);box-shadow:var(--shadow)}
+table{border-collapse:collapse;width:100%;min-width:520px}
+th,td{text-align:left;padding:11px 15px;border-bottom:1px solid var(--line-soft);font-size:15.2px;vertical-align:top}
+th{font-family:var(--m);font-size:10px;letter-spacing:.13em;text-transform:uppercase;color:var(--muted);font-weight:600;background:#EDEBF0}
+tbody tr:last-child td{border-bottom:0}
+td.strong{font-family:var(--d);font-weight:600;font-size:15px}
+.mark-hi{color:var(--viridian);font-family:var(--m);font-size:12px}
+.mark-mid{color:var(--ochre);font-family:var(--m);font-size:12px}
+.mark-lo{color:var(--grey);font-family:var(--m);font-size:12px}
+
+/* ---------- two-column compare ---------- */
+.vs{display:grid;grid-template-columns:1fr auto 1fr;gap:0;align-items:stretch;border:1px solid var(--line-soft);border-radius:3px;overflow:hidden;background:var(--paper-2);box-shadow:var(--shadow)}
+.vs .col{padding:20px 22px}
+.vs .mid{width:1px;background:var(--line-soft)}
+.vs .kv{margin-bottom:12px}
+
+/* ---------- toolbar / filter ---------- */
+.toolbar{position:sticky;top:0;z-index:40;background:rgba(239,237,241,.93);backdrop-filter:blur(9px);border-bottom:1px solid var(--line);padding:9px 0}
+.toolbar .wrap{display:flex;gap:12px;align-items:center;flex-wrap:wrap}
+.tb-label{font-family:var(--m);font-size:9.5px;letter-spacing:.16em;text-transform:uppercase;color:var(--muted)}
+.chipbtn{
+  font-family:var(--m);font-size:10px;font-weight:600;letter-spacing:.1em;text-transform:uppercase;
+  border:1px solid var(--line);background:#fff;color:var(--muted);padding:5px 10px;border-radius:2px;cursor:pointer;
+  display:inline-flex;align-items:center;gap:6px;transition:all .16s ease;
+}
+.chipbtn::before{content:"";width:6px;height:6px;border-radius:50%;background:currentColor;opacity:.55}
+.chipbtn[data-f="obs"].act{background:var(--viridian);border-color:var(--viridian);color:#fff}
+.chipbtn[data-f="hyp"].act{background:var(--ochre);border-color:var(--ochre);color:#fff}
+.chipbtn[data-f="unk"].act{background:var(--grey);border-color:var(--grey);color:#fff}
+.chipbtn:hover{border-color:var(--plum)}
+.search{
+  flex:1;min-width:150px;font-family:var(--b);font-size:15px;padding:6px 11px;border:1px solid var(--line);
+  border-radius:2px;background:#fff;color:var(--ink);
+}
+.search::placeholder{color:#9A93A5}
+body.filtering .card:not(.fmatch){opacity:.22;filter:saturate(.2)}
+.hidden{display:none!important}
+.nores{font-family:var(--m);font-size:13px;color:var(--muted);padding:30px 0}
+
+/* ---------- interactive widgets ---------- */
+.trk{border:1px solid var(--line-soft);border-radius:3px;background:var(--paper-2);box-shadow:var(--shadow);overflow:hidden}
+.trk-row{display:grid;grid-template-columns:1fr auto;gap:14px;align-items:center;padding:13px 18px;border-bottom:1px solid var(--line-soft)}
+.trk-row:last-child{border-bottom:0}
+.trk-row .t{font-size:15.5px;line-height:1.4}
+.trk-row .t small{display:block;font-family:var(--m);font-size:9.5px;letter-spacing:.13em;text-transform:uppercase;color:var(--muted);margin-top:4px}
+.seg{display:flex;border:1px solid var(--line);border-radius:2px;overflow:hidden;background:#fff}
+.seg button{
+  font-family:var(--m);font-size:9.5px;font-weight:600;letter-spacing:.07em;text-transform:uppercase;
+  border:0;border-right:1px solid var(--line);background:#fff;color:var(--muted);padding:6px 9px;cursor:pointer;transition:.14s;
+}
+.seg button:last-child{border-right:0}
+.seg button:hover{background:#F0EDF2}
+.seg button.on[data-v="c"]{background:var(--viridian);color:#fff}
+.seg button.on[data-v="p"]{background:var(--ochre);color:#fff}
+.seg button.on[data-v="r"]{background:var(--rose);color:#fff}
+.seg button.on[data-v="u"]{background:var(--grey);color:#fff}
+.tally{display:flex;gap:8px;flex-wrap:wrap;margin:16px 0 0;font-family:var(--m);font-size:11px}
+.tally span{padding:6px 11px;border-radius:2px;background:#fff;border:1px solid var(--line)}
+.tally b{font-weight:600}
+
+.score{border:1px solid var(--line-soft);border-radius:3px;background:var(--paper-2);box-shadow:var(--shadow);padding:6px 20px 18px}
+.score-row{display:grid;grid-template-columns:150px 1fr 34px;gap:14px;align-items:center;padding:11px 0;border-bottom:1px solid var(--line-soft)}
+.score-row:last-child{border-bottom:0}
+.score-row .lbl{font-family:var(--d);font-weight:600;font-size:14.5px}
+.score-row .lbl small{display:block;font-family:var(--b);font-weight:400;font-size:13px;color:var(--muted);line-height:1.3;margin-top:2px}
+.score-row input[type=range]{width:100%;accent-color:var(--plum)}
+.score-row .val{font-family:var(--m);font-size:14px;text-align:right;font-weight:600}
+.score-row.low .val{color:var(--rose)}
+.score-row.low .lbl{color:var(--rose)}
+.flagbox{margin-top:16px;padding:14px 18px;border:1px dashed var(--line);border-radius:3px;font-size:15px;background:#fff}
+
+.qlist{list-style:none;padding:0;margin:0}
+.qlist li{display:flex;gap:11px;padding:9px 0;border-bottom:1px solid var(--line-soft);align-items:flex-start}
+.qlist li:last-child{border-bottom:0}
+.qlist input{margin-top:6px;accent-color:var(--viridian);width:15px;height:15px;flex:0 0 15px}
+.qlist label{font-size:16.2px;line-height:1.45;cursor:pointer}
+.qlist li.done label{color:#9A93A5;text-decoration:line-through}
+details{border:1px solid var(--line-soft);border-radius:3px;background:var(--paper-2);margin-bottom:10px;box-shadow:var(--shadow)}
+details summary{
+  cursor:pointer;padding:14px 18px;font-family:var(--d);font-weight:700;font-size:16px;letter-spacing:-.015em;
+  list-style:none;display:flex;justify-content:space-between;gap:12px;align-items:center;
+}
+details summary::-webkit-details-marker{display:none}
+details summary::after{content:"+";font-family:var(--m);font-size:16px;color:var(--muted)}
+details[open] summary::after{content:"–"}
+details .dbody{padding:0 18px 16px}
+.progbar{height:5px;background:var(--line-soft);border-radius:99px;overflow:hidden;margin:12px 0 0}
+.progbar i{display:block;height:100%;background:var(--viridian);width:0;transition:width .25s ease}
+
+.btn{
+  font-family:var(--m);font-size:10.5px;font-weight:600;letter-spacing:.12em;text-transform:uppercase;
+  background:var(--plum);color:#fff;border:0;padding:10px 16px;border-radius:2px;cursor:pointer;transition:.16s;
+}
+.btn:hover{background:var(--plum-deep)}
+.btn.ghost{background:#fff;color:var(--plum);border:1px solid var(--line)}
+.btn.ghost:hover{border-color:var(--plum);background:#fff}
+.btnrow{display:flex;gap:10px;flex-wrap:wrap;margin-top:16px}
+
+.note{font-family:var(--b);font-size:14.5px;color:var(--muted);font-style:italic;margin-top:10px}
+
+.horiz{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:0;border:1px solid var(--line-soft);border-radius:3px;overflow:hidden;background:var(--paper-2);box-shadow:var(--shadow)}
+.horiz .h{padding:22px;border-right:1px solid var(--line-soft)}
+.horiz .h:last-child{border-right:0}
+.horiz .h .yr{font-family:var(--m);font-size:10px;letter-spacing:.16em;text-transform:uppercase;color:#fff;background:var(--plum);display:inline-block;padding:3px 8px;border-radius:2px}
+.horiz .h h4{margin:12px 0 8px;font-size:19px}
+
+.onepage{background:var(--plum-deep);color:#EEE6F1;border-radius:4px;padding:34px 36px}
+.onepage h3{color:#fff;font-size:26px;margin-bottom:6px}
+.op-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:0;margin-top:24px;border-top:1px solid rgba(255,255,255,.14)}
+.op-cell{padding:18px 22px 18px 0;border-bottom:1px solid rgba(255,255,255,.12)}
+.op-cell:nth-child(odd){border-right:1px solid rgba(255,255,255,.12);padding-right:24px}
+.op-cell:nth-child(even){padding-left:24px}
+.op-cell .kv{color:#B49BC0}
+.op-cell p{font-size:16px;color:#EDE4F0;margin:0}
+
+@media (max-width:1000px){
+  .nav{display:none}
+  .mobilebar{display:block;position:sticky;top:0;z-index:60;background:var(--plum-deep);color:#fff;padding:11px 18px}
+  .mobilebar .mb-in{display:flex;justify-content:space-between;align-items:center;gap:12px}
+  .mobilebar .mb-t{font-family:var(--d);font-weight:800;font-size:16px;letter-spacing:-.02em}
+  .mobilebar select{font-family:var(--m);font-size:11px;background:rgba(255,255,255,.12);color:#fff;border:1px solid rgba(255,255,255,.22);border-radius:2px;padding:6px 8px;max-width:56%}
+  .toolbar{top:47px}
+  .g3,.g2{grid-template-columns:1fr}
+  .vs{grid-template-columns:1fr}
+  .vs .mid{width:auto;height:1px}
+  .horiz{grid-template-columns:1fr}
+  .horiz .h{border-right:0;border-bottom:1px solid var(--line-soft)}
+  .op-grid{grid-template-columns:1fr}
+  .op-cell:nth-child(odd){border-right:0;padding-right:0}
+  .op-cell:nth-child(even){padding-left:0}
+  .score-row{grid-template-columns:1fr 40px;row-gap:6px}
+  .score-row input[type=range]{grid-column:1/3}
+  .wrap{padding:0 20px}
+  .sec{padding-top:52px}
+  body{font-size:16.5px}
+}
+@media print{
+  .nav,.toolbar,.mobilebar,.btnrow{display:none}
+  body{background:#fff}
+  .sec{page-break-inside:avoid;padding-top:24px}
+  details{page-break-inside:avoid}
+  details:not([open]) .dbody{display:block}
+}
+.reveal{opacity:0;transform:translateY(10px)}
+.reveal.in{opacity:1;transform:none;transition:opacity .5s ease,transform .5s ease}
+@media (prefers-reduced-motion:reduce){.reveal{opacity:1;transform:none}}
+</style>
+</head>
+<body>
+
+<div class="mobilebar">
+  <div class="mb-in">
+    <div class="mb-t">Dipti M · Persona Discovery</div>
+    <select id="mobnav" aria-label="Jump to section"></select>
+  </div>
+</div>
+
+<div class="shell">
+  <!-- ================= NAV ================= -->
+  <nav class="nav" aria-label="Sections">
+    <div class="brandmark">
+      <div class="bm-1">WinGrox AI</div>
+      <div class="bm-2">Dipti M</div>
+      <div class="bm-3">Persona Discovery · Pre-immersion</div>
+    </div>
+    <div class="navgroup">The discovery</div>
+    <a href="#start" class="on"><span class="n">00</span> Start here</a>
+    <a href="#p1"><span class="n">01</span> Who she appears to be</a>
+    <a href="#p2"><span class="n">02</span> Inner world</a>
+    <a href="#p3"><span class="n">03</span> Friction &amp; bottlenecks</a>
+    <a href="#p4"><span class="n">04</span> Possible futures</a>
+    <a href="#p5"><span class="n">05</span> Operating blueprint</a>
+    <a href="#p6"><span class="n">06</span> Behaviour &amp; leadership</a>
+    <a href="#p7"><span class="n">07</span> Purpose &amp; legacy</a>
+    <a href="#p8"><span class="n">08</span> The integrated view</a>
+    <div class="navgroup">Working tools</div>
+    <a href="#tracker"><span class="n">→</span> Validation tracker</a>
+    <a href="#scorecard"><span class="n">→</span> Monthly scorecard</a>
+    <a href="#immersion"><span class="n">→</span> Immersion toolkit</a>
+    <a href="#summary"><span class="n">→</span> One-page summary</a>
+    <div class="navfoot">Built from public signals only. Nothing here is a conclusion until Dipti confirms it.</div>
+  </nav>
+
+  <!-- ================= MAIN ================= -->
+  <main class="main">
+
+  <!-- HERO -->
+  <header class="hero" id="start">
+    <div class="wrap">
+      <div class="eyebrow">WinGrox AI · Persona Discovery · Parts 1–8</div>
+      <h1>Dipti M</h1>
+      <div class="sub">Pre-immersion working document</div>
+      <div class="thesis">
+        The question is not <em>“what job next?”</em> It is: which parts of who she already is should get more space in the next chapter?
+        <span class="sm">Everything below was assembled from publicly visible information. It is a set of questions to take into the immersion call — not a verdict on who Dipti is.</span>
+      </div>
+      <div class="herostats">
+        <div class="hstat"><b>8</b> parts consolidated</div>
+        <div class="hstat"><b>15</b> hypotheses to validate</div>
+        <div class="hstat"><b>3</b> experiments in 90 days</div>
+        <div class="hstat"><b>1</b> North Star, in her own words</div>
+      </div>
+    </div>
+  </header>
+
+  <!-- TOOLBAR -->
+  <div class="toolbar">
+    <div class="wrap">
+      <span class="tb-label">Confidence</span>
+      <button class="chipbtn act" data-f="obs">Observed</button>
+      <button class="chipbtn act" data-f="hyp">Hypothesis</button>
+      <button class="chipbtn act" data-f="unk">Unknown</button>
+      <input class="search" id="search" type="search" placeholder="Search the whole document — try “music”, “trust”, “ownership”…" aria-label="Search">
+      <button class="btn ghost" id="clearall">Reset</button>
+    </div>
+  </div>
+
+  <div class="wrap">
+
+  <!-- ============ HOW TO READ ============ -->
+  <section class="sec" id="how">
+    <div class="sec-head">
+      <div class="sec-num">00 — How to read this</div>
+      <h2>Three levels of certainty. Nothing more.</h2>
+      <p class="lede">Public activity can raise good questions. It cannot prove who someone is. Every claim in this document carries one of three labels, and the filter above lets you read only the level you trust.</p>
+    </div>
+    <div class="grid g3">
+      <div class="card tint-o" data-s="obs">
+        <span class="status obs">Observed</span>
+        <h4>There is public evidence</h4>
+        <p>Visible activity, published writing, or indexed records support this. It still needs interpretation, but the fact itself is reasonably solid.</p>
+      </div>
+      <div class="card tint-h" data-s="hyp">
+        <span class="status hyp">Hypothesis</span>
+        <h4>A pattern that may be real</h4>
+        <p>Signals point somewhere, but they do not prove it. Treat every one of these as a question for the immersion call, never as a finding.</p>
+      </div>
+      <div class="card tint-u" data-s="unk">
+        <span class="status unk">Unknown</span>
+        <h4>No basis for a view</h4>
+        <p>Money, family, risk appetite, fears, ambition. These must come from Dipti directly. Naming them as unknown is part of the work.</p>
+      </div>
+    </div>
+
+    <div class="pull">Persona discovery should never tell Dipti “this is who you are.” It should help her answer: “which parts of who I already am should become more important next?”<span>The governing principle</span></div>
+
+    <div class="vs" data-s="obs">
+      <div class="col">
+        <div class="kv">What this document does</div>
+        <ul class="tick">
+          <li>Organises public signals into patterns worth testing</li>
+          <li>Separates evidence from guesswork, out loud</li>
+          <li>Supplies the questions for a 60–90 minute immersion call</li>
+          <li>Offers experiments that produce evidence, not more theory</li>
+          <li>Ends in a decision framework she owns</li>
+        </ul>
+      </div>
+      <div class="mid"></div>
+      <div class="col">
+        <div class="kv">What it must not do</div>
+        <ul class="tick">
+          <li>Assume anything about family, religion, health or finances</li>
+          <li>Assign a personality type from social media</li>
+          <li>Recommend quitting, founding, coaching or rebranding</li>
+          <li>Convert a single post into a personal truth</li>
+          <li>Present a hypothesis as a conclusion</li>
+        </ul>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ PART 1 ============ -->
+  <section class="sec" id="p1">
+    <div class="sec-head">
+      <div class="sec-num">01 — Persona foundation</div>
+      <h2>Who Dipti appears to be, beyond her current role</h2>
+      <p class="lede">The visible professional identity is only one of at least three. The interesting finding is not what she does — it is what she consistently chooses to notice.</p>
+    </div>
+
+    <h3 class="blk">Three identities in public view</h3>
+    <div class="grid g3">
+      <div class="card tint-o" data-s="obs">
+        <span class="status obs">Observed</span>
+        <h4>The professional</h4>
+        <p>Senior client engagement, speakers, leadership programmes, and the preparation of senior-level conversations. Her writing shows she reads what sits underneath the task: what the organisation is experiencing, what leaders may be feeling, what an audience is ready to hear.</p>
+      </div>
+      <div class="card tint-o" data-s="obs">
+        <span class="status obs">Observed</span>
+        <h4>The music and creative self</h4>
+        <p>Public records connect her to a music venture and to executive-producer credits. An indexed post says music has mattered since childhood. This is not casual listening — it is participation, production and organisation over years.</p>
+      </div>
+      <div class="card tint-h" data-s="hyp">
+        <span class="status hyp">Hypothesis</span>
+        <h4>The personal self</h4>
+        <p>Small signals only: a direct line about breaking ties when trust is broken, and a long road trip through Maharashtra’s temple towns. Enough to suggest travel and trust carry weight. Not enough to draw any conclusion about beliefs.</p>
+      </div>
+    </div>
+
+    <h3 class="blk">The emerging pattern</h3>
+    <div class="card tint-h" data-s="hyp">
+      <span class="status hyp">Hypothesis</span>
+      <h4>From coordinating people to interpreting them</h4>
+      <p>The signals suggest movement along a chain: <strong>understand people → interpret situations → connect ideas → communicate meaning → influence outcomes.</strong> Her recap of Prabir Jha’s India HR Conclave session was praised by Jha himself for capturing the essence of the discussion — the clearest single piece of evidence that she can listen, find what matters, simplify, and communicate it.</p>
+      <p>She appears comfortable operating in the middle of things: person and person, speaker and audience, organisation and expert, idea and context, professional life and creative life. That may be her strongest asset. It may also be the trap.</p>
+    </div>
+
+    <div class="pull">If most of your career is built around helping other people succeed, when do you start defining what success means for you?<span>The central tension of Part 1</span></div>
+
+    <h3 class="blk">Values worth testing</h3>
+    <div class="grid g2">
+      <div class="card tint-h" data-s="hyp"><span class="status hyp">Hypothesis</span><h4>Trust</h4><p>Appears professionally (context failures break trust), in her leadership notes (control giving way to trust), and personally (direct language about broken ties). Possible internal belief: <em>relationships work when people can rely on each other.</em> The difficult side: once damaged, it may be hard to rebuild.</p></div>
+      <div class="card tint-h" data-s="hyp"><span class="status hyp">Hypothesis</span><h4>Human connection</h4><p>Her work depends on reading and joining people. Possible internal belief: <em>the quality of the human connection determines the quality of the outcome.</em></p></div>
+      <div class="card tint-h" data-s="hyp"><span class="status hyp">Hypothesis</span><h4>Meaning</h4><p>What she shares goes past task completion. Possible internal question: <em>what difference did this actually make?</em></p></div>
+      <div class="card tint-h" data-s="hyp"><span class="status hyp">Hypothesis</span><h4>Expression</h4><p>Music has stayed present across years. Possible internal need: <em>I need space for expression, not only responsibility.</em></p></div>
+      <div class="card tint-h" data-s="hyp"><span class="status hyp">Hypothesis</span><h4>Respect</h4><p>Handling speakers, senior clients and audiences requires sensitivity to how people are treated. Possible belief: <em>people should be understood before they are judged.</em></p></div>
+      <div class="card tint-u" data-s="unk"><span class="status unk">Unknown</span><h4>Rank order</h4><p>Five candidate values is a list, not a hierarchy. Ask Dipti to rank them, and to delete the ones that are simply pleasant rather than load-bearing.</p></div>
+    </div>
+
+    <h3 class="blk">Strength architecture</h3>
+    <div class="grid g2">
+      <div class="card tint-o" data-s="obs"><span class="status obs">Observed</span><h4>Listening and synthesis</h4><p>The strongest evidence point in the entire discovery. She can take a dense senior conversation and return its essence. This is the raw material for interviewing, facilitation, advisory work and content.</p></div>
+      <div class="card tint-o" data-s="obs"><span class="status obs">Observed</span><h4>Reading context</h4><p>Her writing returns repeatedly to the idea that different senior rooms have different unwritten rules, and that a strong speaker still fails if the organisational context is missed.</p></div>
+      <div class="card tint-h" data-s="hyp"><span class="status hyp">Hypothesis</span><h4>Relationship building</h4><p>She appears to work through relationships rather than transactions — building confidence, holding long relationships, understanding expectations.</p></div>
+      <div class="card tint-h" data-s="hyp"><span class="status hyp">Hypothesis</span><h4>Connecting different worlds</h4><p>Corporate leadership and music in one life. Most careers are built by specialising; some are built by combining. This combination is worth exploring rather than treating as unrelated.</p></div>
+      <div class="card tint-h" data-s="hyp"><span class="status hyp">Hypothesis</span><h4>Behind-the-scenes ownership</h4><p>Comfort making things happen without needing to be in front. A real strength — and a possible identity trap. People stay behind the scenes because they are good at it, long after they are ready for more.</p></div>
+      <div class="card tint-u" data-s="unk"><span class="status unk">Unknown</span><h4>Six underused strengths</h4><p>Interviewing · hosting · writing · curation · creative production · community building. All six are things to <em>test</em>, not capabilities to claim.</p></div>
+    </div>
+
+    <h3 class="blk">Visible Dipti vs possible Dipti</h3>
+    <p class="note">A map of territory worth exploring — not a recommendation that she should make any of these moves.</p>
+    <div class="tblwrap" data-s="hyp">
+      <table>
+        <thead><tr><th>Visible today</th><th>Possibly underused</th></tr></thead>
+        <tbody>
+          <tr><td class="strong">Client relationship professional</td><td>Relationship-led advisor</td></tr>
+          <tr><td class="strong">Speaker connector</td><td>Conversation curator</td></tr>
+          <tr><td class="strong">Programme organiser</td><td>Experience creator</td></tr>
+          <tr><td class="strong">Listener</td><td>Interviewer</td></tr>
+          <tr><td class="strong">Content sharer</td><td>Content creator</td></tr>
+          <tr><td class="strong">Behind-the-scenes contributor</td><td>Visible voice</td></tr>
+          <tr><td class="strong">Music enthusiast / producer</td><td>Creative identity</td></tr>
+          <tr><td class="strong">Employee</td><td>Independent or portfolio professional</td></tr>
+          <tr><td class="strong">Network participant</td><td>Community builder</td></tr>
+          <tr><td class="strong">Supports experts</td><td>Becomes a trusted voice herself</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <h3 class="blk">Energy signals</h3>
+    <div class="vs" data-s="hyp">
+      <div class="col">
+        <div class="kv">May give energy</div>
+        <ul class="tick">
+          <li>Meaningful conversations and interesting people</li>
+          <li>Music</li>
+          <li>Seeing an idea come alive</li>
+          <li>Working with people she trusts</li>
+          <li>Learning something new and passing it on</li>
+          <li>Making connections between people</li>
+        </ul>
+      </div>
+      <div class="mid"></div>
+      <div class="col">
+        <div class="kv">May drain energy</div>
+        <ul class="tick">
+          <li>Repetitive coordination</li>
+          <li>Work with little personal meaning</li>
+          <li>Broken trust</li>
+          <li>Being treated only as an execution resource</li>
+          <li>Enabling others without building anything of her own</li>
+          <li>Work that leaves no room for creativity</li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="card tint-u" data-s="unk" style="margin-top:22px">
+      <span class="status unk">Unknown</span>
+      <h4>What we do not know at all</h4>
+      <p>Her age, family priorities, financial goals, definition of success, appetite for entrepreneurship, industry loyalty, desire for visibility, whether music should become professional again, preferred geography, risk appetite, long-term life priorities, regrets, fears, what she would do without money constraints, and what success at 50 or 60 would mean. These come from Dipti — not from inference.</p>
+    </div>
+  </section>
+
+  <!-- ============ PART 2 ============ -->
+  <section class="sec" id="p2">
+    <div class="sec-head">
+      <div class="sec-num">02 — Inner persona and life architecture</div>
+      <h2>What may sit underneath the work</h2>
+      <p class="lede">One level deeper: the needs the visible activities are actually satisfying, and what may be missing. A future role does not need to copy today’s activities — it needs to preserve what those activities give her.</p>
+    </div>
+
+    <h3 class="blk">Three layers</h3>
+    <div class="grid g3">
+      <div class="card tint-o" data-s="obs"><span class="status obs">Observed</span><h4>Layer 1 — What the world sees</h4><p>Professional, relationship-oriented, dependable, comfortable with senior stakeholders, able to coordinate complex interactions, interested in leadership conversations, alert to audience context.</p></div>
+      <div class="card tint-h" data-s="hyp"><span class="status hyp">Hypothesis</span><h4>Layer 2 — What she may value inside</h4><p>Trust, meaningful relationships, learning, expression, respect, human connection, creativity, personal independence.</p></div>
+      <div class="card tint-h" data-s="hyp"><span class="status hyp">Hypothesis</span><h4>Layer 3 — What may be unexpressed</h4><p>Her own voice, creative identity, thought leadership, interviewing, hosting, community, independent work, a personal platform, deeper use of music, something carrying her own name.</p></div>
+    </div>
+
+    <h3 class="blk">The passion map: activity vs underlying need</h3>
+    <p class="note">The distinction that matters most in this whole document. Preserve the need, not the activity.</p>
+    <div class="tblwrap" data-s="hyp">
+      <table>
+        <thead><tr><th>Surface activity</th><th>Possible deeper need</th></tr></thead>
+        <tbody>
+          <tr><td class="strong">Music</td><td>Expression</td></tr>
+          <tr><td class="strong">Working with speakers and leaders</td><td>Learning from people</td></tr>
+          <tr><td class="strong">Connecting people</td><td>Creating relationships</td></tr>
+          <tr><td class="strong">Sharing insights on LinkedIn</td><td>Making sense of ideas</td></tr>
+          <tr><td class="strong">Events and programme execution</td><td>Creating moments people remember</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <h3 class="blk">Six possible needs</h3>
+    <div class="grid g3">
+      <div class="card tint-h" data-s="hyp"><span class="status hyp">Hypothesis</span><h4>Meaning</h4><p>Wanting to understand the value of the work, not only complete it.</p></div>
+      <div class="card tint-h" data-s="hyp"><span class="status hyp">Hypothesis</span><h4>Ownership</h4><p>Wanting work that carries her thinking and her identity.</p></div>
+      <div class="card tint-h" data-s="hyp"><span class="status hyp">Hypothesis</span><h4>Human connection</h4><p>A relationship-based career means isolated or transactional work may be quietly corrosive.</p></div>
+      <div class="card tint-h" data-s="hyp"><span class="status hyp">Hypothesis</span><h4>Expression</h4><p>Creative work may provide what professional responsibility cannot.</p></div>
+      <div class="card tint-h" data-s="hyp"><span class="status hyp">Hypothesis</span><h4>Growth</h4><p>Interest in leadership and future-of-work themes suggests a continuing need to learn.</p></div>
+      <div class="card tint-h" data-s="hyp"><span class="status hyp">Hypothesis</span><h4>Respect</h4><p>Possible strong sensitivity to how people treat one another.</p></div>
+    </div>
+
+    <h3 class="blk">Decoding “independence”</h3>
+    <p>Independence is not one thing, and it does not require entrepreneurship. Ask Dipti to rank these five — the top two should shape the entire roadmap.</p>
+    <div class="grid g2">
+      <div class="card" data-s="unk"><span class="status unk">Unknown</span><h4>Decision · Time · Creative</h4><p><strong>Decision independence:</strong> choosing what work to take on. <strong>Time independence:</strong> control over how time is spent. <strong>Creative independence:</strong> expressing ideas without needing organisational approval.</p></div>
+      <div class="card" data-s="unk"><span class="status unk">Unknown</span><h4>Financial · Identity</h4><p><strong>Financial independence:</strong> enough security to choose on fit rather than necessity. <strong>Identity independence:</strong> being known separately from an employer.</p></div>
+    </div>
+
+    <h3 class="blk">Emotional drivers and fears</h3>
+    <div class="grid g2">
+      <div class="card tint-h" data-s="hyp">
+        <span class="status hyp">Hypothesis</span><h4>Five possible drivers</h4>
+        <ul class="tick tight">
+          <li><strong>Being useful</strong> — “I made this work.”</li>
+          <li><strong>Being trusted</strong> — “People know they can rely on me.”</li>
+          <li><strong>Being understood</strong> — “They see the whole person.”</li>
+          <li><strong>Creating</strong> — “Something exists because I helped create it.”</li>
+          <li><strong>Learning from people</strong> — “I came away thinking differently.”</li>
+        </ul>
+      </div>
+      <div class="card tint-u" data-s="unk">
+        <span class="status unk">Unknown</span><h4>Six fears worth asking about</h4>
+        <ul class="tick tight">
+          <li>Losing stability</li>
+          <li>Starting again after years of investment</li>
+          <li>Being visible — wanting it but hesitating to claim it</li>
+          <li>Failing outside a known environment</li>
+          <li>Disappointing people who depend on her</li>
+          <li>Wasting accumulated experience</li>
+        </ul>
+        <p class="note">There is no evidence Dipti holds any of these. They are listed because fears like these commonly shape career decisions and are rarely volunteered.</p>
+      </div>
+    </div>
+
+    <h3 class="blk">Three possible internal conflicts</h3>
+    <div class="grid g3">
+      <div class="card tint-h" data-s="hyp"><span class="status hyp">Hypothesis</span><h4>Security vs exploration</h4><p>“I know this world” against “there may be more I could do.”</p></div>
+      <div class="card tint-h" data-s="hyp"><span class="status hyp">Hypothesis</span><h4>Supporting vs choosing herself</h4><p>“I am good at making people successful” against “what should I build for me?”</p></div>
+      <div class="card tint-h" data-s="hyp"><span class="status hyp">Hypothesis</span><h4>Professional vs personal identity</h4><p>“This is what I am known for” against “this is not everything I am.”</p></div>
+    </div>
+    <p class="note">These tensions are more useful to explore than asking whether she is satisfied with her job.</p>
+
+    <h3 class="blk">Strengths carry their own risks</h3>
+    <div class="tblwrap" data-s="hyp">
+      <table>
+        <thead><tr><th>Strength</th><th>Potential risk when overused</th></tr></thead>
+        <tbody>
+          <tr><td class="strong">Dependability</td><td>Taking on too much</td></tr>
+          <tr><td class="strong">Relationships</td><td>Difficulty separating personal and professional expectations</td></tr>
+          <tr><td class="strong">Context awareness</td><td>Overthinking how others may react</td></tr>
+          <tr><td class="strong">Supporting others</td><td>Under-prioritising herself</td></tr>
+          <tr><td class="strong">Loyalty</td><td>Staying longer than necessary</td></tr>
+          <tr><td class="strong">Creativity</td><td>Keeping creative interests separate instead of using them</td></tr>
+          <tr><td class="strong">Adaptability</td><td>Adapting to circumstances instead of shaping them</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <h3 class="blk">Five kinds of success — ask her to rank them</h3>
+    <div class="grid g3">
+      <div class="card" data-s="unk"><span class="status unk">Unknown</span><h4>Career</h4><p>Responsibility, influence, learning, impact.</p></div>
+      <div class="card" data-s="unk"><span class="status unk">Unknown</span><h4>Financial</h4><p>Income, security, assets, independence.</p></div>
+      <div class="card" data-s="unk"><span class="status unk">Unknown</span><h4>Personal</h4><p>Health, relationships, time, experiences.</p></div>
+      <div class="card" data-s="unk"><span class="status unk">Unknown</span><h4>Creative</h4><p>Expression, work created, audience, fulfilment.</p></div>
+      <div class="card" data-s="unk"><span class="status unk">Unknown</span><h4>Legacy</h4><p>People helped, ideas shared, something built, how she is remembered.</p></div>
+      <div class="card" data-s="unk"><span class="status unk">Unknown</span><h4>The “enough” question</h4><p>How much income, status, responsibility, visibility and work is enough? Without this, growth becomes endless.</p></div>
+    </div>
+
+    <h3 class="blk">Five life models on the table</h3>
+    <div class="grid g2">
+      <div class="card" data-s="hyp"><span class="status hyp">Hypothesis</span><h4>1 · Senior professional</h4><p>Keep growing inside the corporate and executive-engagement ecosystem. Uses existing experience fully. Risk: may not address the creative or ownership need at all.</p></div>
+      <div class="card" data-s="hyp"><span class="status hyp">Hypothesis</span><h4>2 · Professional + personal platform</h4><p>Keep a strong role while building something under her own name — interviews, content, curated conversations, music, community. Allows experimentation at low risk. <strong>Possibly the most practical option to test first.</strong></p></div>
+      <div class="card" data-s="hyp"><span class="status hyp">Hypothesis</span><h4>3 · Portfolio career</h4><p>Advisory, programming, content, hosting, creative work combined. Variety and independence — but needs clear positioning, network, financial planning and discipline.</p></div>
+      <div class="card" data-s="unk"><span class="status unk">Unknown</span><h4>4 · Entrepreneurship</h4><p>Only if a real problem she cares about emerges. Wanting independence is not a reason to start a company.</p></div>
+      <div class="card" data-s="hyp"><span class="status hyp">Hypothesis</span><h4>5 · Creative reintegration</h4><p>No career change at all — simply bring creativity back into life through projects, collaborations, events. This could resolve the main gap without reinvention. <strong>Do not underestimate it.</strong></p></div>
+      <div class="card tint-h" data-s="hyp"><span class="status hyp">Hypothesis</span><h4>The likely bottleneck: translation</h4><p>The evidence does not suggest a lack of exposure or relationships. It suggests difficulty translating years of relationships, experience, judgement and creative interest into one clear identity. The problem is not starting from zero. It is organising what already exists.</p></div>
+    </div>
+
+    <div class="pull">From access to people → to a point of view about people → to a platform through which she brings people, ideas and experiences together. That platform does not have to be a company. It can be a professional identity.<span>The growth opportunity, in one line</span></div>
+  </section>
+
+  <!-- ============ PART 3 ============ -->
+  <section class="sec" id="p3">
+    <div class="sec-head">
+      <div class="sec-num">03 — Pain areas, bottlenecks, blind spots</div>
+      <h2>What may be holding the ingredients apart</h2>
+      <p class="lede">She may already have the raw ingredients: experience, relationships, senior access, judgement, communication, creative exposure, credibility, curiosity. The real question is why they have not yet combined into a direction of her own.</p>
+    </div>
+
+    <h3 class="blk">Ten possible pain areas</h3>
+    <div class="grid g2">
+      <div class="card tint-h" data-s="hyp"><span class="status hyp">Hypothesis</span><h4>1 · Role versus identity</h4><p>Competence in a role without the role representing you. Feels like: “I am doing well, but I am not sure this is all I want to be known for.”</p></div>
+      <div class="card tint-h" data-s="hyp"><span class="status hyp">Hypothesis</span><h4>2 · Seen mainly as the execution person</h4><p>People who deliver get given more delivery. Reliability may have strengthened her current value while making it harder to change how people see her.</p></div>
+      <div class="card tint-h" data-s="hyp"><span class="status hyp">Hypothesis</span><h4>3 · Building other people’s platforms</h4><p>What carries her own name? What would remain if she left? Does she have an audience independent of her employer — and does she want one? The answer may be no, and that may be fine.</p></div>
+      <div class="card tint-h" data-s="hyp"><span class="status hyp">Hypothesis</span><h4>4 · Underused creative identity</h4><p>A gap between who she once had space to be and what her current life allows. Key distinction to test: <em>does she miss creating, or does she miss that period of life?</em></p></div>
+      <div class="card tint-h" data-s="hyp"><span class="status hyp">Hypothesis</span><h4>5 · Success without a personal definition</h4><p>Knowing how to succeed inside a system is not the same as knowing what success means outside it. Without a personal definition, decisions default to title, salary and size.</p></div>
+      <div class="card tint-h" data-s="hyp"><span class="status hyp">Hypothesis</span><h4>6 · Strong network, limited positioning</h4><p>“Dipti knows many interesting people” is not the same as “people know exactly why to come to Dipti.” Her network may be broader than her position.</p></div>
+      <div class="card tint-h" data-s="hyp"><span class="status hyp">Hypothesis</span><h4>7 · Too many possible directions</h4><p>Corporate leadership, executive engagement, learning, curation, content, hosting, community, advisory, creative work, music, entrepreneurship. The problem is not options. It is prioritisation.</p></div>
+      <div class="card tint-h" data-s="hyp"><span class="status hyp">Hypothesis</span><h4>8 · Comfort with familiar competence</h4><p>“I know I am good here” against “I don’t yet know how good I could become there.” Competence creates confidence — and comfort.</p></div>
+      <div class="card tint-h" data-s="hyp"><span class="status hyp">Hypothesis</span><h4>9 · Under-articulated ambition</h4><p>Not having ambition and not having articulated ambition are different. If personal ambition stays unstated, other people’s priorities keep setting the direction.</p></div>
+      <div class="card tint-h" data-s="hyp"><span class="status hyp">Hypothesis</span><h4>10 · Saying yes too easily</h4><p>Dependable people become default problem-solvers: full calendars, little thinking time, many commitments, little ownership. Ask what she says yes to because people expect it.</p></div>
+    </div>
+
+    <h3 class="blk">Six bottlenecks</h3>
+    <div class="grid g3">
+      <div class="card" data-s="hyp"><span class="status hyp">Hypothesis</span><h4>Identity</h4><p>No settled answer to “what should Dipti be known for?”</p></div>
+      <div class="card" data-s="hyp"><span class="status hyp">Hypothesis</span><h4>Positioning</h4><p>Strong capabilities with no single place they come together.</p></div>
+      <div class="card" data-s="hyp"><span class="status hyp">Hypothesis</span><h4>Ownership</h4><p>Effort that strengthens other people’s brands and platforms.</p></div>
+      <div class="card" data-s="hyp"><span class="status hyp">Hypothesis</span><h4>Visibility</h4><p>Value that may exceed how visible it is — inside and outside her network.</p></div>
+      <div class="card" data-s="hyp"><span class="status hyp">Hypothesis</span><h4>Focus</h4><p>Several plausible futures competing for the same attention.</p></div>
+      <div class="card" data-s="hyp"><span class="status hyp">Hypothesis</span><h4>Experimentation</h4><p>No systematic testing of alternative versions of her future — yet.</p></div>
+    </div>
+
+    <h3 class="blk">Activity or outcome? The positioning shift</h3>
+    <div class="vs" data-s="hyp">
+      <div class="col">
+        <div class="kv">Associated with activities</div>
+        <ul class="tick"><li>Arrange</li><li>Coordinate</li><li>Connect</li><li>Organise</li><li>Support</li><li>Manage</li></ul>
+      </div>
+      <div class="mid"></div>
+      <div class="col">
+        <div class="kv">Could be associated with outcomes</div>
+        <ul class="tick">
+          <li>Creates the right conversation</li>
+          <li>Connects the right people</li>
+          <li>Helps leaders access useful ideas</li>
+          <li>Designs meaningful experiences</li>
+          <li>Makes complex thinking easy to understand</li>
+        </ul>
+      </div>
+    </div>
+    <p class="note">This single shift — activity to outcome — can change perceived value more than any new qualification.</p>
+
+    <h3 class="blk">Six possible blind spots</h3>
+    <div class="grid g2">
+      <div class="card tint-u" data-s="unk"><span class="status unk">Unknown</span><h4>Confusing being needed with growing</h4><p>Ask: are people asking more of me because I am progressing, or because I am reliable at what I already do?</p></div>
+      <div class="card tint-u" data-s="unk"><span class="status unk">Unknown</span><h4>Waiting for permission</h4><p>A platform, a project or an identity rarely begins with a title, a moment, more confidence or more time. It begins with a small experiment.</p></div>
+      <div class="card tint-u" data-s="unk"><span class="status unk">Unknown</span><h4>Overvaluing existing experience</h4><p>Separate “what should I carry forward?” from “what should not determine my future?” This avoids the sunk-cost trap.</p></div>
+      <div class="card tint-u" data-s="unk"><span class="status unk">Unknown</span><h4>Underestimating transferable skills</h4><p>Relationship management → advisory, partnerships, community. Speaker management → thought curation, executive learning. Event understanding → experience design. Music → creative production, artist relationships, culture-led projects.</p></div>
+      <div class="card tint-u" data-s="unk"><span class="status unk">Unknown</span><h4>Treating creativity and career as separate boxes</h4><p>They may stay separate — that is a legitimate choice. But cultural leadership experiences, creator communities, and leadership conversations with artists are territory worth naming.</p></div>
+      <div class="card tint-u" data-s="unk"><span class="status unk">Unknown</span><h4>Network without a system</h4><p>A strong network stays underused when it lives in memory. A simple map — relationship, strength, expertise, last interaction, mutual value, next action — changes that.</p></div>
+    </div>
+
+    <h3 class="blk">Ten opportunity territories</h3>
+    <p class="note">None should be selected before validation. They exist to be scored, not admired.</p>
+    <div class="grid g2">
+      <div class="card" data-s="hyp"><span class="status hyp">Hypothesis</span><h4>1 · Corporate leadership</h4><p>Larger portfolio, partnerships, executive learning, regional or business responsibility. Attractive only if it adds autonomy and decision-making rather than volume and administration.</p></div>
+      <div class="card" data-s="hyp"><span class="status hyp">Hypothesis</span><h4>2 · Executive conversation curator</h4><p>From “who should speak?” to “what conversation needs to happen, between whom, and why?” The strongest bridge from her current experience.</p></div>
+      <div class="card" data-s="hyp"><span class="status hyp">Hypothesis</span><h4>3 · Interviewer / host</h4><p>Moving from behind the conversation to inside it. A small experiment answers this quickly.</p></div>
+      <div class="card" data-s="hyp"><span class="status hyp">Hypothesis</span><h4>4 · Content curator</h4><p>Not a traditional creator — a curator. “Five ideas I took from this leader.” “What senior leaders are discussing this month.” Uses existing experience rather than a new persona.</p></div>
+      <div class="card" data-s="hyp"><span class="status hyp">Hypothesis</span><h4>5 · Leadership × creator intersection</h4><p>Leadership through music, lessons from artists, CEOs in conversation with creators, storytelling, cultural intelligence. Distinctive — if it genuinely interests her.</p></div>
+      <div class="card" data-s="hyp"><span class="status hyp">Hypothesis</span><h4>6 · Curated community</h4><p>Senior women leaders, emerging executives, business-and-creative leaders, speakers and facilitators. Only viable if she enjoys sustained relationship building.</p></div>
+      <div class="card" data-s="unk"><span class="status unk">Unknown</span><h4>7 · Independent advisory</h4><p>Executive engagement, speaker strategy, leadership experiences, audience understanding, event design. Not to be attempted until her distinct value is clear.</p></div>
+      <div class="card" data-s="unk"><span class="status unk">Unknown</span><h4>8 · Music and creative projects</h4><p>Artist projects, curation, events, production, collaborations. Not every past interest needs to become a business.</p></div>
+      <div class="card" data-s="unk"><span class="status unk">Unknown</span><h4>9 · Portfolio career</h4><p>Illustrative mix: 50–60% core work, 15–20% personal platform, 10–15% curated conversations, 10–20% creative projects.</p></div>
+      <div class="card" data-s="hyp"><span class="status hyp">Hypothesis</span><h4>10 · AI-enabled leverage</h4><p>Research before interviews, summarising conversations, drafting from notes, organising relationship insight, building a knowledge base. AI should amplify her judgement, never replace her voice.</p></div>
+    </div>
+
+    <h3 class="blk">Score every opportunity against six questions</h3>
+    <div class="tblwrap" data-s="obs">
+      <table>
+        <thead><tr><th>Test</th><th>Question</th></tr></thead>
+        <tbody>
+          <tr><td class="strong">Energy</td><td>Does she enjoy it?</td></tr>
+          <tr><td class="strong">Ability</td><td>Can she become very good at it?</td></tr>
+          <tr><td class="strong">Credibility</td><td>Does her past experience support it?</td></tr>
+          <tr><td class="strong">Demand</td><td>Will someone value or pay for it?</td></tr>
+          <tr><td class="strong">Lifestyle</td><td>Does it fit the life she wants?</td></tr>
+          <tr><td class="strong">Ownership</td><td>Does it build something she controls?</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <p class="note">Any path scoring poorly on several dimensions should not become a priority — however attractive it sounds.</p>
+
+    <h3 class="blk">From experience to intellectual capital</h3>
+    <div class="card tint-h" data-s="hyp">
+      <span class="status hyp">Hypothesis</span>
+      <h4>A five-step progression already half-built</h4>
+      <ul class="tick">
+        <li><strong>Today</strong> — she meets and works with interesting people</li>
+        <li><strong>Next</strong> — she captures what she learns from them</li>
+        <li><strong>Then</strong> — she identifies patterns across those conversations</li>
+        <li><strong>Then</strong> — she develops her own point of view</li>
+        <li><strong>Eventually</strong> — people seek Dipti for the perspective she has built</li>
+      </ul>
+    </div>
+
+    <div class="pull">She may not need a new identity. She may need to reorganise and make visible the strongest parts of the identity she already has.<span>Preliminary hidden-opportunity statement</span></div>
+  </section>
+
+  <!-- ============ PART 4 ============ -->
+  <section class="sec" id="p4">
+    <div class="sec-head">
+      <div class="sec-num">04 — Future possibility map</div>
+      <h2>Eight paths, three horizons, one decision sequence</h2>
+      <p class="lede">This is where diagnosis turns into options. Not a recommendation — a map to be scored against what Dipti actually wants. The correct order is: understand, prioritise, experiment, evaluate, scale.</p>
+    </div>
+
+    <h3 class="blk">Five possible future identities</h3>
+    <div class="grid g2">
+      <div class="card" data-s="hyp"><span class="status hyp">Hypothesis</span><h4>Senior relationship and client leader</h4><p>Senior relationships, partnerships, executive engagement, key account ownership. <strong>Fits if</strong> she wants stability, scale and income growth. <strong>Risk:</strong> a larger version of the same execution-heavy work.</p></div>
+      <div class="card" data-s="hyp"><span class="status hyp">Hypothesis</span><h4>Executive conversation curator</h4><p>Understand leadership needs, identify themes and voices, design the discussion, prepare experts, host it, turn it into insight. <strong>Fits if</strong> she enjoys people, ideas, listening, context and curation.</p></div>
+      <div class="card" data-s="unk"><span class="status unk">Unknown</span><h4>Independent advisor</h4><p>Executive engagement, speaker strategy, leadership experiences, audience understanding. <strong>Requires:</strong> clear expertise, proof of value, network, ability to sell, financial runway. Longer-term, not immediate.</p></div>
+      <div class="card" data-s="hyp"><span class="status hyp">Hypothesis</span><h4>Host, interviewer, content voice</h4><p>Interviews, written reflections, video, podcast, moderation. Does not require leaving her career — it can begin as a side experiment. Tests one thing: can she move from supporting conversations to leading them?</p></div>
+      <div class="card" data-s="unk"><span class="status unk">Unknown</span><h4>Portfolio professional</h4><p>Advisory, client work, content, hosting, community, creative projects combined. <strong>Risk:</strong> a portfolio only works when there is one clear central identity holding it together.</p></div>
+      <div class="card tint-h" data-s="hyp"><span class="status hyp">Hypothesis</span><h4>Creative reintegration — no career change</h4><p>She may not need professional reinvention at all, only more room for music, travel, creative work, learning and relationships. If that closes the gap, a career move is unnecessary. Keep this option open.</p></div>
+    </div>
+
+    <h3 class="blk">Path comparison</h3>
+    <p class="note">Directional only. Dipti’s own priorities decide which column matters most.</p>
+    <div class="tblwrap" data-s="hyp">
+      <table>
+        <thead><tr><th>Path</th><th>Stability</th><th>Ownership</th><th>Visibility</th><th>Creative space</th><th>Risk</th></tr></thead>
+        <tbody>
+          <tr><td class="strong">Stay &amp; scale</td><td class="mark-hi">High</td><td class="mark-mid">Medium</td><td class="mark-mid">Medium</td><td class="mark-lo">Low–Med</td><td class="mark-hi">Low</td></tr>
+          <tr><td class="strong">Stay + second identity</td><td class="mark-hi">High</td><td class="mark-hi">High</td><td class="mark-mid">Med–High</td><td class="mark-hi">High</td><td class="mark-mid">Low–Med</td></tr>
+          <tr><td class="strong">Adjacent role</td><td class="mark-mid">Med–High</td><td class="mark-mid">Med–High</td><td class="mark-mid">Medium</td><td class="mark-mid">Medium</td><td class="mark-mid">Medium</td></tr>
+          <tr><td class="strong">Portfolio career</td><td class="mark-mid">Medium</td><td class="mark-hi">High</td><td class="mark-hi">High</td><td class="mark-hi">High</td><td class="mark-lo">Med–High</td></tr>
+          <tr><td class="strong">Entrepreneurship</td><td class="mark-lo">Low–Med</td><td class="mark-hi">Very high</td><td class="mark-hi">High</td><td class="mark-mid">Variable</td><td class="mark-lo">High</td></tr>
+          <tr><td class="strong">Creative reintegration</td><td class="mark-hi">High</td><td class="mark-mid">Personal</td><td class="mark-lo">Low–Med</td><td class="mark-hi">High</td><td class="mark-hi">Low</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <h3 class="blk">Three horizons</h3>
+    <div class="horiz" data-s="hyp">
+      <div class="h">
+        <span class="yr">Year 1 · Clarity</span>
+        <h4>Build evidence, not a new career</h4>
+        <ul class="tick tight">
+          <li>Define a personal North Star covering life, not only work</li>
+          <li>Define one core identity statement</li>
+          <li>Choose one signature capability</li>
+          <li>Run one personal experiment for at least three months</li>
+          <li>Start a personal knowledge base</li>
+          <li>Map the network into mentors, peers, creators, collaborators</li>
+          <li>Protect creative time</li>
+          <li>Reduce low-value, low-ownership work</li>
+          <li>Build one new capability tied to the chosen path</li>
+          <li>Reach an evidence-based decision point</li>
+        </ul>
+      </div>
+      <div class="h">
+        <span class="yr">Years 2–3 · Positioning</span>
+        <h4>Which version of her is proving strongest?</h4>
+        <ul class="tick tight">
+          <li>Shift perception toward one clear value</li>
+          <li>Build proof: outcomes, moderated conversations, published insight, repeat invitations</li>
+          <li>Move from supporting to owning — a relationship, a format, a theme, an offering</li>
+          <li>Build a second source of value: audience, reputation, IP, community, content library</li>
+          <li>Test monetisation only if independence is the goal</li>
+          <li>Develop public confidence — a point of view, not a personal brand</li>
+          <li>Formalise a portfolio only if the experiments earned it</li>
+        </ul>
+      </div>
+      <div class="h">
+        <span class="yr">Years 4–5 · Choice</span>
+        <h4>Enough clarity and proof to choose</h4>
+        <p>A clear professional identity independent of any single employer, work on problems and relationships she values, more control over her time, and a meaningful creative life.</p>
+        <ul class="tick tight">
+          <li>Senior leadership with autonomy, <em>or</em></li>
+          <li>Independent advisory with a smaller, higher-value client set, <em>or</em></li>
+          <li>Known conversation curator, <em>or</em></li>
+          <li>Portfolio career, <em>or</em></li>
+          <li>A business built on a validated need</li>
+        </ul>
+      </div>
+    </div>
+
+    <h3 class="blk">Three plans, plainly stated</h3>
+    <div class="grid g3">
+      <div class="card" data-s="hyp"><span class="status hyp">Hypothesis</span><h4>Plan A · Stay and scale + build a voice</h4><p>2–3 years: stay on the core path, increase strategic responsibility, reduce execution, build a personal platform slowly, restart creative activity, test hosting. <strong>Best if</strong> she values stability but wants a broader identity.</p></div>
+      <div class="card" data-s="hyp"><span class="status hyp">Hypothesis</span><h4>Plan B · Higher-value adjacent role</h4><p>1–2 years: strategic partnerships, executive engagement, leadership content, client advisory, learning or community leadership. <strong>Best if</strong> the ceiling in the current role becomes clear.</p></div>
+      <div class="card" data-s="unk"><span class="status unk">Unknown</span><h4>Plan C · Toward an independent portfolio</h4><p>3–5 years: establish positioning, build network equity and proof, test paid work, build savings, develop multiple income streams. <strong>Best if</strong> she values independence and self-directed work.</p></div>
+    </div>
+
+    <h3 class="blk">Decision gates</h3>
+    <div class="grid g3">
+      <div class="card" data-s="obs"><span class="status obs">Observed</span><h4>6 months</h4><ul class="tick tight"><li>Am I clearer about what I want?</li><li>Which experiment gave me most energy?</li><li>Which did people value?</li><li>What do I want more of? Less of?</li></ul></div>
+      <div class="card" data-s="obs"><span class="status obs">Observed</span><h4>12 months</h4><ul class="tick tight"><li>Change role, grow in place, or build a second identity?</li><li>Has any experiment created real opportunity?</li><li>Do I want more visibility?</li><li>Is music central or secondary?</li></ul></div>
+      <div class="card" data-s="obs"><span class="status obs">Observed</span><h4>24 months</h4><ul class="tick tight"><li>Is the current trajectory still right?</li><li>Do I have a clear independent identity?</li><li>Have I created an owned asset?</li><li>Can I create value outside my employer — and do I want to scale it?</li></ul></div>
+    </div>
+
+    <h3 class="blk">Six risks and their mitigations</h3>
+    <div class="tblwrap" data-s="obs">
+      <table>
+        <thead><tr><th>Risk</th><th>Mitigation</th></tr></thead>
+        <tbody>
+          <tr><td class="strong">Too many experiments</td><td>Run one major experiment at a time</td></tr>
+          <tr><td class="strong">Visibility without substance</td><td>Build thinking before reach</td></tr>
+          <tr><td class="strong">Premature career exit</td><td>Build evidence and financial runway first</td></tr>
+          <tr><td class="strong">Turning every interest into work</td><td>Keep some interests purely personal</td></tr>
+          <tr><td class="strong">Overcommitment</td><td>Remove something before adding something</td></tr>
+          <tr><td class="strong">Following external expectations</td><td>Use her own success criteria, not the obvious ones</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="pull">You do not need to decide your next ten years before testing your next ten weeks.<span>The operating principle for Horizon 1</span></div>
+  </section>
+
+  <!-- ============ PART 5 ============ -->
+  <section class="sec" id="p5">
+    <div class="sec-head">
+      <div class="sec-num">05 — Operating blueprint</div>
+      <h2>North Star, goals, and the first 90 days</h2>
+      <p class="lede">Not a career to lock into — a system for making better choices. The 90-day objective is single and specific: convert persona hypotheses into evidence.</p>
+    </div>
+
+    <h3 class="blk">Four North Star options</h3>
+    <p class="note">Draft language only. The final wording must be Dipti’s own. Pick the one that best answers: does this sound like me, would I still want it in five years, does it guide decisions, does it include life beyond work?</p>
+    <div class="grid g2">
+      <div class="card" data-s="hyp"><span class="status hyp">Hypothesis</span><div class="kv">Option 1 · balance</div><p class="q">“Build a life where I use my understanding of people and ideas to create meaningful conversations and experiences, while having more control over my time, work and creative expression.”</p></div>
+      <div class="card" data-s="hyp"><span class="status hyp">Hypothesis</span><div class="kv">Option 2 · professional identity</div><p class="q">“Become known for bringing the right people, ideas and context together in ways that help others think, learn and connect better.”</p></div>
+      <div class="card" data-s="hyp"><span class="status hyp">Hypothesis</span><div class="kv">Option 3 · life design</div><p class="q">“Create a professional and personal life that gives me enough security, freedom and space to do work I value, build something of my own and remain connected to creativity.”</p></div>
+      <div class="card" data-s="hyp"><span class="status hyp">Hypothesis</span><div class="kv">Option 4 · ownership</div><p class="q">“Move from enabling other people’s success to creating a body of work and relationships that reflects my own voice and contribution.”</p></div>
+    </div>
+
+    <h3 class="blk">Goals across the whole life, not only the career</h3>
+    <div class="grid g2">
+      <div class="card" data-s="hyp"><span class="status hyp">Hypothesis</span><h4>Career</h4><p>Move from being valued for coordination, execution and relationship management toward being valued for judgement, perspective, curation, client insight, conversation design and ownership.</p></div>
+      <div class="card tint-u" data-s="unk"><span class="status unk">Unknown</span><h4>Financial</h4><p>The first goal is not an income number. It is: <em>understand my financial baseline well enough to know which career choices are realistically available.</em> Then define current income, minimum acceptable income, desired income, fixed expenses, savings, commitments, emergency reserve and transition runway.</p></div>
+      <div class="card" data-s="hyp"><span class="status hyp">Hypothesis</span><h4>Relationships</h4><p>Invest more intentionally in the people who matter most; reduce what is purely transactional or draining. Depth over network size.</p></div>
+      <div class="card" data-s="hyp"><span class="status hyp">Hypothesis</span><h4>Creative</h4><p>Protected space for music or another form of expression <em>without forcing it to become commercial.</em> First-year target: one defined project, regular time, one collaboration, one completed output.</p></div>
+      <div class="card" data-s="hyp"><span class="status hyp">Hypothesis</span><h4>Learning</h4><p>No random courses. Build only the capabilities the identity being tested actually requires — interviewing, facilitation, writing, executive communication, commercial thinking, public speaking, AI-enabled research.</p></div>
+      <div class="card" data-s="unk"><span class="status unk">Unknown</span><h4>Health and energy</h4><p>Know what gives and drains energy, when she works best, which habits protect it. The measure is not productivity but: <em>do I have enough energy left for the parts of life that matter outside work?</em></p></div>
+    </div>
+
+    <h3 class="blk">The 90-day plan</h3>
+    <div class="horiz" data-s="obs">
+      <div class="h">
+        <span class="yr">Days 1–30 · Discover</span>
+        <h4>Five audits</h4>
+        <ul class="tick tight">
+          <li><strong>Reflection:</strong> proudest of, energised by, drained by, would stop, want more time for, want to be known for, keep postponing</li>
+          <li><strong>Life audit:</strong> for work, money, relationships, health, time, creativity, learning — keep / change / remove / explore</li>
+          <li><strong>Energy audit:</strong> mark four weeks of activities from +2 to −2, then find the pattern</li>
+          <li><strong>Relationship audit:</strong> who inspires, supports, teaches, drains — then name the 20 that matter</li>
+          <li><strong>Career audit:</strong> good at &amp; enjoy (deepen) · good at, no longer enjoy (reduce) · want to learn (build) · neither (stop)</li>
+        </ul>
+      </div>
+      <div class="h">
+        <span class="yr">Days 31–60 · Experiment</span>
+        <h4>Two tests: one professional, one personal</h4>
+        <ul class="tick tight">
+          <li><strong>Interview test:</strong> three people she respects, on their decisions, failures and lessons</li>
+          <li><strong>Writing test:</strong> four original posts, one clear idea each, in her own voice</li>
+          <li><strong>Advisory test:</strong> own the diagnosis, questions, options and recommendation for one real challenge</li>
+          <li><strong>Moderation test:</strong> moderate one discussion or panel</li>
+          <li><strong>Creative test:</strong> a recording, an artist collaboration, a small music evening, or a restarted project</li>
+        </ul>
+      </div>
+      <div class="h">
+        <span class="yr">Days 61–90 · Evaluate</span>
+        <h4>Score, then narrow</h4>
+        <p>Rate every experiment 1–10 on energy, enjoyment, ability, learning, external response, demand, ownership, sustainability and future interest.</p>
+        <p>Then reduce the future map to a <strong>maximum of two pathways</strong>. The aim is to remove noise, not to decide a career.</p>
+        <p class="note">Key question after the creative test: did this feel like an important part of me returning, or simply a pleasant activity?</p>
+      </div>
+    </div>
+
+    <h3 class="blk">Weekly and monthly rhythm</h3>
+    <div class="grid g3">
+      <div class="card" data-s="obs"><span class="status obs">Observed</span><h4>Monday · 30 minutes</h4><p>Set three priorities: one professional, one personal, one future-building.</p></div>
+      <div class="card" data-s="obs"><span class="status obs">Observed</span><h4>Midweek · 30 minutes</h4><p>Review energy, workload, new opportunities, and commitments that should be declined.</p></div>
+      <div class="card" data-s="obs"><span class="status obs">Observed</span><h4>Weekend · 45 minutes</h4><p>What gave energy, what drained, what was learned, what was created, who was invested in — and did the week move toward the North Star?</p></div>
+    </div>
+
+    <h3 class="blk">Stop, start, continue</h3>
+    <div class="grid g3">
+      <div class="card" data-s="hyp"><span class="status hyp">Hypothesis</span><h4>Start</h4><ul class="tick tight"><li>Protected thinking time</li><li>Personal knowledge capture</li><li>One owned project</li><li>Intentional relationship mapping</li><li>Clearer public expression</li><li>Quarterly life review</li></ul></div>
+      <div class="card" data-s="hyp"><span class="status hyp">Hypothesis</span><h4>Stop</h4><ul class="tick tight"><li>Saying yes immediately</li><li>Work with no learning or ownership</li><li>Treating every relationship as equally important</li><li>Postponing creative activity</li><li>Waiting for complete clarity</li><li>Judging options only by salary or title</li></ul></div>
+      <div class="card" data-s="obs"><span class="status obs">Observed</span><h4>Continue</h4><ul class="tick tight"><li>Learning from senior people</li><li>Maintaining trusted relationships</li><li>Exposure to different industries</li><li>Listening carefully</li><li>Observing organisational context</li><li>Creative engagement</li></ul></div>
+    </div>
+
+    <h3 class="blk">Personal decision filter</h3>
+    <div class="card tint-o" data-s="obs">
+      <span class="status obs">Observed</span>
+      <h4>Eight questions before accepting anything important</h4>
+      <ul class="tick">
+        <li>Does this move me toward my North Star?</li>
+        <li>Will I learn something important?</li>
+        <li>Does it give me more ownership?</li>
+        <li>Will I work with people I respect?</li>
+        <li>Does it improve or reduce my freedom?</li>
+        <li>Does it pay fairly?</li>
+        <li>What will I have to give up to make room for it?</li>
+        <li><strong>Would I still want it if nobody knew I was doing it?</strong></li>
+      </ul>
+      <p class="note">The last question separates status from genuine interest.</p>
+    </div>
+
+    <h3 class="blk">Constraints: real, changeable, or a story?</h3>
+    <div class="grid g3">
+      <div class="card" data-s="obs"><span class="status obs">Observed</span><h4>Hard constraint</h4><p>Cannot be changed easily. Example: a major financial obligation.</p></div>
+      <div class="card" data-s="obs"><span class="status obs">Observed</span><h4>Soft constraint</h4><p>Can be changed with planning. Example: a missing skill.</p></div>
+      <div class="card" data-s="obs"><span class="status obs">Observed</span><h4>Assumed constraint</h4><p>May not be real at all. Example: “I am too late to start something new.”</p></div>
+    </div>
+    <p class="note">Ask directly: which of these is a real constraint, and which one may be a story you have been telling yourself?</p>
+  </section>
+
+  <!-- ============ PART 6 ============ -->
+  <section class="sec" id="p6">
+    <div class="sec-head">
+      <div class="sec-num">06 — Behaviour, decisions, leadership</div>
+      <h2>How she may operate — and where each strength turns on itself</h2>
+      <p class="lede">Not a psychometric assessment. Public information can suggest patterns; it cannot confirm traits. Every item here is a behaviour to validate through real examples, never a label to assign.</p>
+    </div>
+
+    <h3 class="blk">The likely behavioural core</h3>
+    <div class="card tint-h" data-s="hyp">
+      <span class="status hyp">Hypothesis</span>
+      <h4>Observe → interpret → connect → adapt → execute</h4>
+      <p>Understand the people and context. Work out what matters. Bring the right people or ideas together. Adjust to the situation. Make sure the outcome happens.</p>
+      <p>She may influence less through formal authority and more through credibility, relationships, reading the room, knowing what matters to whom, preparing well, and creating trust. Likely strongest where the work needs <strong>both</strong> human understanding <strong>and</strong> something meaningful getting done.</p>
+    </div>
+
+    <h3 class="blk">Communication</h3>
+    <div class="grid g2">
+      <div class="card" data-s="obs"><span class="status obs">Observed</span><h4>Listens, then simplifies</h4><p>Her public writing shows the pattern: listen → process → simplify → communicate. Useful in senior stakeholder conversations, interviews, facilitation, advisory work and complex client environments.</p></div>
+      <div class="card" data-s="hyp"><span class="status hyp">Hypothesis</span><h4>The risk: adapting too much</h4><p>People strong at reading context can adjust so far that their own position disappears. “What will work for this person?” quietly replaces “what do I actually think?” Possible result: softened disagreement, delayed opinions, harmony prioritised.</p></div>
+      <div class="card tint-u" data-s="unk"><span class="status unk">Unknown</span><h4>Directness</h4><p>Two very different patterns are possible. <strong>A — diplomatic directness:</strong> disagreement expressed carefully but clearly. <strong>B — tolerate then exit:</strong> discomfort absorbed for a long time, then disengagement once a threshold is crossed. The trust signals make this distinction important.</p></div>
+      <div class="card" data-s="hyp"><span class="status hyp">Hypothesis</span><h4>The visibility ladder</h4><p>She may be most comfortable sharing learning, observations and other people’s insights. If she wants a stronger voice, the move is gradual: <em>“here is what I heard”</em> → <em>“here is what I think this means.”</em></p></div>
+    </div>
+
+    <h3 class="blk">Decisions</h3>
+    <div class="grid g3">
+      <div class="card" data-s="hyp"><span class="status hyp">Hypothesis</span><h4>Contextual, not rule-based</h4><p>People, trust, timing, consequence, fit, practicality, comfort and opportunity all in play. Two similar opportunities may get different answers depending on who and when.</p></div>
+      <div class="card" data-s="hyp"><span class="status hyp">Hypothesis</span><h4>The risk: over-analysis</h4><p>What will they think? What if it goes wrong? Is this the right time? How will it affect the relationship? The result is delay.</p></div>
+      <div class="card" data-s="hyp"><span class="status hyp">Hypothesis</span><h4>For others vs for herself</h4><p>Routine professional decisions may come quickly. Decisions about her own life may not. Ask: is it easier to advise someone else on a career decision than to make the same one yourself?</p></div>
+    </div>
+
+    <div class="card tint-o" data-s="obs">
+      <span class="status obs">Observed</span>
+      <h4>A better decision framework: four lenses</h4>
+      <p><strong>Head</strong> — what does the evidence say? · <strong>Heart</strong> — what do I genuinely want? · <strong>Reality</strong> — what constraints exist? · <strong>Future</strong> — which option creates more long-term choice?</p>
+    </div>
+
+    <h3 class="blk">Risk: ask by category, not in general</h3>
+    <div class="card tint-u" data-s="unk">
+      <span class="status unk">Unknown</span>
+      <h4>Rate comfort 1–10 on each</h4>
+      <p>Changing employer · changing industry · losing a fixed salary · public speaking · posting strong opinions · starting a side project · charging independently for advice · launching a business · moving geography · working without a defined title.</p>
+      <p class="note">She may be comfortable with interpersonal complexity and responsibility while being much less comfortable with financial uncertainty or public failure. “Risk-averse” as a single label would hide that.</p>
+    </div>
+
+    <h3 class="blk">Two kinds of confidence</h3>
+    <div class="vs" data-s="hyp">
+      <div class="col">
+        <div class="kv">Competence confidence — likely strong</div>
+        <p class="q">“I know how to do this work.”</p>
+        <p>High when she knows the subject, understands the people, has prepared, and is inside familiar territory.</p>
+      </div>
+      <div class="mid"></div>
+      <div class="col">
+        <div class="kv">Identity confidence — possibly weaker</div>
+        <p class="q">“I know what I stand for and I am comfortable being known for it.”</p>
+        <p>Lower when promoting herself, claiming expertise, entering a new field, or making her own ideas visible. If true, the next phase needs identity confidence — not more technical competence.</p>
+      </div>
+    </div>
+
+    <h3 class="blk">Leadership</h3>
+    <div class="grid g2">
+      <div class="card" data-s="hyp"><span class="status hyp">Hypothesis</span><h4>Likely style: relational and contextual</h4><p>Giving people space, building trust, understanding individual situations, solving through conversation, creating alignment — rather than command and control. Validate with people who have actually worked for her.</p></div>
+      <div class="card" data-s="unk"><span class="status unk">Unknown</span><h4>The common overuse risk</h4><p>Supportive leaders often struggle to challenge low performance, say no, remove responsibility, confront repeated issues, or make unpopular decisions. There is no evidence this applies — it should simply be tested.</p></div>
+      <div class="card" data-s="unk"><span class="status unk">Unknown</span><h4>Under pressure</h4><p>Does she become more controlling, quieter, work harder herself, absorb others’ tasks, become very direct, avoid conflict, or seek more information? Explore through real examples.</p></div>
+      <div class="card" data-s="hyp"><span class="status hyp">Hypothesis</span><h4>The safety-net problem</h4><p>If she is the person who repeatedly fixes things, the organisation becomes more dependent on her while she becomes less free. That can feel like recognition while it is actually operational dependence.</p></div>
+    </div>
+
+    <h3 class="blk">Four possible leadership personas — and what each costs</h3>
+    <div class="tblwrap" data-s="hyp">
+      <table>
+        <thead><tr><th>Persona</th><th>Characteristics</th><th>Risk</th></tr></thead>
+        <tbody>
+          <tr><td class="strong">Trusted connector</td><td>Builds networks, understands different people, creates alignment</td><td>Stays known only as the connector</td></tr>
+          <tr><td class="strong">Contextual leader</td><td>Reads the room, adapts, holds multiple perspectives</td><td>Delays taking a position</td></tr>
+          <tr><td class="strong">Curator</td><td>Filters, identifies what matters, simplifies complexity</td><td>Curates others’ thinking instead of building her own</td></tr>
+          <tr><td class="strong">Enabler</td><td>Helps others perform, creates conditions for success</td><td>Her own contribution becomes invisible</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="pull">Today: “people trust Dipti to make things happen.” Next: “people trust Dipti’s judgement about what should happen.”<span>The influence shift</span></div>
+
+    <h3 class="blk">Strength-overuse map</h3>
+    <div class="tblwrap" data-s="hyp">
+      <table>
+        <thead><tr><th>Strength</th><th>When helpful</th><th>When overused</th></tr></thead>
+        <tbody>
+          <tr><td class="strong">Relationships</td><td>Builds trust</td><td>Avoids difficult boundaries</td></tr>
+          <tr><td class="strong">Adaptability</td><td>Works across contexts</td><td>Loses her own position</td></tr>
+          <tr><td class="strong">Dependability</td><td>Builds credibility</td><td>Becomes overloaded</td></tr>
+          <tr><td class="strong">Listening</td><td>Understands people</td><td>Her own voice stays hidden</td></tr>
+          <tr><td class="strong">Context awareness</td><td>Improves judgement</td><td>Over-analysis</td></tr>
+          <tr><td class="strong">Loyalty</td><td>Builds long relationships</td><td>Stays too long</td></tr>
+          <tr><td class="strong">Creativity</td><td>Creates new possibilities</td><td>Too many directions</td></tr>
+          <tr><td class="strong">Execution</td><td>Makes things happen</td><td>Trapped in operations</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <h3 class="blk">Possible emotional triggers</h3>
+    <div class="grid g2">
+      <div class="card" data-s="hyp"><span class="status hyp">Hypothesis</span><h4>Trust breach</h4><p>Broken commitments, dishonesty, feeling used, disrespect, inconsistency. She may take these more personally than ordinary performance mistakes.</p></div>
+      <div class="card" data-s="hyp"><span class="status hyp">Hypothesis</span><h4>Being taken for granted</h4><p>If much of the work is behind the scenes, invisible effort may trigger frustration, withdrawal, or reduced willingness to go beyond the role.</p></div>
+      <div class="card" data-s="unk"><span class="status unk">Unknown</span><h4>Loss of autonomy</h4><p>Excessive control or micromanagement may become harder to tolerate with experience. Ask: how much freedom do you need to perform at your best?</p></div>
+      <div class="card" data-s="unk"><span class="status unk">Unknown</span><h4>Meaningless work</h4><p>If her interest in leadership and human themes reflects deeper values, repetitive work with no visible meaning may become a genuine career signal.</p></div>
+    </div>
+
+    <h3 class="blk">Four blind spots specific to this profile</h3>
+    <div class="grid g2">
+      <div class="card tint-u" data-s="unk"><span class="status unk">Unknown</span><h4>Identity through usefulness</h4><p>The question that unlocks the next identity: <em>if people no longer needed you for the things they need you for today, what would you want them to need you for instead?</em></p></div>
+      <div class="card tint-u" data-s="unk"><span class="status unk">Unknown</span><h4>Being the bridge, not the destination</h4><p>She connects leaders, speakers, clients and ideas — but people may still think of the people she connects rather than her own point of view. The shift is from bridge to <strong>bridge + perspective</strong>.</p></div>
+      <div class="card tint-u" data-s="unk"><span class="status unk">Unknown</span><h4>Quiet authority</h4><p>She may already hold more authority than she recognises, because people trust her judgement. It is informal rather than positioned. She may not need a new capability — only to claim and structure the one she has.</p></div>
+      <div class="card tint-u" data-s="unk"><span class="status unk">Unknown</span><h4>Expertise mistaken for the obvious</h4><p>Reading senior client behaviour, sensing audience needs, matching people to situations, knowing what makes an executive interaction work. What feels normal to her may be valuable to others.</p></div>
+    </div>
+
+    <h3 class="blk">Environments</h3>
+    <div class="vs" data-s="hyp">
+      <div class="col">
+        <div class="kv">Where she may perform best</div>
+        <ul class="tick"><li>Relationship-rich and high trust</li><li>Relatively autonomous</li><li>Intellectually interesting and varied</li><li>Close to decision-makers</li><li>Room for judgement and creativity</li></ul>
+      </div>
+      <div class="mid"></div>
+      <div class="col">
+        <div class="kv">Where she may be drained</div>
+        <ul class="tick"><li>Repetitive administration</li><li>Transactional culture, low trust</li><li>Unclear purpose, heavy politics</li><li>Little ownership</li><li>High control with low autonomy</li></ul>
+      </div>
+    </div>
+
+    <h3 class="blk">Development priorities if the hypotheses hold</h3>
+    <div class="grid g2">
+      <div class="card" data-s="hyp"><span class="status hyp">Hypothesis</span><h4>Assertiveness</h4><p>Being able to say: this is what I believe · this is what I need · this is what I cannot do · this is what I recommend · this is where I disagree — without damaging relationships unnecessarily.</p></div>
+      <div class="card" data-s="hyp"><span class="status hyp">Hypothesis</span><h4>Boundaries</h4><p>Four answers instead of one: <strong>Yes</strong> (fits purpose) · <strong>Not now</strong> (wrong timing) · <strong>Not me</strong> (someone else should own it) · <strong>No</strong> (does not fit).</p></div>
+      <div class="card" data-s="hyp"><span class="status hyp">Hypothesis</span><h4>Point of view</h4><p>After every important conversation: what did I hear? what do I agree with? what do I disagree with? what is missing? what is my own conclusion? This converts listening into perspective.</p></div>
+      <div class="card" data-s="hyp"><span class="status hyp">Hypothesis</span><h4>Voice, in five stages</h4><p>Share learnings → interpret learnings → express perspective → create original frameworks → become known for a body of thinking. A voice does not require controversy. It requires repeated clarity.</p></div>
+    </div>
+
+    <h3 class="blk">Validate behaviour with examples, never labels</h3>
+    <div class="tblwrap" data-s="obs">
+      <table>
+        <thead><tr><th>Do not ask</th><th>Ask instead</th></tr></thead>
+        <tbody>
+          <tr><td class="strong">“Are you relationship-oriented?”</td><td>Tell me about a difficult relationship you managed successfully.</td></tr>
+          <tr><td class="strong">“Are you risk-averse?”</td><td>What is the biggest professional risk you have taken?</td></tr>
+          <tr><td class="strong">“Are you assertive?”</td><td>Tell me about a time you strongly disagreed with a senior leader.</td></tr>
+          <tr><td class="strong">“Are you logical or emotional?”</td><td>Tell me about a major decision that worked — and one you regret.</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="pull">Can Dipti keep the relationship strength that has made her successful while becoming clearer, more assertive and more visible about her own judgement?<span>The central development question</span></div>
+  </section>
+
+  <!-- ============ PART 7 ============ -->
+  <section class="sec" id="p7">
+    <div class="sec-head">
+      <div class="sec-num">07 — Purpose, passion, legacy</div>
+      <h2>The life the career is supposed to serve</h2>
+      <p class="lede">Beyond career: what gives meaning, what “enough” means, which freedom matters, and what should remain. This is where a role stops defining a life and starts fitting into one.</p>
+    </div>
+
+    <div class="pull">If Dipti continues to grow professionally but does not feel more alive, more free or more herself — would that still count as success?<span>The main life question</span></div>
+
+    <h3 class="blk">Passion is not the same as enjoyment</h3>
+    <div class="card tint-o" data-s="obs">
+      <span class="status obs">Observed</span>
+      <h4>What distinguishes a passion</h4>
+      <p>Repeated return, emotional connection, energy, curiosity, willingness to invest time, desire to improve, and a sense of loss when it is absent. So the useful question is not “what do you enjoy?” but: <strong>which activities do you keep returning to even when nobody asks you to?</strong></p>
+    </div>
+
+    <h3 class="blk">Four possible meanings of music</h3>
+    <p class="note">The question is not “do you like music?” It is: what does music let her experience that professional life does not?</p>
+    <div class="grid g2">
+      <div class="card" data-s="hyp"><span class="status hyp">Hypothesis</span><h4>Music as expression</h4><p>A space where she does not have to operate through corporate expectations.</p></div>
+      <div class="card" data-s="hyp"><span class="status hyp">Hypothesis</span><h4>Music as identity</h4><p>A connection to a part of herself she values strongly.</p></div>
+      <div class="card" data-s="hyp"><span class="status hyp">Hypothesis</span><h4>Music as relationship</h4><p>A connection to artists, communities and people.</p></div>
+      <div class="card" data-s="hyp"><span class="status hyp">Hypothesis</span><h4>Music as creation</h4><p>The satisfaction of making something that did not exist before.</p></div>
+    </div>
+    <div class="card tint-u" data-s="unk">
+      <span class="status unk">Unknown</span>
+      <h4>Then decide what form it should take</h4>
+      <p><strong>Personal</strong> — protected from commercial pressure. <strong>Collaborative</strong> — occasionally, with others. <strong>Public</strong> — shared more visibly. <strong>Commercial</strong> — contributing to income. There is no reason to assume the most commercial option is the best one.</p>
+    </div>
+
+    <h3 class="blk">Five purpose hypotheses</h3>
+    <div class="grid g3">
+      <div class="card" data-s="hyp"><span class="status hyp">Hypothesis</span><h4>Connect</h4><p>Bring people together who can create value for one another.</p></div>
+      <div class="card" data-s="hyp"><span class="status hyp">Hypothesis</span><h4>Enable</h4><p>Help people access ideas, people and experiences that help them grow.</p></div>
+      <div class="card" data-s="hyp"><span class="status hyp">Hypothesis</span><h4>Create</h4><p>Make experiences, conversations or work that people remember and value.</p></div>
+      <div class="card" data-s="hyp"><span class="status hyp">Hypothesis</span><h4>Express</h4><p>Live with enough freedom to express both professional judgement and creative identity.</p></div>
+      <div class="card tint-h" data-s="hyp"><span class="status hyp">Hypothesis</span><h4>Combine — the working version</h4><p class="q">“Use relationships, ideas and creativity to bring people together and create experiences that help them think, feel or connect differently.”</p></div>
+      <div class="card" data-s="obs"><span class="status obs">Observed</span><h4>Six tests any purpose must pass</h4><p>Energy · authenticity · longevity (ten years) · portability (survives a company or industry change) · contribution beyond herself · lifestyle fit.</p></div>
+    </div>
+
+    <h3 class="blk">Where does meaning come from? Pick the top three.</h3>
+    <div class="grid g3">
+      <div class="card" data-s="unk"><span class="status unk">Unknown</span><h4>Achievement</h4><p>“I built or achieved something.”</p></div>
+      <div class="card" data-s="unk"><span class="status unk">Unknown</span><h4>Relationships</h4><p>“I had people around me who mattered.”</p></div>
+      <div class="card" data-s="unk"><span class="status unk">Unknown</span><h4>Contribution</h4><p>“I helped someone.”</p></div>
+      <div class="card" data-s="unk"><span class="status unk">Unknown</span><h4>Creation</h4><p>“I made something that did not exist before.”</p></div>
+      <div class="card" data-s="unk"><span class="status unk">Unknown</span><h4>Learning</h4><p>“I kept growing.”</p></div>
+      <div class="card" data-s="unk"><span class="status unk">Unknown</span><h4>Freedom &amp; experience</h4><p>“I had control over how I lived.” · “I lived fully.”</p></div>
+    </div>
+
+    <h3 class="blk">Seven kinds of freedom — rank them</h3>
+    <div class="tblwrap" data-s="unk">
+      <table>
+        <thead><tr><th>Freedom</th><th>What it actually means</th></tr></thead>
+        <tbody>
+          <tr><td class="strong">Time</td><td>Control over the calendar</td></tr>
+          <tr><td class="strong">Financial</td><td>Choices without immediate income pressure</td></tr>
+          <tr><td class="strong">Location</td><td>Ability to work from different places</td></tr>
+          <tr><td class="strong">Creative</td><td>Creating without excessive approval</td></tr>
+          <tr><td class="strong">Relationship</td><td>Choosing whom she works with</td></tr>
+          <tr><td class="strong">Decision</td><td>Authority over what she works on</td></tr>
+          <tr><td class="strong">Identity</td><td>Not being defined by one employer or role</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <p class="note">The top two or three become the design criteria for every future decision.</p>
+
+    <h3 class="blk">The “enough” question</h3>
+    <div class="grid g2">
+      <div class="card tint-u" data-s="unk"><span class="status unk">Unknown</span><h4>Financial enough — four numbers</h4><p><strong>Security number:</strong> minimum annual income for comfort. <strong>Freedom number:</strong> income and savings that create career choice. <strong>Aspiration number:</strong> tied to larger lifestyle goals. <strong>Independence number:</strong> assets or passive income that reduce salary dependence.</p></div>
+      <div class="card tint-u" data-s="unk"><span class="status unk">Unknown</span><h4>Career, visibility and work enough</h4><p>How senior does she actually want to be? A large team? P&amp;L? Influence without hierarchy? Would she trade title for autonomy? Does she want 500 people who know her deeply, or 50,000 who know her name? And: if money were comfortable, how many hours would she <em>want</em> to work?</p></div>
+    </div>
+
+    <h3 class="blk">The seven forms of capital</h3>
+    <p class="note">A life portfolio, not a career ladder. Growing only the first one is the common mistake.</p>
+    <div class="grid g3">
+      <div class="card" data-s="obs"><span class="status obs">Observed</span><h4>Professional capital</h4><p>Experience, senior exposure, relationship management, credibility. <strong>Next:</strong> convert some into judgement, positioning and intellectual capital.</p></div>
+      <div class="card" data-s="obs"><span class="status obs">Observed</span><h4>Relationship capital</h4><p>Network, long-term relationships, senior contacts, creative relationships. <strong>Next:</strong> more reciprocity and intentionality.</p></div>
+      <div class="card" data-s="unk"><span class="status unk">Unknown</span><h4>Financial capital</h4><p>Income, savings, assets. Currently unknown — and it determines what is actually possible.</p></div>
+      <div class="card" data-s="obs"><span class="status obs">Observed</span><h4>Creative capital</h4><p>A long-standing connection to music. <strong>Next:</strong> decide whether to protect, expand, share, commercialise, or simply enjoy it.</p></div>
+      <div class="card" data-s="hyp"><span class="status hyp">Hypothesis</span><h4>Knowledge capital</h4><p>Years of observing leaders, audiences and organisations. <strong>Next:</strong> document the patterns before they stay tacit forever.</p></div>
+      <div class="card" data-s="hyp"><span class="status hyp">Hypothesis</span><h4>Health &amp; freedom capital</h4><p>Energy, and the ability to choose. Freedom capital may currently be the least developed — runway, positioning, owned assets, more than one credible option.</p></div>
+    </div>
+
+    <h3 class="blk">The choice index</h3>
+    <div class="card tint-o" data-s="obs">
+      <span class="status obs">Observed</span>
+      <h4>A simpler measure of progress than promotion</h4>
+      <p>How many high-quality choices does Dipti have? More than one credible career path · ability to reject poor-fit work · financial ability to pause · creative options · a network that supports transition · the ability to work independently. Growth should increase this number.</p>
+    </div>
+
+    <h3 class="blk">Legacy — action, not sentiment</h3>
+    <div class="tblwrap" data-s="hyp">
+      <table>
+        <thead><tr><th>If she wants to leave behind…</th><th>Then behaviour starts now with…</th></tr></thead>
+        <tbody>
+          <tr><td class="strong">People</td><td>Mentoring and investing in relationships</td></tr>
+          <tr><td class="strong">Ideas</td><td>Writing and documenting</td></tr>
+          <tr><td class="strong">Creative work</td><td>Making and completing projects</td></tr>
+          <tr><td class="strong">Community</td><td>Bringing people together consistently</td></tr>
+          <tr><td class="strong">Independence</td><td>Building assets and financial choice</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <h3 class="blk">Six life principles worth testing</h3>
+    <div class="grid g3">
+      <div class="card" data-s="hyp"><span class="status hyp">Hypothesis</span><p><strong>1.</strong> Do not sacrifice all creative identity for professional identity — if creativity is genuinely important.</p></div>
+      <div class="card" data-s="hyp"><span class="status hyp">Hypothesis</span><p><strong>2.</strong> Do not stay in a role only because you are good at it. Capability and fit are different things.</p></div>
+      <div class="card" data-s="hyp"><span class="status hyp">Hypothesis</span><p><strong>3.</strong> Build enough financial security to create choice. Freedom is easier when money constrains less.</p></div>
+      <div class="card" data-s="hyp"><span class="status hyp">Hypothesis</span><p><strong>4.</strong> Keep some relationships free from professional utility. Not every connection needs to become an opportunity.</p></div>
+      <div class="card" data-s="hyp"><span class="status hyp">Hypothesis</span><p><strong>5.</strong> Create before you feel completely ready. Small experiments reveal more than long reflection.</p></div>
+      <div class="card" data-s="hyp"><span class="status hyp">Hypothesis</span><p><strong>6.</strong> Protect time before filling it. Unstructured space may be a precondition for creativity.</p></div>
+    </div>
+
+    <h3 class="blk">Two exercises that cut through</h3>
+    <div class="grid g2">
+      <div class="card tint-o" data-s="obs"><span class="status obs">Observed</span><h4>The “no résumé” exercise</h4><p>Describe your life without mentioning companies, job titles, awards, salary or qualifications. Only people, experiences, things created, lessons, contribution and memories. Then ask: <strong>would that life still feel successful?</strong></p></div>
+      <div class="card tint-o" data-s="obs"><span class="status obs">Observed</span><h4>The energy test for any future</h4><p>Do not ask whether a future looks impressive. Imagine doing it repeatedly and ask: <strong>would this give me energy on an ordinary Tuesday?</strong></p></div>
+    </div>
+
+    <h3 class="blk">Five alignment tests for any path</h3>
+    <div class="tblwrap" data-s="obs">
+      <table>
+        <thead><tr><th>Test</th><th>Question</th></tr></thead>
+        <tbody>
+          <tr><td class="strong">Identity</td><td>Does this feel like me?</td></tr>
+          <tr><td class="strong">Energy</td><td>Can I live this repeatedly?</td></tr>
+          <tr><td class="strong">Relationships</td><td>Does it support the people who matter?</td></tr>
+          <tr><td class="strong">Freedom</td><td>Does it create more choice?</td></tr>
+          <tr><td class="strong">Legacy</td><td>Would I be proud to have spent years doing it?</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <p class="note">If a path fails several of these, it may be wrong even if it pays well.</p>
+  </section>
+
+  <!-- ============ PART 8 ============ -->
+  <section class="sec" id="p8">
+    <div class="sec-head">
+      <div class="sec-num">08 — The integrated view</div>
+      <h2>Everything, reduced to a decision-ready model</h2>
+      <p class="lede">The final aim is not to tell Dipti who she is. It is to help her make better choices about life, career, identity, relationships, creativity and freedom.</p>
+    </div>
+
+    <h3 class="blk">Six identity components — which moves to the centre?</h3>
+    <div class="grid g3">
+      <div class="card" data-s="obs"><span class="status obs">Observed</span><h4>Connector</h4><p>Brings people together.</p></div>
+      <div class="card" data-s="obs"><span class="status obs">Observed</span><h4>Context reader</h4><p>Understands people, environment and audience.</p></div>
+      <div class="card" data-s="obs"><span class="status obs">Observed</span><h4>Enabler</h4><p>Makes things happen for others.</p></div>
+      <div class="card" data-s="hyp"><span class="status hyp">Hypothesis</span><h4>Curator</h4><p>Identifies the relevant people, ideas and experiences.</p></div>
+      <div class="card" data-s="obs"><span class="status obs">Observed</span><h4>Learner</h4><p>Drawn toward useful conversations and insight.</p></div>
+      <div class="card" data-s="obs"><span class="status obs">Observed</span><h4>Creative self</h4><p>Music and creative expression, still part of the wider identity.</p></div>
+    </div>
+
+    <div class="card tint-h" data-s="hyp" style="margin-top:18px">
+      <span class="status hyp">Hypothesis</span>
+      <h4>The identity evolution — a shift in perceived value, not job titles</h4>
+      <p><strong>Now:</strong> connector + enabler → <strong>emerging:</strong> connector + curator → <strong>possible next:</strong> curator + advisor → <strong>longer term:</strong> advisor + creator + trusted voice.</p>
+    </div>
+
+    <h3 class="blk">Eight career paths on the table</h3>
+    <div class="tblwrap" data-s="hyp">
+      <table>
+        <thead><tr><th>Path</th><th>What it means in practice</th></tr></thead>
+        <tbody>
+          <tr><td class="strong">A · Senior corporate leadership</td><td>Higher ownership, less execution</td></tr>
+          <tr><td class="strong">B · Strategic client / executive engagement</td><td>Closer to advisory and decision-making</td></tr>
+          <tr><td class="strong">C · Executive conversation curator</td><td>Owns themes, people, content and conversations</td></tr>
+          <tr><td class="strong">D · Personal platform</td><td>Voice through writing, interviews or hosting</td></tr>
+          <tr><td class="strong">E · Independent advisory</td><td>Selected work built on proven capability</td></tr>
+          <tr><td class="strong">F · Portfolio career</td><td>Professional, advisory and creative work combined</td></tr>
+          <tr><td class="strong">G · Entrepreneurship</td><td>Only if a clear problem and real desire emerge</td></tr>
+          <tr><td class="strong">H · Creative reintegration</td><td>Career stable, creativity given far more space</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <p class="note">Score every path on energy, fit with strengths, credibility, income, freedom, ownership, lifestyle fit, future choice, learning and personal meaning. The highest-paying path should not automatically win.</p>
+
+    <h3 class="blk">The lowest-risk near-term direction</h3>
+    <div class="card tint-o" data-s="obs">
+      <span class="status obs">Observed</span>
+      <h4>Maintain professional stability while testing a stronger personal identity through one or two controlled experiments.</h4>
+      <p>This lets Dipti learn without making an irreversible decision. It is the only direction the current evidence actually supports — everything else waits for the immersion call.</p>
+    </div>
+
+    <h3 class="blk">Ten decisions the immersion call should produce</h3>
+    <div class="tblwrap" data-s="obs">
+      <table>
+        <thead><tr><th>#</th><th>Decision</th></tr></thead>
+        <tbody>
+          <tr><td class="strong">1</td><td>What does Dipti want more of?</td></tr>
+          <tr><td class="strong">2</td><td>What does she want less of?</td></tr>
+          <tr><td class="strong">3</td><td>What should she become known for?</td></tr>
+          <tr><td class="strong">4</td><td>What role should music and creativity play?</td></tr>
+          <tr><td class="strong">5</td><td>Does she want greater public visibility?</td></tr>
+          <tr><td class="strong">6</td><td>Does she want to remain on the same career path?</td></tr>
+          <tr><td class="strong">7</td><td>How important is independence — and which kind?</td></tr>
+          <tr><td class="strong">8</td><td>Which one future identity should she test first?</td></tr>
+          <tr><td class="strong">9</td><td>What should she stop doing to create space?</td></tr>
+          <tr><td class="strong">10</td><td>What is the first 90-day experiment?</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="card tint-o" data-s="obs" style="margin-top:18px">
+      <span class="status obs">Observed</span>
+      <h4>The rule for what happens next</h4>
+      <p><strong>If clarity is high</strong> — build the roadmap. <strong>If clarity is medium</strong> — run experiments. <strong>If clarity is low</strong> — continue discovery before changing anything. Do not build a five-year plan on unclear answers; that is false precision.</p>
+    </div>
+
+    <h3 class="blk">What she may <em>not</em> need</h3>
+    <div class="vs" data-s="hyp">
+      <div class="col">
+        <div class="kv">May not need</div>
+        <ul class="tick"><li>A complete career restart</li><li>Another qualification</li><li>Immediate entrepreneurship</li><li>High social media visibility</li><li>Large-scale personal branding</li><li>A dramatic life change</li></ul>
+      </div>
+      <div class="mid"></div>
+      <div class="col">
+        <div class="kv">May need more</div>
+        <ul class="tick"><li>Clearer self-definition</li><li>A stronger point of view</li><li>Protected time</li><li>One owned project</li><li>Better boundaries</li><li>Clearer financial choices</li><li>Deliberate experimentation</li><li>More space for creativity</li></ul>
+      </div>
+    </div>
+
+    <div class="pull">Self-clarity + strong relationships + one signature capability + owned work + financial security + creative space = greater choice.<span>The growth equation — the goal is choice, not constant expansion</span></div>
+  </section>
+
+  <!-- ============ TOOL: VALIDATION TRACKER ============ -->
+  <section class="sec" id="tracker">
+    <div class="sec-head">
+      <div class="sec-num">Tool 01 — Use live during the call</div>
+      <h2>Validation tracker</h2>
+      <p class="lede">Mark each hypothesis as Dipti responds. Nothing is settled until it moves out of “unknown”. The tally updates as you go.</p>
+    </div>
+    <div class="trk" id="trkbox"></div>
+    <div class="tally" id="tally"></div>
+    <div class="btnrow">
+      <button class="btn ghost" id="trkreset">Clear all marks</button>
+      <button class="btn" id="trkcopy">Copy results as text</button>
+    </div>
+    <p class="note">Marks live in this browser tab only and are not saved. Copy the results before closing.</p>
+  </section>
+
+  <!-- ============ TOOL: SCORECARD ============ -->
+  <section class="sec" id="scorecard">
+    <div class="sec-head">
+      <div class="sec-num">Tool 02 — Monthly, for Dipti</div>
+      <h2>Personal scorecard</h2>
+      <p class="lede">Ten dimensions, scored 1–10 each month. The trend matters far more than any single number. Anything below 5 for three months running deserves attention.</p>
+    </div>
+    <div class="score" id="scorebox"></div>
+    <div class="flagbox" id="flagbox"></div>
+    <div class="btnrow"><button class="btn ghost" id="scorereset">Reset to 5</button></div>
+  </section>
+
+  <!-- ============ TOOL: IMMERSION TOOLKIT ============ -->
+  <section class="sec" id="immersion">
+    <div class="sec-head">
+      <div class="sec-num">Tool 03 — The 60–90 minute conversation</div>
+      <h2>Immersion call toolkit</h2>
+      <p class="lede">Seven blocks, five must-ask questions, and deeper sets to draw on. Do not run these as a list — let them guide the conversation. Tick what you cover.</p>
+    </div>
+    <div class="progbar"><i id="qprog"></i></div>
+    <p class="note" id="qcount">0 of 0 questions covered</p>
+
+    <h3 class="blk">The five must-ask questions</h3>
+    <div class="card tint-o" data-s="obs">
+      <span class="status obs">Observed</span>
+      <ul class="qlist">
+        <li><input type="checkbox" id="m1"><label for="m1"><strong>What do you want that you have never allowed yourself to say clearly?</strong> — uncovers suppressed aspiration</label></li>
+        <li><input type="checkbox" id="m2"><label for="m2"><strong>What are you very good at but no longer want to spend most of your life doing?</strong> — separates capability from direction</label></li>
+        <li><input type="checkbox" id="m3"><label for="m3"><strong>What part of yourself has received the least attention over the last five years?</strong> — reveals the creative, personal or relationship gap</label></li>
+        <li><input type="checkbox" id="m4"><label for="m4"><strong>If the next five years looked exactly like the last five, how would you feel?</strong> — reveals urgency</label></li>
+        <li><input type="checkbox" id="m5"><label for="m5"><strong>What would you regret not trying?</strong> — identifies the first experiments</label></li>
+      </ul>
+    </div>
+
+    <h3 class="blk">The seven blocks</h3>
+
+    <details data-s="obs">
+      <summary>Block 1 · Life story — the person before the career</summary>
+      <div class="dbody"><ul class="qlist">
+        <li><input type="checkbox"><label>Where did you grow up, and what were you like?</label></li>
+        <li><input type="checkbox"><label>What did you enjoy before career expectations became important?</label></li>
+        <li><input type="checkbox"><label>How did music become part of your life?</label></li>
+        <li><input type="checkbox"><label>Which life experiences shaped you most?</label></li>
+        <li><input type="checkbox"><label>Which periods were happiest? Which were hardest?</label></li>
+        <li><input type="checkbox"><label>Who influenced you most?</label></li>
+        <li><input type="checkbox"><label>What did you believe you would become when you were younger?</label></li>
+      </ul></div>
+    </details>
+
+    <details data-s="obs">
+      <summary>Block 2 · Career story</summary>
+      <div class="dbody"><ul class="qlist">
+        <li><input type="checkbox"><label>How did you enter your current field?</label></li>
+        <li><input type="checkbox"><label>Which career decision changed your direction most?</label></li>
+        <li><input type="checkbox"><label>Which role taught you the most?</label></li>
+        <li><input type="checkbox"><label>Which work have you enjoyed most? Which have you disliked?</label></li>
+        <li><input type="checkbox"><label>What are people most likely to ask you for help with?</label></li>
+        <li><input type="checkbox"><label>What capability do you think others underestimate?</label></li>
+      </ul></div>
+    </details>
+
+    <details data-s="obs">
+      <summary>Block 3 · Current reality, energy and drain</summary>
+      <div class="dbody"><ul class="qlist">
+        <li><input type="checkbox"><label>What does a normal week look like today? Where does most of your time go?</label></li>
+        <li><input type="checkbox"><label>Which work requires the most mental energy?</label></li>
+        <li><input type="checkbox"><label>What part of work feels meaningful? What has become routine?</label></li>
+        <li><input type="checkbox"><label>Which three things give you the most energy today?</label></li>
+        <li><input type="checkbox"><label>Which three take the most energy from you?</label></li>
+        <li><input type="checkbox"><label>What do you wish you had more time for? What do you keep postponing?</label></li>
+        <li><input type="checkbox"><label>When do you feel you are operating below your capability?</label></li>
+        <li><input type="checkbox"><label>What do you do because you are good at it, but no longer enjoy?</label></li>
+        <li><input type="checkbox"><label>Where do you feel most under-recognised?</label></li>
+      </ul></div>
+    </details>
+
+    <details data-s="obs">
+      <summary>Block 4 · Identity</summary>
+      <div class="dbody"><ul class="qlist">
+        <li><input type="checkbox"><label><strong>If you could not mention your company, designation or industry, how would you introduce yourself?</strong></label></li>
+        <li><input type="checkbox"><label>Which part of that answer was easiest? Which was difficult?</label></li>
+        <li><input type="checkbox"><label>What do you wish had been part of the answer?</label></li>
+        <li><input type="checkbox"><label>What do you want that answer to sound like five years from now?</label></li>
+        <li><input type="checkbox"><label>What do you wish people understood about your capability that they currently do not?</label></li>
+      </ul></div>
+    </details>
+
+    <details data-s="obs">
+      <summary>Block 5 · Aspiration and future options</summary>
+      <div class="dbody"><ul class="qlist">
+        <li><input type="checkbox"><label>If nothing were stopping you, what would the next chapter contain?</label></li>
+        <li><input type="checkbox"><label>What do you want more of? What do you want less of?</label></li>
+        <li><input type="checkbox"><label>What kind of work — and what kind of people around you?</label></li>
+        <li><input type="checkbox"><label>How public do you want to be?</label></li>
+        <li><input type="checkbox"><label>What have you always wanted to build that would feel truly yours?</label></li>
+        <li><input type="checkbox"><label>Are you looking for growth inside your current path, or questioning the path itself?</label></li>
+        <li><input type="checkbox"><label>Would you prefer to lead a team, advise, create, teach, host, build or connect?</label></li>
+        <li><input type="checkbox"><label>Which two options excite you most? Which two feel safe but not exciting?</label></li>
+      </ul></div>
+    </details>
+
+    <details data-s="obs">
+      <summary>Block 6 · Fear, risk, money and constraint</summary>
+      <div class="dbody"><ul class="qlist">
+        <li><input type="checkbox"><label>What would you change if money were not a constraint?</label></li>
+        <li><input type="checkbox"><label>What would you try if failure carried no embarrassment?</label></li>
+        <li><input type="checkbox"><label>What responsibility makes change difficult? What are you most afraid of losing?</label></li>
+        <li><input type="checkbox"><label>What is the worst realistic outcome if you change direction — and could you recover from it?</label></li>
+        <li><input type="checkbox"><label><strong>What is the risk of not changing anything?</strong></label></li>
+        <li><input type="checkbox"><label>What does financial security mean to you? What income level feels comfortable?</label></li>
+        <li><input type="checkbox"><label>Would you ever trade income for more control over time?</label></li>
+        <li><input type="checkbox"><label>Is entrepreneurship attractive, or is independence without it enough?</label></li>
+        <li><input type="checkbox"><label>Is the main issue clarity, confidence, capability, time, money or risk?</label></li>
+        <li><input type="checkbox"><label>Which constraint is external, and which comes from your own thinking?</label></li>
+      </ul></div>
+    </details>
+
+    <details data-s="obs">
+      <summary>Block 7 · North Star — an ordinary Tuesday, five years out</summary>
+      <div class="dbody"><ul class="qlist">
+        <li><input type="checkbox"><label>Where are you, and what time do you wake up?</label></li>
+        <li><input type="checkbox"><label>What work do you do, and who with?</label></li>
+        <li><input type="checkbox"><label>What does your calendar look like? How many hours do you work?</label></li>
+        <li><input type="checkbox"><label>What do people call you for?</label></li>
+        <li><input type="checkbox"><label>What role does music play?</label></li>
+        <li><input type="checkbox"><label>What does financial security look like?</label></li>
+        <li><input type="checkbox"><label>What are you proud of? What are you no longer doing?</label></li>
+      </ul></div>
+    </details>
+
+    <h3 class="blk">Deeper sets — draw on these as the conversation opens up</h3>
+
+    <details data-s="hyp">
+      <summary>Trust and relationships</summary>
+      <div class="dbody"><ul class="qlist">
+        <li><input type="checkbox"><label>What makes you trust someone, and how long does it take?</label></li>
+        <li><input type="checkbox"><label>What breaks trust fastest?</label></li>
+        <li><input type="checkbox"><label>Have you ever rebuilt a relationship after trust was broken? What made it possible?</label></li>
+        <li><input type="checkbox"><label>Do you prefer many connections or a smaller group you can really rely on?</label></li>
+        <li><input type="checkbox"><label>Who do you help most? Who helps you? Who challenges you?</label></li>
+        <li><input type="checkbox"><label>Who knows what you want for yourself?</label></li>
+      </ul></div>
+    </details>
+
+    <details data-s="hyp">
+      <summary>Communication, conflict and boundaries</summary>
+      <div class="dbody"><ul class="qlist">
+        <li><input type="checkbox"><label>In a senior meeting, do you speak early or understand the room first?</label></li>
+        <li><input type="checkbox"><label>When do you hold back? What would make you speak up against the room?</label></li>
+        <li><input type="checkbox"><label>Tell me about your last major disagreement — what did you do first, and what did you avoid?</label></li>
+        <li><input type="checkbox"><label>Do unresolved conflicts stay on your mind?</label></li>
+        <li><input type="checkbox"><label>What do you find hardest to say no to? When do you feel guilty saying it?</label></li>
+        <li><input type="checkbox"><label>What do people depend on you for unnecessarily?</label></li>
+      </ul></div>
+    </details>
+
+    <details data-s="hyp">
+      <summary>Decisions and risk</summary>
+      <div class="dbody"><ul class="qlist">
+        <li><input type="checkbox"><label>Tell me about a major decision you made quickly — why was it easy?</label></li>
+        <li><input type="checkbox"><label>Tell me about one you delayed — what created the hesitation?</label></li>
+        <li><input type="checkbox"><label>Whose opinion matters most to you?</label></li>
+        <li><input type="checkbox"><label>When have you ignored advice and been right? When did you ignore instinct and regret it?</label></li>
+        <li><input type="checkbox"><label>What is the biggest professional risk you have taken?</label></li>
+        <li><input type="checkbox"><label>At what point does uncertainty stop being exciting and become stressful?</label></li>
+        <li><input type="checkbox"><label>What failure would feel acceptable? What would be hard to recover from?</label></li>
+      </ul></div>
+    </details>
+
+    <details data-s="hyp">
+      <summary>Visibility and leadership</summary>
+      <div class="dbody"><ul class="qlist">
+        <li><input type="checkbox"><label>Do you want people to know your point of view?</label></li>
+        <li><input type="checkbox"><label>Would you enjoy hosting a conversation? Appearing on video?</label></li>
+        <li><input type="checkbox"><label>Do you prefer being the person in front, or creating the experience?</label></li>
+        <li><input type="checkbox"><label>What kind of visibility would feel meaningful rather than performative?</label></li>
+        <li><input type="checkbox"><label>What do people who work with you say about your style?</label></li>
+        <li><input type="checkbox"><label>How do you handle poor performance? Which is harder — giving difficult feedback or receiving it?</label></li>
+        <li><input type="checkbox"><label>What do you want people to feel after working with you?</label></li>
+      </ul></div>
+    </details>
+
+    <details data-s="hyp">
+      <summary>Music and creative identity</summary>
+      <div class="dbody"><ul class="qlist">
+        <li><input type="checkbox"><label>What is your earliest strong memory of music?</label></li>
+        <li><input type="checkbox"><label>When was music most important in your life, and which role did you enjoy most?</label></li>
+        <li><input type="checkbox"><label>What did it give you emotionally? What made it reduce?</label></li>
+        <li><input type="checkbox"><label>Do you miss creating, or do you mainly miss that period of life?</label></li>
+        <li><input type="checkbox"><label>If music disappeared completely, would something important be missing?</label></li>
+        <li><input type="checkbox"><label>Would you prefer music to stay personal — or become something more?</label></li>
+        <li><input type="checkbox"><label>Is there a creative project you still think about?</label></li>
+      </ul></div>
+    </details>
+
+    <details data-s="hyp">
+      <summary>Purpose, legacy and “enough”</summary>
+      <div class="dbody"><ul class="qlist">
+        <li><input type="checkbox"><label>What gives your life meaning today? When do you feel most useful?</label></li>
+        <li><input type="checkbox"><label>Whose progress would make you proud even if you got no credit?</label></li>
+        <li><input type="checkbox"><label>What would you continue doing even if nobody saw it?</label></li>
+        <li><input type="checkbox"><label>How much income, status, responsibility, work and recognition is enough?</label></li>
+        <li><input type="checkbox"><label>What do you want more of <em>after</em> “enough” is reached?</label></li>
+        <li><input type="checkbox"><label>Which freedom matters most today — and what currently limits it?</label></li>
+        <li><input type="checkbox"><label>What do you want to be remembered for by the people closest to you?</label></li>
+        <li><input type="checkbox"><label>Ten years on: what would you regret not creating, learning, or protecting?</label></li>
+      </ul></div>
+    </details>
+
+    <div class="btnrow">
+      <button class="btn" id="qcopy">Copy every question</button>
+      <button class="btn ghost" id="qexpand">Open all sets</button>
+      <button class="btn ghost" id="qreset">Clear ticks</button>
+    </div>
+  </section>
+
+  <!-- ============ ONE-PAGE SUMMARY ============ -->
+  <section class="sec" id="summary">
+    <div class="sec-head">
+      <div class="sec-num">Tool 04 — After the call</div>
+      <h2>The one page that matters</h2>
+      <p class="lede">Whatever else is produced, the immersion should reduce to this. Rewrite it in Dipti’s own words and delete every hypothesis she did not validate.</p>
+    </div>
+
+    <div class="onepage" data-s="hyp">
+      <h3>Working persona — pre-immersion</h3>
+      <p style="color:#C6A7D2;font-family:'IBM Plex Mono',monospace;font-size:11px;letter-spacing:.14em;text-transform:uppercase;margin:0">To be replaced by her own answers</p>
+      <div class="op-grid">
+        <div class="op-cell"><div class="kv">Dipti today</div><p>A relationship-led professional with experience around senior people, client context, communication and execution.</p></div>
+        <div class="op-cell"><div class="kv">Dipti beyond the role</div><p>A person with a meaningful creative history and evident interest in leadership, trust, people and learning.</p></div>
+        <div class="op-cell"><div class="kv">Likely strength</div><p>Understanding people and context, then helping useful things happen.</p></div>
+        <div class="op-cell"><div class="kv">Possible underused strength</div><p>Turning what she hears and sees into her own perspective.</p></div>
+        <div class="op-cell"><div class="kv">Possible current tension</div><p>Strong at helping other people’s work succeed, without enough visible ownership of her own.</p></div>
+        <div class="op-cell"><div class="kv">Possible aspiration</div><p>More meaning, choice, ownership and creative expression.</p></div>
+        <div class="op-cell"><div class="kv">Possible bottleneck</div><p>Clarity about which parts of her identity should define the next chapter.</p></div>
+        <div class="op-cell"><div class="kv">Possible North Star</div><p>A life with more choice over work, time and expression, while still working through people, ideas and creativity.</p></div>
+        <div class="op-cell"><div class="kv">First experiment</div><p>One controlled test of voice, conversation or creativity — run for at least three months.</p></div>
+        <div class="op-cell"><div class="kv">Immediate need</div><p>Validation through conversation and experiments, not another career plan.</p></div>
+      </div>
+    </div>
+
+    <h3 class="blk">The final question</h3>
+    <div class="pull">“What should the next chapter of your life give more space to that the current chapter has not?”<span>If the whole discovery were reduced to one question</span></div>
+
+    <div class="card tint-o" data-s="obs">
+      <span class="status obs">Observed</span>
+      <h4>What a good outcome sounds like</h4>
+      <p>“I understand what matters to me, I know what I want more and less of, I know where my strengths can create value, and I can make the next decision with clarity rather than habit.”</p>
+    </div>
+
+    <div class="btnrow">
+      <button class="btn" onclick="window.print()">Print or save as PDF</button>
+    </div>
+    <p class="note" style="margin-bottom:70px">WinGrox AI Persona Discovery · Dipti M · Parts 1–8 consolidated · Pre-immersion working document. Every interpretation here must be confirmed, corrected or discarded by Dipti herself.</p>
+  </section>
+
+<script>
+/* ============ shared copy helper ============ */
+function copyText(text,btn,orig){
+  var done=function(){btn.textContent='Copied';setTimeout(function(){btn.textContent=orig},1600)};
+  function fallback(){
+    var ta=document.createElement('textarea');ta.value=text;ta.style.position='fixed';ta.style.opacity='0';
+    document.body.appendChild(ta);ta.select();
+    try{document.execCommand('copy');done()}catch(err){btn.textContent='Press Ctrl+C'}
+    document.body.removeChild(ta);
+  }
+  if(navigator.clipboard&&navigator.clipboard.writeText){
+    navigator.clipboard.writeText(text).then(done,fallback);
+  } else fallback();
+}
+
+/* ============ validation tracker ============ */
+(function(){
+  var H=[
+    ["Relationships are central to how she works and decides","Part 1"],
+    ["Trust is a strong personal value","Part 1"],
+    ["She wants greater ownership over her work","Part 2"],
+    ["She has a meaningful creative identity beyond work","Part 1"],
+    ["Execution uses more of her time than she wants","Part 3"],
+    ["She is interested in becoming more visible","Part 6"],
+    ["Her network is stronger than her personal positioning","Part 3"],
+    ["She wants more independence over time","Part 2"],
+    ["The next stage is an evolution, not a restart","Part 8"],
+    ["Her main bottleneck is clarity, not capability","Part 3"],
+    ["Music should have a future role, not only a past one","Part 7"],
+    ["A personal platform would genuinely suit her","Part 3"],
+    ["Advisory work interests her","Part 4"],
+    ["Entrepreneurship interests her","Part 4"],
+    ["Financial freedom is a stated priority","Part 5"]
+  ];
+  var V=[["c","Confirmed"],["p","Partly"],["r","Rejected"],["u","Unknown"]];
+  var box=document.getElementById('trkbox'), tally=document.getElementById('tally');
+  var state={};
+  H.forEach(function(h,i){
+    var row=document.createElement('div'); row.className='trk-row';
+    var t=document.createElement('div'); t.className='t';
+    t.innerHTML=h[0]+'<small>'+h[1]+'</small>';
+    var seg=document.createElement('div'); seg.className='seg';
+    V.forEach(function(v){
+      var b=document.createElement('button');
+      b.type='button'; b.setAttribute('data-v',v[0]); b.textContent=v[1];
+      b.addEventListener('click',function(){
+        state[i]=(state[i]===v[0])?null:v[0];
+        Array.prototype.forEach.call(seg.children,function(c){
+          c.classList.toggle('on',c.getAttribute('data-v')===state[i]);
+        });
+        draw();
+      });
+      seg.appendChild(b);
+    });
+    row.appendChild(t); row.appendChild(seg); box.appendChild(row);
+  });
+  function draw(){
+    var c={c:0,p:0,r:0,u:0,n:0};
+    H.forEach(function(_,i){ if(state[i]){c[state[i]]++}else{c.n++} });
+    tally.innerHTML=
+      '<span style="border-color:#176B57;color:#176B57">Confirmed <b>'+c.c+'</b></span>'+
+      '<span style="border-color:#A76310;color:#A76310">Partly <b>'+c.p+'</b></span>'+
+      '<span style="border-color:#A32F4E;color:#A32F4E">Rejected <b>'+c.r+'</b></span>'+
+      '<span>Unknown <b>'+c.u+'</b></span>'+
+      '<span>Not yet marked <b>'+c.n+'</b></span>';
+  }
+  draw();
+  document.getElementById('trkreset').addEventListener('click',function(){
+    state={};
+    Array.prototype.forEach.call(box.querySelectorAll('.seg button'),function(b){b.classList.remove('on')});
+    draw();
+  });
+  document.getElementById('trkcopy').addEventListener('click',function(e){
+    var lines=H.map(function(h,i){
+      var lbl='Not marked';
+      V.forEach(function(v){if(v[0]===state[i])lbl=v[1]});
+      return '- '+h[0]+' — '+lbl;
+    });
+    copyText('Validation tracker — Dipti M\n\n'+lines.join('\n'),e.target,'Copy results as text');
+  });
+})();
+
+/* ============ scorecard ============ */
+(function(){
+  var D=[
+    ["Meaning","Am I doing work that feels worthwhile?"],
+    ["Energy","Do I feel energised more often than drained?"],
+    ["Learning","Am I learning and stretching?"],
+    ["Ownership","Am I building something that feels mine?"],
+    ["Relationships","Am I investing in the right people?"],
+    ["Creativity","Am I giving enough space to expression?"],
+    ["Freedom","Do I have enough control over my time?"],
+    ["Financial security","Do I feel financially stable?"],
+    ["Health","Do I have energy left for life outside work?"],
+    ["Future choice","Do I have more than one good option?"]
+  ];
+  var box=document.getElementById('scorebox'), flag=document.getElementById('flagbox');
+  var rows=[];
+  D.forEach(function(d){
+    var r=document.createElement('div'); r.className='score-row';
+    var l=document.createElement('div'); l.className='lbl'; l.innerHTML=d[0]+'<small>'+d[1]+'</small>';
+    var i=document.createElement('input'); i.type='range'; i.min=1; i.max=10; i.value=5;
+    i.setAttribute('aria-label',d[0]+' score');
+    var v=document.createElement('div'); v.className='val'; v.textContent='5';
+    i.addEventListener('input',function(){
+      v.textContent=i.value; r.classList.toggle('low',parseInt(i.value,10)<5); update();
+    });
+    r.appendChild(l); r.appendChild(i); r.appendChild(v); box.appendChild(r);
+    rows.push({name:d[0],input:i,val:v,row:r});
+  });
+  function update(){
+    var low=rows.filter(function(r){return parseInt(r.input.value,10)<5}).map(function(r){return r.name});
+    var sum=rows.reduce(function(a,r){return a+parseInt(r.input.value,10)},0);
+    var avg=(sum/rows.length).toFixed(1);
+    if(!low.length){
+      flag.innerHTML='<strong>Average '+avg+' / 10.</strong> Nothing below 5. Watch the direction of travel month to month rather than the score itself.';
+    } else {
+      flag.innerHTML='<strong>Average '+avg+' / 10. Attention needed: '+low.join(', ')+'.</strong><br>'+
+      'Meaning below 5 suggests the work is no longer aligned. Ownership below 5 suggests too much effort is building other people’s outcomes. Creativity below 5 suggests an important part of identity is being suppressed. Freedom below 5 suggests the calendar, commitments or financial structure are limiting choice. If any stays low for three months, act on it.';
+    }
+  }
+  update();
+  document.getElementById('scorereset').addEventListener('click',function(){
+    rows.forEach(function(r){r.input.value=5;r.val.textContent='5';r.row.classList.remove('low')});
+    update();
+  });
+})();
+
+/* ============ question checklist ============ */
+(function(){
+  var boxes=Array.prototype.slice.call(document.querySelectorAll('#immersion .qlist input[type=checkbox]'));
+  var prog=document.getElementById('qprog'), count=document.getElementById('qcount');
+  function update(){
+    var n=boxes.filter(function(b){return b.checked}).length;
+    prog.style.width=(n/boxes.length*100)+'%';
+    count.textContent=n+' of '+boxes.length+' questions covered';
+  }
+  boxes.forEach(function(b){
+    b.addEventListener('change',function(){
+      var li=b.parentNode;
+      li.classList.toggle('done',b.checked);
+      update();
+    });
+  });
+  update();
+  document.getElementById('qreset').addEventListener('click',function(){
+    boxes.forEach(function(b){b.checked=false;b.parentNode.classList.remove('done')});
+    update();
+  });
+  document.getElementById('qexpand').addEventListener('click',function(e){
+    var ds=Array.prototype.slice.call(document.querySelectorAll('#immersion details'));
+    var anyClosed=ds.some(function(d){return !d.open});
+    ds.forEach(function(d){d.open=anyClosed});
+    e.target.textContent=anyClosed?'Close all sets':'Open all sets';
+  });
+  document.getElementById('qcopy').addEventListener('click',function(e){
+    var out=[];
+    Array.prototype.forEach.call(document.querySelectorAll('#immersion .qlist'),function(l){
+      var d=l.parentNode.parentNode;
+      var head=(d&&d.tagName==='DETAILS')?d.querySelector('summary').textContent.trim():'Must-ask questions';
+      out.push('');out.push('— '+head+' —');
+      Array.prototype.forEach.call(l.querySelectorAll('label'),function(lb){out.push('- '+lb.textContent.trim())});
+    });
+    copyText('Immersion call questions — Dipti M'+out.join('\n'),e.target,'Copy every question');
+  });
+})();
+</script>
+  </div>
+  </main>
+</div>
+
+<script>
+/* ============ nav: mobile select ============ */
+(function(){
+  var links=[].slice.call(document.querySelectorAll('.nav a'));
+  var sel=document.getElementById('mobnav');
+  links.forEach(function(a){
+    var o=document.createElement('option');
+    o.value=a.getAttribute('href');
+    o.textContent=a.textContent.trim();
+    sel.appendChild(o);
+  });
+  sel.addEventListener('change',function(){location.hash=sel.value});
+
+  /* active section highlighting */
+  var secs=[].slice.call(document.querySelectorAll('section.sec, header.hero'));
+  var io=new IntersectionObserver(function(es){
+    es.forEach(function(e){
+      if(!e.isIntersecting) return;
+      var id=e.target.id;
+      links.forEach(function(a){a.classList.toggle('on',a.getAttribute('href')==='#'+id)});
+      if(sel.value!=='#'+id) sel.value='#'+id;
+    });
+  },{rootMargin:'-20% 0px -70% 0px'});
+  secs.forEach(function(s){io.observe(s)});
+})();
+
+/* ============ confidence filter + search ============ */
+(function(){
+  var state={obs:true,hyp:true,unk:true,q:''};
+  var cards=function(){return [].slice.call(document.querySelectorAll('[data-s]'))};
+  var btns=[].slice.call(document.querySelectorAll('.chipbtn'));
+  var search=document.getElementById('search');
+
+  function apply(){
+    var anyFilter=!(state.obs&&state.hyp&&state.unk)||state.q.length>0;
+    document.body.classList.toggle('filtering',anyFilter);
+    var q=state.q.toLowerCase();
+    cards().forEach(function(c){
+      var okS=state[c.getAttribute('data-s')];
+      var okQ=!q||c.textContent.toLowerCase().indexOf(q)>-1;
+      c.classList.toggle('fmatch',okS&&okQ);
+      c.classList.toggle('hidden',q.length>1&&!okQ);
+    });
+    /* hide empty sections during text search */
+    [].slice.call(document.querySelectorAll('section.sec')).forEach(function(s){
+      if(q.length<2){s.classList.remove('hidden');return}
+      var vis=s.querySelectorAll('[data-s]:not(.hidden)').length;
+      s.classList.toggle('hidden',vis===0);
+    });
+  }
+  btns.forEach(function(b){
+    b.addEventListener('click',function(){
+      var k=b.getAttribute('data-f');
+      state[k]=!state[k];
+      b.classList.toggle('act',state[k]);
+      apply();
+    });
+  });
+  search.addEventListener('input',function(){state.q=search.value.trim();apply()});
+  document.getElementById('clearall').addEventListener('click',function(){
+    state={obs:true,hyp:true,unk:true,q:''};
+    search.value='';
+    btns.forEach(function(b){b.classList.add('act')});
+    apply();
+  });
+  apply();
+})();
+
+/* ============ reveal ============ */
+(function(){
+  if(window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+  var els=[].slice.call(document.querySelectorAll('.sec .card, .sec .tblwrap, .sec .vs, .sec .pull, .sec .horiz, .sec .onepage'));
+  els.forEach(function(e){e.classList.add('reveal')});
+  var io=new IntersectionObserver(function(es){
+    es.forEach(function(e){if(e.isIntersecting){e.target.classList.add('in');io.unobserve(e.target)}});
+  },{rootMargin:'0px 0px -8% 0px'});
+  els.forEach(function(e){io.observe(e)});
+})();
+</script>
+</body>
+</html>
