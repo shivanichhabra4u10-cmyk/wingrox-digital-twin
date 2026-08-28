@@ -1053,6 +1053,11 @@ var PRIORITY = ["Critical","High","Low"];
 var VISIBILITY = ["Private to me","Architect only","Architect and coach","Summary to sponsor"];
 
 /* ---- Step 4: the 50-question Growth Diagnostic bank ---- */
+/* Resolve active question bank: participant-uploaded JSON takes priority over default QB */
+function activeQB(){ return (S.diagnostic && S.diagnostic.questionBank && S.diagnostic.questionBank.length) ? S.diagnostic.questionBank : QB; }
+function activeSection(id){ var bank=activeQB(), total=bank.length, slen=Math.ceil(total/10);
+  for(var i=0;i<SECTIONS.length;i++){ if(id>=SECTIONS[i].from && id<=SECTIONS[i].to) return SECTIONS[i]; }
+  return SECTIONS[SECTIONS.length-1]; }
 var SECTIONS = [
   {k:"A", t:"Present identity and life stage", from:1,  to:5},
   {k:"B", t:"Aspirations and future self",     from:6,  to:10},
@@ -1967,7 +1972,7 @@ function defaultState(){
       items:{}, privacyConfirmed:false, notesSaved:false, participantConfirmed:false, architectClosed:false,
       summary:{agreed:"", disagreed:"", changed:"", private:"", q1:"", q2:"", q3:"", g1:"", g2:"", g3:"", c1:"", c2:"", c3:"", next:""}
     },
-    diagnostic:{answers:{}, submitted:false, released:false, reportOpened:false, dims:{}},
+    diagnostic:{answers:{}, submitted:false, released:false, reportOpened:false, dims:{}, questionBank:null, questionBankName:""},
     mirror:{
       reviewed:false, identityText:MIRROR.identity, identityConfirmed:false,
       priority:"", accepted:false, privacyConfirmed:false, acks:{a0:false,a1:false,a2:false},
@@ -2259,7 +2264,7 @@ function stepChecks(n){
     c.push({l:"Architect closes validation", ok:S.validation.architectClosed});
   }
   if(n===4){
-    c.push({l:"All 50 responses complete", ok:answeredCount()===50});
+    c.push({l:"All "+activeQB().length+" responses complete", ok:answeredCount()===activeQB().length});
     c.push({l:"Questionnaire submitted", ok:S.diagnostic.submitted});
     c.push({l:"Growth Diagnostic released", ok:S.diagnostic.released});
     c.push({l:"Navigator report opened", ok:S.diagnostic.reportOpened});
@@ -2321,7 +2326,7 @@ function nextAction(){
 }
 function answeredCount(){
   var n = 0;
-  QB.forEach(function(q){
+  activeQB().forEach(function(q){
     var a = S.diagnostic.answers[q.id];
     if(a && a.choices && a.choices.length>0 && nonEmpty(a.conf)) n++;
   });
@@ -3024,9 +3029,21 @@ function adminPushes(){
 
    '<div class="card"><h3 style="margin-top:0">Step 4 — Growth Diagnostic '+gate(f.questionsPushed,"Not pushed")+'</h3>'+
     '<p class="muted">Pushing the questionnaire makes all fifty questions visible to the participant. You see their answers when they submit.</p>'+
+
+    '<details style="margin-bottom:12px;border:1px solid var(--rule2);border-radius:4px"><summary style="cursor:pointer;padding:10px 14px;font-size:.82rem;font-weight:700;letter-spacing:.04em;text-transform:uppercase;color:var(--brass)">📋 Upload custom question bank (optional)</summary>'+
+    '<div style="padding:12px 14px 14px">'+
+    '<p style="font-size:.84rem;color:var(--slate);margin:0 0 10px">Upload a JSON file to replace the default 50 questions for <strong>'+esc(withPid(pid,function(){ return S.profile.fullName||pid; }))+'</strong>. If no custom bank is uploaded, the built-in 50 questions are used.</p>'+
+    '<p style="font-size:.78rem;color:var(--slate);margin:0 0 8px">Format: <code>[{"id":1,"q":"Question text","o":["Option A","Option B",...10 options]},...]</code></p>'+
+    (withPid(pid, function(){ return S.diagnostic.questionBank && S.diagnostic.questionBank.length ? '<p class="notice green" style="margin:0 0 8px">✓ Custom bank active: '+S.diagnostic.questionBank.length+' questions'+( S.diagnostic.questionBankName ? ' ('+esc(S.diagnostic.questionBankName)+')' : '')+'</p>' : '<p class="notice" style="margin:0 0 8px">Using default 50 questions.</p>'; }))+
+    '<div class="btnrow" style="margin-top:8px">'+
+    '<label style="cursor:pointer"><input type="file" accept=".json,application/json" data-qbupload="'+pid+'" style="display:none">'+
+    '<span class="btn sec sm">Choose JSON file</span></label>'+
+    (withPid(pid, function(){ return S.diagnostic.questionBank ? '<button class="btn sec sm" data-act="clearQB" data-pid="'+pid+'">Remove custom bank</button>' : ''; }))+
+    '</div></div></details>'+
+
     '<div class="btnrow">'+
      '<button class="btn '+(f.questionsPushed?"sec":"blue")+'" data-act="admPushQuestions" data-pid="'+pid+'"'+
-       (f.validationSubmitted?"":" disabled")+'>'+(f.questionsPushed?"Pushed":"Push the 50 questions")+'</button>'+
+       (f.validationSubmitted?"":" disabled")+'>'+(f.questionsPushed?"Pushed":"Push the questions")+'</button>'+
      '<button class="btn '+(f.diagnosticPushed?"sec":"green")+'" data-act="admPushDiagnostic" data-pid="'+pid+'"'+
        (f.answersSubmitted?"":" disabled")+'>'+(f.diagnosticPushed?"Report released":"Release the diagnostic report")+'</button></div>'+
     (!f.validationSubmitted? '<p class="muted" style="font-size:.84rem">Waiting for the participant to close validation in Step 3.</p>':'')+
@@ -3877,7 +3894,7 @@ function nudgeCard(){
   if(done===0 || done%5!==0) return "";
   if(S.ui.lastNudge===done) { /* still show, it is the current milestone */ }
   var msg = NUDGES[Math.min(9, done/5 - 1)];
-  var full = (done===50);
+  var full = (done===activeQB().length);
   var secLine = "";
   for(var i=0;i<SECTIONS.length;i++){
     var sc = SECTIONS[i], all = true;
@@ -3890,11 +3907,11 @@ function nudgeCard(){
     (secLine?'<div class="muted" style="font-size:.86rem">'+esc(secLine)+'</div>':'')+
     (full?'<div class="btnrow" style="margin-top:8px"><button class="btn green sm" data-act="tab" data-stage="4" data-k="review">Review and submit</button></div>':'')+
     '</div>'+
-    '<span class="np">'+done+'/50</span></div>';
+    '<span class="np">'+done+'/'+activeQB().length+'</span></div>';
 }
 function questionView(){
   var id = Math.min(50, Math.max(1, S.ui.qIndex||1));
-  var q = QB[id-1], a = ansOf(id), sec = sectionOf(id);
+  var q = activeQB()[id-1], a = ansOf(id), sec = activeSection(id);
   var secDone = 0, secTotal = sec.to - sec.from + 1;
   for(var i=sec.from;i<=sec.to;i++){ if(qComplete(i)) secDone++; }
   var done = answeredCount();
@@ -3953,9 +3970,9 @@ function questionView(){
       '<div class="qnav">'+
         '<button class="btn sec" data-act="qgo" data-n="'+(id-1)+'"'+(id===1?" disabled":"")+'>'+icon("arrowl")+' Back</button>'+
         '<div class="qnav-r">'+
-          (id<50 ? '<button class="btn sec" data-act="qgo" data-n="'+(id+1)+'">Skip for now</button>' : '')+
+          (id<activeQB().length ? '<button class="btn sec" data-act="qgo" data-n="'+(id+1)+'">Skip for now</button>' : '')+
           '<button class="btn '+(ready?"blue":"")+'" data-act="qsave" data-n="'+(id+1)+'">'+
-            (id===50?"Save and finish":"Save and continue")+' '+icon("arrowr")+'</button>'+
+            (id===activeQB().length?"Save and finish":"Save and continue")+' '+icon("arrowr")+'</button>'+
         '</div>'+
       '</div>'+
       (ready?'':'<p class="panelnote">'+icon("info")+'Pick at least one choice and one confidence marker to count this question as answered. You can still move on and come back.</p>')+
@@ -3979,14 +3996,14 @@ function questionView(){
     '</details></div>';
 }
 function reviewView(){
-  var done = answeredCount(), missing = QB.filter(function(q){ return !qComplete(q.id); });
+  var done = answeredCount(), missing = activeQB().filter(function(q){ return !qComplete(q.id); });
   return '<div class="card"><h2>Review before you submit</h2>'+
-   '<div class="sbar"><span class="lab">Completed</span>'+bar(pct(done,50), done===50)+'<span>'+done+'/50</span></div>'+
+   '<div class="sbar"><span class="lab">Completed</span>'+bar(pct(done,activeQB().length), done===activeQB().length)+'<span>'+done+'/'+activeQB().length+'</span></div>'+
    (missing.length ? '<p class="notice">'+missing.length+' question'+(missing.length===1?" is":"s are")+' still incomplete. A question is complete when it has at least one choice and a confidence marker.</p>'+
      '<div class="chips">'+missing.map(function(q){return '<button class="chip" data-act="qgo" data-n="'+q.id+'">Q'+q.id+'</button>';}).join("")+'</div>'
-     : '<p class="notice green">All 50 questions are complete. You can submit.</p>')+
+     : '<p class="notice green">All '+activeQB().length+' questions are complete. You can submit.</p>')+
    '<div class="sep"></div>'+SECTIONS.map(function(s){
-     var rows = QB.filter(function(q){ return q.id>=s.from && q.id<=s.to; }).map(function(q){
+     var rows = activeQB().filter(function(q){ return q.id>=s.from && q.id<=s.to; }).map(function(q){
        var a = ansOf(q.id);
        var picks = a.choices.map(function(n,ix){ return (ix+1)+". "+q.o[n-1]; }).join("<br>");
        return '<tr><td><button class="btn sec sm" data-act="qgo" data-n="'+q.id+'">Q'+q.id+'</button></td>'+
@@ -3996,7 +4013,7 @@ function reviewView(){
      }).join("");
      return '<h4>Section '+s.k+' — '+esc(s.t)+'</h4><div class="tscroll"><table><thead><tr><th></th><th>Question</th><th>Ranked answers</th><th>Marker</th></tr></thead><tbody>'+rows+'</tbody></table></div>';
    }).join("")+
-   '<div class="btnrow"><button class="btn green" data-act="submitQ"'+(done===50&&!S.diagnostic.submitted?"":" disabled")+'>Submit questionnaire</button>'+
+   '<div class="btnrow"><button class="btn green" data-act="submitQ"'+(done===activeQB().length&&!S.diagnostic.submitted?"":" disabled")+'>Submit questionnaire</button>'+
    (S.diagnostic.submitted?'<span class="tag g">Submitted</span>':'')+'</div>'+
    (isArchitect()? '<div class="btnrow"><button class="btn blue" data-act="releaseDiag"'+(S.diagnostic.submitted&&!S.diagnostic.released?"":" disabled")+'>Release the Growth Diagnostic</button></div>'
      : '<p class="muted" style="font-size:.88rem">After you submit, the Architect releases the Growth Diagnostic report.</p>')+
@@ -4898,6 +4915,31 @@ document.addEventListener("input", function(e){
 });
 document.addEventListener("change", function(e){
   var t = e.target;
+
+  /* ---- Question bank JSON upload ---- */
+  if(t && t.getAttribute && t.getAttribute("data-qbupload")){
+    var qbfile = t.files && t.files[0];
+    if(!qbfile) return;
+    var qbpid = t.getAttribute("data-qbupload");
+    var qbrd = new FileReader();
+    qbrd.onload = function(){
+      try{
+        var bank = JSON.parse(qbrd.result);
+        if(!Array.isArray(bank) || !bank.length || !bank[0].q || !bank[0].o){
+          toast("Invalid format. JSON must be an array of {id, q, o} objects."); return;
+        }
+        /* Ensure every entry has an id */
+        bank = bank.map(function(b,ix){ return {id:b.id||ix+1, q:b.q, o:b.o}; });
+        DB.participants[qbpid].diagnostic.questionBank = bank;
+        DB.participants[qbpid].diagnostic.questionBankName = qbfile.name;
+        toast("Custom bank loaded: "+bank.length+" questions from "+qbfile.name);
+        saveState(); render();
+      }catch(err){ toast("Could not parse JSON: "+err.message); }
+    };
+    qbrd.readAsText(qbfile);
+    return;
+  }
+
   if(t && t.getAttribute && t.getAttribute("data-upl")){
     var file = t.files && t.files[0];
     if(!file) return;
@@ -5049,8 +5091,13 @@ document.addEventListener("click", function(e){
     }
     case "admPushQuestions": {
       var t6 = DB.participants[d.pid]; t6.flow.questionsPushed = true; t6.flow.questionsPushedOn = todayISO();
-      t6.notifications.unshift({id:uid(), t:"Your fifty diagnostic questions are ready in Step 4.", read:false, date:todayISO()});
+      t6.notifications.unshift({id:uid(), t:"Your diagnostic questions are ready in Step 4.", read:false, date:todayISO()});
       toast("Questions pushed."); break;
+    }
+    case "clearQB": {
+      var cqb = DB.participants[d.pid];
+      cqb.diagnostic.questionBank = null; cqb.diagnostic.questionBankName = "";
+      toast("Custom question bank removed. Default 50 questions will be used."); break;
     }
     case "admPushDiagnostic": {
       var t7 = DB.participants[d.pid]; t7.flow.diagnosticPushed = true; t7.diagnostic.released = true;
@@ -5307,8 +5354,8 @@ document.addEventListener("click", function(e){
     case "qgo": S.ui.qIndex = Math.min(50, Math.max(1, parseInt(d.n,10))); S.ui.tab[4] = "questions"; break;
     case "qsave": {
       S.ui.qIndex = Math.min(50, parseInt(d.n,10));
-      toast("Saved. "+answeredCount()+" of 50 complete.");
-      if(answeredCount()===50) notify("All 50 diagnostic answers are complete.");
+      toast("Saved. "+answeredCount()+" of "+activeQB().length+" complete.");
+      if(answeredCount()===activeQB().length) notify("All "+activeQB().length+" diagnostic answers are complete.");
       break;
     }
     case "qjump": {
@@ -5563,7 +5610,7 @@ function demoValidation(){
   S.validation.participantConfirmed = true; S.validation.architectClosed = true;
 }
 function demoQuestionnaire(){
-  QB.forEach(function(q,ix){
+  activeQB().forEach(function(q,ix){
     var a = ansOf(q.id);
     var pr = PRESET_RANKS[q.id] || [1,2,3];
     a.choices = pr.slice(0,3);
