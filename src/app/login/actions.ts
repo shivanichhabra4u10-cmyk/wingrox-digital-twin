@@ -38,7 +38,7 @@ export async function signInAction(formData: FormData) {
   }
 
   revalidatePath("/", "layout");
-  redirect("/app");
+  redirect("/api/auth/confirm?next=/prototype/index.html");
 }
 
 export async function signUpAction(formData: FormData) {
