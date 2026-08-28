@@ -5639,23 +5639,16 @@ function exportJSON(){
 
 /* -------------------------------- init ----------------------------------- */
 async function initApp(){
-  var app = document.getElementById("app");
-  if(app) app.innerHTML = '<main class="wrap"><div class="card"><h2>Loading workspace</h2><p class="muted">Restoring your saved workflow from the secure app backend.</p></div></main>';
-  try{
-    await loadRemoteState();
-  }catch(err){
-    loadState();
-    if(!DB || !DB.session){
-      DB = defaultDB();
-    }
-    if(DB && !DB.session){
-      DB.session = {u:"user", role:"participant", name:"User", pid:Object.keys(DB.participants||{})[0]||"p_dipti", aid:""};
-      bindState();
-    }
-  }
+  /* Render immediately from local state — no loading screen */
+  loadState();
   if(!S.ui) S.ui = {stage:1, tab:{}, qIndex:1, notifOpen:false, demoOpen:false};
   if(!S.ui.tab) S.ui.tab = {};
   render();
+  /* Then try to hydrate from remote silently in the background */
+  try{
+    await loadRemoteState();
+    render();
+  }catch(err){ /* remote unavailable — local state is already shown */ }
 }
 void initApp();
 window.addEventListener("resize", function(){

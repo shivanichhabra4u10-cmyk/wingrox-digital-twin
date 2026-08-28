@@ -26,107 +26,129 @@ export default async function LoginPage({ searchParams }: LoginPageProps) {
     redirect("/app");
   }
 
+  const serif = '"Iowan Old Style","Palatino Linotype",Palatino,"Book Antiqua",Georgia,"Times New Roman",serif';
+  const ink   = "#0C1A2B";
+  const brass = "#A67C34";
+  const slate = "#5A6A7D";
+
+  const circles = Array.from({length: 14}, (_, i) => (
+    <circle key={i} cx="470" cy="392" r={70 + i * 46} />
+  ));
+
   return (
-    <main className="min-h-screen bg-[#0f0f14] flex items-center justify-center px-4 py-12">
-      <div className="mx-auto grid w-full max-w-5xl gap-8 lg:grid-cols-[1fr_420px]">
+    <main style={{minHeight:"100vh", display:"grid", gridTemplateColumns:"minmax(0,1.05fr) minmax(0,1fr)"}}>
 
-        {/* ── Left: Brand panel ── */}
-        <section className="flex flex-col justify-center py-4">
-          <p className="text-[11px] font-semibold uppercase tracking-[0.22em] text-amber-400">WinGroX AI</p>
-          <h1 className="mt-3 text-4xl font-bold leading-[1.1] text-white">
-            Your personal growth<br />journey, guided end to end
-          </h1>
-          <p className="mt-4 max-w-md text-[15px] leading-relaxed text-slate-400">
-            An individual growth intelligence system that takes you from self-discovery to a coached 12-week journey — with a digital twin that evolves as you do.
-          </p>
+      {/* ── Left: dark cover ── */}
+      <aside style={{position:"relative", background:ink, color:"#fff", overflow:"hidden", display:"flex"}}>
+        {/* engraved circle pattern */}
+        <svg viewBox="0 0 600 800" preserveAspectRatio="xMidYMid slice" aria-hidden="true"
+          style={{position:"absolute",inset:0,width:"100%",height:"100%",fill:"none",stroke:"rgba(166,124,52,0.22)",strokeWidth:1}}>
+          {circles}
+        </svg>
 
-          <div className="mt-8 grid gap-px overflow-hidden rounded-xl border border-white/10">
-            {[
-              ["01", "Profile",           "Build your baseline — who you are, where you are, and what matters most."],
-              ["02", "Persona Discovery", "Pre-immersion analysis + live immersion call to surface your values, strengths and blind spots."],
-              ["03", "Validation",        "Review and confirm your persona with your Growth Sprint Architect before moving forward."],
-              ["04", "Growth Diagnostic", "50 structured questions mapping your pain areas and behaviour patterns into a Navigator report."],
-              ["05", "Growth Mirror",     "Your digital twin — capital, blockages, career options, opportunity scorecard and 5-year roadmap."],
-              ["06", "Coach Activation",  "Meet shortlisted coaches, run a chemistry call, choose your match and get a personalised plan."],
-              ["07", "Growth Journey",    "A structured 12-week sprint with weekly check-ins, tracked milestones and monthly reviews."],
-            ].map(([num, title, desc]) => (
-              <div key={num} className="flex gap-4 bg-white/[0.03] px-5 py-4 hover:bg-white/[0.06] transition-colors">
-                <span className="mt-0.5 shrink-0 text-[11px] font-bold tabular-nums text-amber-400/70">{num}</span>
-                <div>
-                  <p className="text-[13px] font-semibold text-amber-300">{title}</p>
-                  <p className="mt-0.5 text-[13px] leading-snug text-slate-400">{desc}</p>
-                </div>
-              </div>
-            ))}
+        <div style={{position:"relative",zIndex:1,display:"flex",flexDirection:"column",justifyContent:"space-between",padding:"48px 56px",width:"100%"}}>
+          {/* Logo */}
+          <div style={{display:"flex",alignItems:"center",gap:12}}>
+            <svg width="32" height="32" viewBox="0 0 32 32" aria-hidden="true">
+              <rect width="32" height="32" rx="4" fill={brass}/>
+              <path d="M7 10l4 12 5-9 5 9 4-12" fill="none" stroke={ink} strokeWidth="2.6" strokeLinecap="round" strokeLinejoin="round"/>
+            </svg>
+            <div>
+              <div style={{fontFamily:serif,fontSize:"1.22rem",fontWeight:600,letterSpacing:"0.01em"}}>WinGroX</div>
+              <div style={{fontSize:"0.6rem",letterSpacing:"0.19em",textTransform:"uppercase",color:"rgba(255,255,255,0.5)",marginTop:1}}>Individual Growth Intelligence</div>
+            </div>
           </div>
-        </section>
 
-        {/* ── Right: Auth forms ── */}
-        <section className="flex flex-col gap-5">
-          {error ? (
-            <div className="rounded-xl border border-rose-400/30 bg-rose-950/40 px-4 py-3 text-sm text-rose-300">
+          {/* Hero copy */}
+          <div style={{maxWidth:"34ch"}}>
+            <p style={{fontFamily:serif,fontSize:"clamp(1.9rem,3.4vw,2.7rem)",lineHeight:1.16,fontWeight:600,letterSpacing:"-0.015em",margin:0,color:"#fff"}}>
+              From self&#8209;awareness<br/>to self&#8209;authorship.
+            </p>
+            <span style={{display:"block",width:52,height:2,background:brass,margin:"22px 0"}}/>
+            <p style={{fontSize:"0.92rem",lineHeight:1.65,color:"rgba(255,255,255,0.66)",margin:0}}>
+              Seven steps, twelve weeks, and one working view of a career that keeps changing as the evidence arrives. Everything recorded here belongs to the person it describes.
+            </p>
+          </div>
+
+          {/* Footer */}
+          <footer style={{display:"flex",gap:26,fontSize:"0.63rem",letterSpacing:"0.17em",textTransform:"uppercase",color:"rgba(255,255,255,0.36)",borderTop:"1px solid rgba(255,255,255,0.10)",paddingTop:16}}>
+            <span>Confidential</span><span>Secure Workspace</span><span>{new Date().getFullYear()}</span>
+          </footer>
+        </div>
+      </aside>
+
+      {/* ── Right: form panel ── */}
+      <main style={{display:"grid",placeItems:"center",padding:"40px 56px",background:"#FFFFFF"}}>
+        <div style={{width:"100%",maxWidth:378}}>
+          <div style={{fontSize:"0.68rem",letterSpacing:"0.15em",textTransform:"uppercase",color:brass,fontWeight:700,marginBottom:10}}>Programme access</div>
+          <h1 style={{fontFamily:serif,fontSize:"2.05rem",fontWeight:600,margin:"0 0 6px",color:ink}}>Sign in</h1>
+          <p style={{color:slate,fontSize:"0.9rem",margin:"0 0 26px"}}>Your email and password decide which screen opens.</p>
+
+          {error && (
+            <div style={{display:"flex",gap:9,alignItems:"flex-start",background:"#FAF0F0",borderLeft:`2px solid #C0392B`,borderRadius:"0 4px 4px 0",padding:"10px 13px",fontSize:"0.87rem",color:"#7C2C2B",marginBottom:18}}>
               {error}
             </div>
-          ) : null}
+          )}
 
-          <form action={signInAction} className="rounded-2xl border border-white/10 bg-white/[0.05] p-7 backdrop-blur">
-            <h2 className="text-lg font-semibold text-white">Sign in</h2>
-            <p className="mt-1 text-sm text-slate-400">Welcome back. Enter your credentials to continue.</p>
-            <div className="mt-5 grid gap-4">
-              <label className="grid gap-1.5 text-sm font-medium text-slate-300">
-                Email
-                <input name="email" type="email" required placeholder="you@example.com"
-                  className="rounded-lg border border-white/10 bg-white/5 px-3 py-2.5 text-sm text-white placeholder:text-slate-600 focus:border-amber-400/50 focus:outline-none focus:ring-1 focus:ring-amber-400/30" />
-              </label>
-              <label className="grid gap-1.5 text-sm font-medium text-slate-300">
-                Password
-                <input name="password" type="password" required minLength={8} placeholder="••••••••"
-                  className="rounded-lg border border-white/10 bg-white/5 px-3 py-2.5 text-sm text-white placeholder:text-slate-600 focus:border-amber-400/50 focus:outline-none focus:ring-1 focus:ring-amber-400/30" />
-              </label>
+          <form action={signInAction}>
+            <div style={{marginBottom:15}}>
+              <label style={{display:"block",fontSize:"0.68rem",letterSpacing:"0.15em",textTransform:"uppercase",color:slate,marginBottom:7,fontWeight:700}}>Email</label>
+              <input name="email" type="email" required placeholder="e.g. dipti@example.com" autoComplete="email"
+                style={{width:"100%",fontSize:"0.98rem",padding:"11px 2px",border:0,borderBottom:`1px solid #D1D9E0`,borderRadius:0,background:"transparent",outline:"none",color:ink}}
+              />
+            </div>
+            <div style={{marginBottom:15}}>
+              <label style={{display:"block",fontSize:"0.68rem",letterSpacing:"0.15em",textTransform:"uppercase",color:slate,marginBottom:7,fontWeight:700}}>Password</label>
+              <input name="password" type="password" required minLength={8} placeholder="Enter your password" autoComplete="current-password"
+                style={{width:"100%",fontSize:"0.98rem",padding:"11px 2px",border:0,borderBottom:`1px solid #D1D9E0`,borderRadius:0,background:"transparent",outline:"none",color:ink}}
+              />
             </div>
             <button type="submit"
-              className="mt-5 w-full rounded-lg bg-amber-400 px-4 py-2.5 text-sm font-semibold text-slate-950 hover:bg-amber-300 transition-colors">
-              Sign in
+              style={{width:"100%",marginTop:12,fontWeight:600,fontSize:"0.94rem",cursor:"pointer",background:ink,color:"#fff",border:`1px solid ${ink}`,borderRadius:4,padding:"13px 18px",display:"flex",alignItems:"center",justifyContent:"center",gap:9}}>
+              Sign in →
             </button>
           </form>
 
-          <form action={signUpAction} className="rounded-2xl border border-white/10 bg-white/[0.05] p-7 backdrop-blur">
-            <h2 className="text-lg font-semibold text-white">Create account</h2>
-            <p className="mt-1 text-sm text-slate-400">New here? Set up your account and role to begin.</p>
-            <div className="mt-5 grid gap-4">
-              <label className="grid gap-1.5 text-sm font-medium text-slate-300">
-                Full name
+          <details style={{marginTop:26,borderTop:"1px solid #E4EAF0",paddingTop:16}}>
+            <summary style={{cursor:"pointer",listStyle:"none",display:"flex",alignItems:"center",justifyContent:"space-between",fontSize:"0.72rem",letterSpacing:"0.14em",textTransform:"uppercase",color:slate,fontWeight:700}}>
+              <span>Create account</span>
+            </summary>
+            <form action={signUpAction} style={{marginTop:16}}>
+              <div style={{marginBottom:12}}>
+                <label style={{display:"block",fontSize:"0.68rem",letterSpacing:"0.15em",textTransform:"uppercase",color:slate,marginBottom:6,fontWeight:700}}>Full name</label>
                 <input name="fullName" type="text" required minLength={2} placeholder="Your full name"
-                  className="rounded-lg border border-white/10 bg-white/5 px-3 py-2.5 text-sm text-white placeholder:text-slate-600 focus:border-amber-400/50 focus:outline-none focus:ring-1 focus:ring-amber-400/30" />
-              </label>
-              <label className="grid gap-1.5 text-sm font-medium text-slate-300">
-                Email
+                  style={{width:"100%",fontSize:"0.95rem",padding:"9px 2px",border:0,borderBottom:`1px solid #D1D9E0`,borderRadius:0,background:"transparent",outline:"none",color:ink}}/>
+              </div>
+              <div style={{marginBottom:12}}>
+                <label style={{display:"block",fontSize:"0.68rem",letterSpacing:"0.15em",textTransform:"uppercase",color:slate,marginBottom:6,fontWeight:700}}>Email</label>
                 <input name="email" type="email" required placeholder="you@example.com"
-                  className="rounded-lg border border-white/10 bg-white/5 px-3 py-2.5 text-sm text-white placeholder:text-slate-600 focus:border-amber-400/50 focus:outline-none focus:ring-1 focus:ring-amber-400/30" />
-              </label>
-              <label className="grid gap-1.5 text-sm font-medium text-slate-300">
-                Password
+                  style={{width:"100%",fontSize:"0.95rem",padding:"9px 2px",border:0,borderBottom:`1px solid #D1D9E0`,borderRadius:0,background:"transparent",outline:"none",color:ink}}/>
+              </div>
+              <div style={{marginBottom:12}}>
+                <label style={{display:"block",fontSize:"0.68rem",letterSpacing:"0.15em",textTransform:"uppercase",color:slate,marginBottom:6,fontWeight:700}}>Password</label>
                 <input name="password" type="password" required minLength={8} placeholder="Min 8 characters"
-                  className="rounded-lg border border-white/10 bg-white/5 px-3 py-2.5 text-sm text-white placeholder:text-slate-600 focus:border-amber-400/50 focus:outline-none focus:ring-1 focus:ring-amber-400/30" />
-              </label>
-              <label className="grid gap-1.5 text-sm font-medium text-slate-300">
-                Role
-                <select name="role" required
-                  className="rounded-lg border border-white/10 bg-white/5 px-3 py-2.5 text-sm text-white focus:border-amber-400/50 focus:outline-none focus:ring-1 focus:ring-amber-400/30">
-                  {USER_ROLES.map((role) => (
-                    <option key={role} value={role} className="bg-slate-900">{role}</option>
-                  ))}
+                  style={{width:"100%",fontSize:"0.95rem",padding:"9px 2px",border:0,borderBottom:`1px solid #D1D9E0`,borderRadius:0,background:"transparent",outline:"none",color:ink}}/>
+              </div>
+              <div style={{marginBottom:12}}>
+                <label style={{display:"block",fontSize:"0.68rem",letterSpacing:"0.15em",textTransform:"uppercase",color:slate,marginBottom:6,fontWeight:700}}>Role</label>
+                <select name="role" required style={{width:"100%",fontSize:"0.95rem",padding:"9px 2px",border:0,borderBottom:`1px solid #D1D9E0`,borderRadius:0,background:"transparent",outline:"none",color:ink}}>
+                  {USER_ROLES.map((role) => <option key={role} value={role}>{role}</option>)}
                 </select>
-              </label>
-            </div>
-            <button type="submit"
-              className="mt-5 w-full rounded-lg border border-amber-400/40 bg-transparent px-4 py-2.5 text-sm font-semibold text-amber-300 hover:bg-amber-400/10 transition-colors">
-              Create account
-            </button>
-          </form>
-        </section>
+              </div>
+              <button type="submit" style={{width:"100%",marginTop:8,fontWeight:600,fontSize:"0.92rem",cursor:"pointer",background:"transparent",color:ink,border:`1px solid ${ink}`,borderRadius:4,padding:"11px 18px"}}>
+                Create account
+              </button>
+            </form>
+          </details>
 
-      </div>
+          <p style={{marginTop:22,fontSize:"0.76rem",lineHeight:1.6,color:slate,borderLeft:`2px solid #E4EAF0`,paddingLeft:12}}>
+            <strong style={{color:ink}}>Important.</strong> Use assigned credentials only and share account details through approved secure channels.
+          </p>
+        </div>
+      </main>
+
     </main>
   );
 }
+
+
