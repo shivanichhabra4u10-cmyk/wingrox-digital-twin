@@ -1,8 +1,8 @@
 [
   {
     "id": 1,
-    "dimension": "Identity clarity",
-    "q": "Which statement best describes how clearly you can explain your professional identity today?",
+    "dimension": "Identity Clarity",
+    "q": "Which statement best describes how ada clearly you can explain your professional identity today?",
     "o": [
       "I have a sharp, confident answer that I give consistently",
       "I know what I do but struggle to explain why it matters",
