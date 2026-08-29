@@ -5767,8 +5767,6 @@ async function autoLoadQuestionBank(){
   if(!email) return;
   var url = QB_EMAIL_MAP[email];
   if(!url) return;
-  /* Skip if a custom bank is already loaded for this participant */
-  if(S.diagnostic && S.diagnostic.questionBank && S.diagnostic.questionBank.length) return;
   try{
     var res = await fetch(url, {cache:"no-store"});
     if(!res.ok) return;
