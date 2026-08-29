@@ -364,6 +364,12 @@ h2{letter-spacing:-.01em}
 .qrank{flex:0 0 28px;height:28px;border-radius:50%;background:var(--blue);color:#fff;display:grid;place-items:center;font-size:.82rem;font-weight:700}
 .qtx{flex:1 1 auto;font-size:.95rem}
 .qtick{flex:0 0 auto;opacity:.9}
+/* Score badge on each option */
+.qsc{flex:0 0 auto;font-size:.75rem;font-weight:700;color:var(--muted);background:var(--paper2);
+  border:1px solid var(--line2);border-radius:4px;padding:2px 6px;min-width:22px;text-align:center}
+.qopt.on .qsc{background:var(--blue);color:#fff;border-color:var(--blue)}
+/* Score bar below selected choices */
+.qscorebar{display:flex;gap:10px;flex-wrap:wrap;margin:10px 0 2px;padding:8px 10px;background:#F8F9FB;border-radius:8px;border:1px solid var(--line2)}
 .qsel{margin-top:12px;font-size:.85rem;display:flex;gap:6px;flex-wrap:wrap;align-items:center}
 .qextra{margin-top:14px;border:1px solid var(--line2);border-radius:11px;padding:10px 13px;background:#FBFCFE}
 .qextra > summary{cursor:pointer;font-weight:600;font-size:.88rem;color:var(--muted)}
@@ -1055,6 +1061,41 @@ var VISIBILITY = ["Private to me","Architect only","Architect and coach","Summar
 /* ---- Step 4: the 50-question Growth Diagnostic bank ---- */
 /* Resolve active question bank: participant-uploaded JSON takes priority over default QB */
 function activeQB(){ return (S.diagnostic && S.diagnostic.questionBank && S.diagnostic.questionBank.length) ? S.diagnostic.questionBank : QB; }
+
+/* ---- Scoring helpers ---- */
+/* Returns the scores array for a question; defaults to [10,9,8,7,6,5,4,3,2,1] if not defined */
+function qScores(q){ return (q.scores && q.scores.length) ? q.scores : [10,9,8,7,6,5,4,3,2,1]; }
+/* Score for one answered question: average of scores of selected choices (0 if unanswered) */
+function scoreForQ(qid){
+  var bank = activeQB(), q = null;
+  for(var i=0;i<bank.length;i++){ if(bank[i].id===qid){ q=bank[i]; break; } }
+  if(!q) return 0;
+  var a = S.diagnostic.answers[qid];
+  if(!a || !a.choices || !a.choices.length) return 0;
+  var sc = qScores(q), sum = 0;
+  a.choices.forEach(function(n){ sum += (sc[n-1]||0); });
+  return Math.round((sum / a.choices.length) * 10) / 10;
+}
+/* Section score: average of answered questions in section (0–10) */
+function sectionScore(sec){
+  var total = 0, count = 0;
+  for(var i=sec.from; i<=sec.to; i++){
+    var a = S.diagnostic.answers[i];
+    if(a && a.choices && a.choices.length){ total += scoreForQ(i); count++; }
+  }
+  return count ? Math.round((total/count)*10)/10 : null;
+}
+/* Overall score: average of all scored sections */
+function totalDiagScore(){
+  var total = 0, count = 0;
+  activeQB().forEach(function(q){
+    var a = S.diagnostic.answers[q.id];
+    if(a && a.choices && a.choices.length){ total += scoreForQ(q.id); count++; }
+  });
+  return count ? Math.round((total/count)*10)/10 : null;
+}
+/* Score colour band */
+function scoreBand(s){ return s===null?"":s>=8?"green":s>=6?"b":s>=4?"a":"r"; }
 function activeSection(id){ var bank=activeQB(), total=bank.length, slen=Math.ceil(total/10);
   for(var i=0;i<SECTIONS.length;i++){ if(id>=SECTIONS[i].from && id<=SECTIONS[i].to) return SECTIONS[i]; }
   return SECTIONS[SECTIONS.length-1]; }
@@ -3910,20 +3951,27 @@ function nudgeCard(){
     '<span class="np">'+done+'/'+activeQB().length+'</span></div>';
 }
 function questionView(){
-  var id = Math.min(50, Math.max(1, S.ui.qIndex||1));
+  var id = Math.min(activeQB().length, Math.max(1, S.ui.qIndex||1));
   var q = activeQB()[id-1], a = ansOf(id), sec = activeSection(id);
   var secDone = 0, secTotal = sec.to - sec.from + 1;
   for(var i=sec.from;i<=sec.to;i++){ if(qComplete(i)) secDone++; }
   var done = answeredCount();
   var ready = a.choices.length>0 && nonEmpty(a.conf);
+  var qScore = scoreForQ(id);
+  var secSc = sectionScore(sec);
+  var totalSc = totalDiagScore();
 
+  /* Show score badge next to options when choices are made */
   var opts = q.o.map(function(o,ix){
     var n = ix+1, r = a.choices.indexOf(n), last = (n===10);
+    var sc = qScores(q);
     var label = last ? (nonEmpty(a.other) ? a.other : "Something else \u2014 write it in your own words") : o;
     return '<button class="qopt'+(r>=0?" on":"")+(last?" qother":"")+'" data-act="choose" data-q="'+id+'" data-o="'+n+'" aria-pressed="'+(r>=0)+'">'+
       (r>=0 ? '<span class="qrank">'+(r+1)+'</span>' : '<span class="qbox">'+String.fromCharCode(64+n)+'</span>')+
       '<span class="qtx'+(last && !nonEmpty(a.other) ? " qplace" : "")+'">'+esc(label)+'</span>'+
-      (r>=0 ? '<span class="qtick">'+icon("check","#10736B")+'</span>' : '')+'</button>';
+      (r>=0 ? '<span class="qtick">'+icon("check","#10736B")+'</span>' : '')+
+      '<span class="qsc" title="Option score">'+sc[ix]+'</span>'+
+    '</button>';
   }).join("");
   var otherBox = (a.choices.indexOf(10)>=0 || nonEmpty(a.other))
     ? '<input class="qotherin" type="text" value="'+esc(a.other)+'" data-qother="'+id+'" '+
@@ -3935,13 +3983,19 @@ function questionView(){
       'aria-label="Question '+k+(qComplete(k)?", answered":", not answered")+'" aria-current="'+(k===id)+'"></button>';
   }
 
+  var scorePanel = '<div class="qscorebar">'+
+    '<span><span class="tag '+(qScore?scoreBand(qScore):"")+'">Q score: '+(qScore||'—')+'</span></span>'+
+    '<span><span class="tag '+(secSc!==null?scoreBand(secSc):"")+'">Section '+sec.k+': '+(secSc!==null?secSc:'—')+'</span></span>'+
+    '<span><span class="tag '+(totalSc!==null?scoreBand(totalSc):"")+'">Overall: '+(totalSc!==null?totalSc:'—')+' / 10</span></span>'+
+  '</div>';
+
   return '<div class="qwrap">'+
     nudgeCard()+
     '<div class="qtop">'+
-      '<div class="qprog"><i style="width:'+pct(done,50)+'%"></i></div>'+
-      '<div class="qmeta"><span><strong>Question '+id+'</strong> of 50</span>'+
+      '<div class="qprog"><i style="width:'+pct(done,activeQB().length)+'%"></i></div>'+
+      '<div class="qmeta"><span><strong>Question '+id+'</strong> of '+activeQB().length+'</span>'+
         '<span class="qsec">Section '+sec.k+' &middot; '+esc(sec.t)+' &middot; '+secDone+' of '+secTotal+'</span>'+
-        '<span>'+pct(done,50)+'% complete</span></div>'+
+        '<span>'+pct(done,activeQB().length)+'% complete</span></div>'+
       '<div class="qdots">'+dots+'</div>'+
     '</div>'+
 
@@ -3954,7 +4008,7 @@ function questionView(){
             var lb = (c===10) ? (nonEmpty(a.other) ? a.other : "Something else") : q.o[c-1];
             return '<span class="tag b">'+(ix+1)+'. '+esc(lb)+'</span>'; }).join(" ")
         : '<span class="muted">Nothing selected yet.</span>')+'</div>'+
-
+      scorePanel+
       '<div class="sep"></div>'+
       '<label style="margin-bottom:6px">How sure are you about this answer?</label>'+
       '<div class="chips">'+CONFIDENCE.map(function(c){
@@ -3997,21 +4051,38 @@ function questionView(){
 }
 function reviewView(){
   var done = answeredCount(), missing = activeQB().filter(function(q){ return !qComplete(q.id); });
+  var totalSc = totalDiagScore();
   return '<div class="card"><h2>Review before you submit</h2>'+
    '<div class="sbar"><span class="lab">Completed</span>'+bar(pct(done,activeQB().length), done===activeQB().length)+'<span>'+done+'/'+activeQB().length+'</span></div>'+
+   (totalSc!==null ? '<div style="margin:10px 0 0;display:flex;align-items:center;gap:12px">'+
+     '<span style="font-size:.88rem;color:var(--slate)">Overall diagnostic score:</span>'+
+     '<span class="tag '+scoreBand(totalSc)+'" style="font-size:.92rem;padding:4px 12px">'+totalSc+' / 10</span>'+
+   '</div>' : '')+
    (missing.length ? '<p class="notice">'+missing.length+' question'+(missing.length===1?" is":"s are")+' still incomplete. A question is complete when it has at least one choice and a confidence marker.</p>'+
      '<div class="chips">'+missing.map(function(q){return '<button class="chip" data-act="qgo" data-n="'+q.id+'">Q'+q.id+'</button>';}).join("")+'</div>'
      : '<p class="notice green">All '+activeQB().length+' questions are complete. You can submit.</p>')+
-   '<div class="sep"></div>'+SECTIONS.map(function(s){
+   '<div class="sep"></div>'+
+   '<h4>Section scores</h4>'+
+   '<div class="grid g2" style="margin-bottom:18px">'+SECTIONS.map(function(s){
+     var sc = sectionScore(s);
+     return '<div class="sbar" style="border:1px solid var(--rule2);border-radius:4px;padding:8px 12px;background:var(--paper2)">'+
+       '<span class="lab" style="font-size:.82rem"><strong>'+s.k+'</strong> '+esc(s.t)+'</span>'+
+       (sc!==null ? bar(sc*10)+'<span class="tag '+scoreBand(sc)+'">'+sc+'</span>' : '<span class="muted" style="font-size:.8rem">Not started</span>')+
+     '</div>';
+   }).join("")+'</div>'+
+   SECTIONS.map(function(s){
      var rows = activeQB().filter(function(q){ return q.id>=s.from && q.id<=s.to; }).map(function(q){
        var a = ansOf(q.id);
        var picks = a.choices.map(function(n,ix){ return (ix+1)+". "+q.o[n-1]; }).join("<br>");
+       var sc = scoreForQ(q.id);
        return '<tr><td><button class="btn sec sm" data-act="qgo" data-n="'+q.id+'">Q'+q.id+'</button></td>'+
         '<td>'+esc(q.q)+'</td><td>'+(picks||'<span class="muted">No answer yet</span>')+'</td>'+
         '<td>'+(a.conf?'<span class="tag b">'+esc(a.conf)+'</span>':'<span class="tag a">Missing</span>')+
-        (a.priv?' <span class="tag t">Private</span>':'')+'</td></tr>';
+        (a.priv?' <span class="tag t">Private</span>':'')+'</td>'+
+        '<td><span class="tag '+(sc?scoreBand(sc):'')+'">'+(sc||'—')+'</span></td>'+
+        '</tr>';
      }).join("");
-     return '<h4>Section '+s.k+' — '+esc(s.t)+'</h4><div class="tscroll"><table><thead><tr><th></th><th>Question</th><th>Ranked answers</th><th>Marker</th></tr></thead><tbody>'+rows+'</tbody></table></div>';
+     return '<h4>Section '+s.k+' — '+esc(s.t)+(sectionScore(s)!==null?' <span class="tag '+scoreBand(sectionScore(s))+'">'+sectionScore(s)+' / 10</span>':'')+'</h4><div class="tscroll"><table><thead><tr><th></th><th>Question</th><th>Ranked answers</th><th>Marker</th><th>Score</th></tr></thead><tbody>'+rows+'</tbody></table></div>';
    }).join("")+
    '<div class="btnrow"><button class="btn green" data-act="submitQ"'+(done===activeQB().length&&!S.diagnostic.submitted?"":" disabled")+'>Submit questionnaire</button>'+
    (S.diagnostic.submitted?'<span class="tag g">Submitted</span>':'')+'</div>'+
