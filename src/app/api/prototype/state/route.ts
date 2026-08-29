@@ -94,7 +94,6 @@ type DiagnosticQuestionRow = {
 };
 
 type DiagnosticResponseSnapshotRow = {
-  questionnaire_id: string;
   participant_id: string;
   answers: Record<string, unknown> | null;
 };
@@ -814,7 +813,6 @@ async function syncDiagnosticResponses(
     .from("diagnostic_response_snapshots")
     .upsert(
       {
-        questionnaire_id: questionnaireId,
         participant_id: participantId,
         answers: normalized.answersPayload,
         answered_count: normalized.answeredCount,
@@ -823,7 +821,7 @@ async function syncDiagnosticResponses(
         updated_by: userId,
       },
       {
-        onConflict: "questionnaire_id",
+        onConflict: "participant_id",
       }
     );
 
@@ -951,7 +949,7 @@ export async function GET() {
           .select("questionnaire_id, question_id, display_order, dimension, question_text, options, scores"),
         supabase
           .from("diagnostic_response_snapshots")
-          .select("questionnaire_id, participant_id, answers")
+          .select("participant_id, answers")
           .in("participant_id", participantIds),
       ]);
 

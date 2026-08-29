@@ -243,7 +243,6 @@ create table if not exists public.diagnostic_questions (
 
 create table if not exists public.diagnostic_response_snapshots (
   id uuid primary key default gen_random_uuid(),
-  questionnaire_id uuid not null references public.diagnostic_questionnaires(id) on delete cascade,
   participant_id uuid not null references public.participants(id) on delete cascade,
   answers jsonb not null default '{}'::jsonb,
   answered_count integer not null default 0,
@@ -252,7 +251,6 @@ create table if not exists public.diagnostic_response_snapshots (
   updated_by uuid references auth.users(id) on delete set null,
   created_at timestamptz not null default now(),
   updated_at timestamptz not null default now(),
-  constraint diagnostic_response_snapshots_questionnaire_uk unique (questionnaire_id),
   constraint diagnostic_response_snapshots_participant_uk unique (participant_id),
   constraint diagnostic_response_snapshots_answers_object_chk check (jsonb_typeof(answers) = 'object'),
   constraint diagnostic_response_snapshots_answered_count_chk check (answered_count >= 0)
