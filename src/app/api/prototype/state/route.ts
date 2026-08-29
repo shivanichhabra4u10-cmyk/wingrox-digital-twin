@@ -93,15 +93,10 @@ type DiagnosticQuestionRow = {
   scores: unknown;
 };
 
-type DiagnosticResponseRow = {
+type DiagnosticResponseSnapshotRow = {
   questionnaire_id: string;
   participant_id: string;
-  question_id: number;
-  ranked_choices: unknown;
-  confidence: string | null;
-  comment: string | null;
-  other_text: string | null;
-  is_private: boolean;
+  answers: Record<string, unknown> | null;
 };
 
 const PROFILE_SELECT = "id, full_name, email, role";
@@ -370,26 +365,17 @@ type DiagnosticQuestionRecord = {
   raw: Record<string, unknown>;
 };
 
-type DiagnosticResponseRecord = {
-  questionId: number;
-  rankedChoices: number[];
-  confidence: string | null;
-  comment: string | null;
-  otherText: string | null;
-  isPrivate: boolean;
-  answerPayload: Record<string, unknown>;
-  answeredAt: string | null;
-};
-
 type NormalizedDiagnostic = {
   bankName: string | null;
   totalQuestions: number;
   isSubmitted: boolean;
   isReleased: boolean;
   reportOpened: boolean;
+  answeredAt: string | null;
+  answeredCount: number;
   rawDiagnostic: Record<string, unknown>;
   questions: DiagnosticQuestionRecord[];
-  responses: DiagnosticResponseRecord[];
+  answersPayload: Record<string, Record<string, unknown>>;
 };
 
 function normalizeDiagnosticState(
@@ -435,7 +421,9 @@ function normalizeDiagnosticState(
     questions.push(question);
   });
 
-  const responseRows: DiagnosticResponseRecord[] = [];
+  const answersPayload: Record<string, Record<string, unknown>> = {};
+  let maxAnsweredQuestionId = 0;
+  let answeredCount = 0;
   Object.entries(answers).forEach(([answerKey, answerValue]) => {
     const questionId = asPositiveInt(answerKey);
     const answer = safeObject(answerValue);
@@ -449,26 +437,24 @@ function normalizeDiagnosticState(
     const otherText = asTrimmed(answer.other);
     const isPrivate = asBoolean(answer.priv);
 
-    responseRows.push({
-      questionId,
-      rankedChoices,
-      confidence,
-      comment,
-      otherText,
-      isPrivate,
-      answerPayload: answer,
-      answeredAt:
-        rankedChoices.length > 0 || confidence || comment || otherText || isPrivate
-          ? timestampIso
-          : null,
-    });
+    if (questionId > maxAnsweredQuestionId) {
+      maxAnsweredQuestionId = questionId;
+    }
+
+    if (rankedChoices.length > 0 || confidence || comment || otherText || isPrivate) {
+      answeredCount += 1;
+    }
+
+    answersPayload[String(questionId)] = {
+      choices: rankedChoices,
+      conf: confidence ?? "",
+      comment: comment ?? "",
+      other: otherText ?? "",
+      priv: isPrivate,
+    };
   });
 
-  const inferredTotal = Math.max(
-    questions.length,
-    ...responseRows.map((response) => response.questionId),
-    0
-  );
+  const inferredTotal = Math.max(questions.length, maxAnsweredQuestionId, 0);
 
   return {
     bankName: asTrimmed(diagnostic.questionBankName),
@@ -476,9 +462,11 @@ function normalizeDiagnosticState(
     isSubmitted: asBoolean(diagnostic.submitted),
     isReleased: asBoolean(diagnostic.released),
     reportOpened: asBoolean(diagnostic.reportOpened),
+    answeredAt: answeredCount > 0 ? timestampIso : null,
+    answeredCount,
     rawDiagnostic: diagnostic,
     questions,
-    responses: responseRows,
+    answersPayload,
   };
 }
 
@@ -640,7 +628,7 @@ function restorePrototypeState(
 function buildDiagnosticSnapshot(
   questionnaire: DiagnosticQuestionnaireRow | undefined,
   questions: DiagnosticQuestionRow[],
-  responses: DiagnosticResponseRow[]
+  responseSnapshot?: DiagnosticResponseSnapshotRow
 ) {
   if (!questionnaire) {
     return {
@@ -664,16 +652,7 @@ function buildDiagnosticSnapshot(
       scores: asNumberArray(row.scores),
     }));
 
-  const answers: Record<string, unknown> = {};
-  responses.forEach((row) => {
-    answers[String(row.question_id)] = {
-      choices: asNumberArray(row.ranked_choices),
-      conf: row.confidence ?? "",
-      comment: row.comment ?? "",
-      other: row.other_text ?? "",
-      priv: Boolean(row.is_private),
-    };
-  });
+  const answers = safeObject(responseSnapshot?.answers) ?? {};
 
   return {
     submitted: Boolean(questionnaire.is_submitted),
@@ -831,51 +810,30 @@ async function syncDiagnosticResponses(
     }
   }
 
-  if (normalized.responses.length === 0) {
-    await supabase
-      .from("diagnostic_question_responses")
-      .delete()
-      .eq("questionnaire_id", questionnaireId);
-    return;
-  }
-
-  const responseIds = normalized.responses.map((response) => response.questionId);
-  const responseFilter = `(${responseIds.join(",")})`;
-
-  const { error: deleteResponseError } = await supabase
-    .from("diagnostic_question_responses")
-    .delete()
-    .eq("questionnaire_id", questionnaireId)
-    .not("question_id", "in", responseFilter);
-
-  if (deleteResponseError) {
-    throw new Error(deleteResponseError.message);
-  }
-
-  const { error: upsertResponseError } = await supabase
-    .from("diagnostic_question_responses")
+  const { error: upsertSnapshotError } = await supabase
+    .from("diagnostic_response_snapshots")
     .upsert(
-      normalized.responses.map((response) => ({
+      {
         questionnaire_id: questionnaireId,
         participant_id: participantId,
-        question_id: response.questionId,
-        ranked_choices: response.rankedChoices,
-        confidence: response.confidence,
-        comment: response.comment,
-        other_text: response.otherText,
-        is_private: response.isPrivate,
-        answer_payload: response.answerPayload,
-        answered_at: response.answeredAt,
+        answers: normalized.answersPayload,
+        answered_count: normalized.answeredCount,
+        answered_at: normalized.answeredAt,
         created_by: userId,
         updated_by: userId,
-      })),
+      },
       {
-        onConflict: "questionnaire_id,question_id",
+        onConflict: "questionnaire_id",
       }
     );
 
-  if (upsertResponseError) {
-    throw new Error(upsertResponseError.message);
+  // 42P01 = undefined_table. Keep prototype working if migration is not applied yet.
+  if (upsertSnapshotError?.code === "42P01") {
+    return;
+  }
+
+  if (upsertSnapshotError) {
+    throw new Error(upsertSnapshotError.message);
   }
 }
 
@@ -971,7 +929,7 @@ export async function GET() {
         { data: documentRows },
         { data: questionnaireRows },
         { data: questionRows },
-        { data: responseRows },
+        { data: responseSnapshotRows },
       ] = await Promise.all([
         supabase
           .from("consents")
@@ -992,8 +950,8 @@ export async function GET() {
           .from("diagnostic_questions")
           .select("questionnaire_id, question_id, display_order, dimension, question_text, options, scores"),
         supabase
-          .from("diagnostic_question_responses")
-          .select("questionnaire_id, participant_id, question_id, ranked_choices, confidence, comment, other_text, is_private")
+          .from("diagnostic_response_snapshots")
+          .select("questionnaire_id, participant_id, answers")
           .in("participant_id", participantIds),
       ]);
 
@@ -1034,11 +992,9 @@ export async function GET() {
       questionsByQuestionnaireId.set(row.questionnaire_id, list);
     });
 
-    const responsesByParticipantId = new Map<string, DiagnosticResponseRow[]>();
-    ((responseRows ?? []) as DiagnosticResponseRow[]).forEach((row) => {
-      const list = responsesByParticipantId.get(row.participant_id) ?? [];
-      list.push(row);
-      responsesByParticipantId.set(row.participant_id, list);
+    const responseSnapshotByParticipantId = new Map<string, DiagnosticResponseSnapshotRow>();
+    ((responseSnapshotRows ?? []) as DiagnosticResponseSnapshotRow[]).forEach((row) => {
+      responseSnapshotByParticipantId.set(row.participant_id, row);
     });
 
     participantIds.forEach((participantId) => {
@@ -1048,11 +1004,8 @@ export async function GET() {
       }
 
       const questions = questionsByQuestionnaireId.get(questionnaire.id) ?? [];
-      const responses = (responsesByParticipantId.get(participantId) ?? []).filter(
-        (row) => row.questionnaire_id === questionnaire.id
-      );
-
-      const diagnostic = buildDiagnosticSnapshot(questionnaire, questions, responses);
+      const responseSnapshot = responseSnapshotByParticipantId.get(participantId);
+      const diagnostic = buildDiagnosticSnapshot(questionnaire, questions, responseSnapshot);
       if (diagnostic) {
         diagnosticMap.set(participantId, diagnostic);
       }

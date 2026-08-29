@@ -241,38 +241,31 @@ create table if not exists public.diagnostic_questions (
   constraint diagnostic_questions_metadata_object_chk check (jsonb_typeof(metadata) = 'object')
 );
 
-create table if not exists public.diagnostic_question_responses (
+create table if not exists public.diagnostic_response_snapshots (
   id uuid primary key default gen_random_uuid(),
   questionnaire_id uuid not null references public.diagnostic_questionnaires(id) on delete cascade,
   participant_id uuid not null references public.participants(id) on delete cascade,
-  question_id integer not null,
-  ranked_choices smallint[] not null default '{}'::smallint[],
-  confidence text,
-  comment text,
-  other_text text,
-  is_private boolean not null default false,
-  answer_payload jsonb not null default '{}'::jsonb,
+  answers jsonb not null default '{}'::jsonb,
+  answered_count integer not null default 0,
   answered_at timestamptz,
   created_by uuid references auth.users(id) on delete set null,
   updated_by uuid references auth.users(id) on delete set null,
   created_at timestamptz not null default now(),
   updated_at timestamptz not null default now(),
-  constraint diagnostic_question_responses_questionnaire_question_uk unique (questionnaire_id, question_id),
-  constraint diagnostic_question_responses_question_id_chk check (question_id > 0),
-  constraint diagnostic_question_responses_ranked_choices_size_chk check (cardinality(ranked_choices) <= 10),
-  constraint diagnostic_question_responses_payload_object_chk check (jsonb_typeof(answer_payload) = 'object')
+  constraint diagnostic_response_snapshots_questionnaire_uk unique (questionnaire_id),
+  constraint diagnostic_response_snapshots_participant_uk unique (participant_id),
+  constraint diagnostic_response_snapshots_answers_object_chk check (jsonb_typeof(answers) = 'object'),
+  constraint diagnostic_response_snapshots_answered_count_chk check (answered_count >= 0)
 );
 
 create index if not exists diagnostic_questionnaires_participant_idx
   on public.diagnostic_questionnaires (participant_id, updated_at desc);
 create index if not exists diagnostic_questions_questionnaire_idx
   on public.diagnostic_questions (questionnaire_id, display_order);
-create index if not exists diagnostic_question_responses_participant_idx
-  on public.diagnostic_question_responses (participant_id, answered_at desc);
-create index if not exists diagnostic_question_responses_questionnaire_idx
-  on public.diagnostic_question_responses (questionnaire_id, question_id);
-create index if not exists diagnostic_question_responses_payload_gin_idx
-  on public.diagnostic_question_responses using gin (answer_payload);
+create index if not exists diagnostic_response_snapshots_participant_idx
+  on public.diagnostic_response_snapshots (participant_id, answered_at desc);
+create index if not exists diagnostic_response_snapshots_answers_gin_idx
+  on public.diagnostic_response_snapshots using gin (answers);
 
 create table if not exists public.audit_logs (
   id uuid primary key default gen_random_uuid(),
@@ -346,9 +339,9 @@ create trigger diagnostic_questions_set_updated_at
 before update on public.diagnostic_questions
 for each row execute function public.set_updated_at();
 
-drop trigger if exists diagnostic_question_responses_set_updated_at on public.diagnostic_question_responses;
-create trigger diagnostic_question_responses_set_updated_at
-before update on public.diagnostic_question_responses
+drop trigger if exists diagnostic_response_snapshots_set_updated_at on public.diagnostic_response_snapshots;
+create trigger diagnostic_response_snapshots_set_updated_at
+before update on public.diagnostic_response_snapshots
 for each row execute function public.set_updated_at();
 
 -- RLS
@@ -362,7 +355,7 @@ alter table public.stage_payloads enable row level security;
 alter table public.prototype_states enable row level security;
 alter table public.diagnostic_questionnaires enable row level security;
 alter table public.diagnostic_questions enable row level security;
-alter table public.diagnostic_question_responses enable row level security;
+alter table public.diagnostic_response_snapshots enable row level security;
 alter table public.audit_logs enable row level security;
 alter table public.notifications enable row level security;
 
@@ -892,12 +885,12 @@ with check (
   )
 );
 
-drop policy if exists "diagnostic_responses_select_assigned" on public.diagnostic_question_responses;
-create policy "diagnostic_responses_select_assigned" on public.diagnostic_question_responses
+drop policy if exists "diagnostic_responses_select_assigned" on public.diagnostic_response_snapshots;
+create policy "diagnostic_responses_select_assigned" on public.diagnostic_response_snapshots
 for select using (
   exists (
     select 1 from public.participants pa
-    where pa.id = diagnostic_question_responses.participant_id
+    where pa.id = diagnostic_response_snapshots.participant_id
       and (
         pa.owner_user_id = auth.uid()
         or exists (
@@ -912,12 +905,12 @@ for select using (
   )
 );
 
-drop policy if exists "diagnostic_responses_modify_owner_architect_admin" on public.diagnostic_question_responses;
-create policy "diagnostic_responses_modify_owner_architect_admin" on public.diagnostic_question_responses
+drop policy if exists "diagnostic_responses_modify_owner_architect_admin" on public.diagnostic_response_snapshots;
+create policy "diagnostic_responses_modify_owner_architect_admin" on public.diagnostic_response_snapshots
 for all using (
   exists (
     select 1 from public.participants pa
-    where pa.id = diagnostic_question_responses.participant_id
+    where pa.id = diagnostic_response_snapshots.participant_id
       and (
         pa.owner_user_id = auth.uid()
         or exists (
@@ -934,7 +927,7 @@ for all using (
 with check (
   exists (
     select 1 from public.participants pa
-    where pa.id = diagnostic_question_responses.participant_id
+    where pa.id = diagnostic_response_snapshots.participant_id
       and (
         pa.owner_user_id = auth.uid()
         or exists (
