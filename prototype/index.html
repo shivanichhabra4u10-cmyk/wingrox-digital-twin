@@ -244,59 +244,6 @@ h2{letter-spacing:-.01em}
 .scrim{display:none}
 
 /* ---- cards ---- */
-.card{border-radius:14px;box-shadow:var(--sh1);transition:box-shadow .16s ease}
-.card:hover{box-shadow:var(--sh2)}
-.card.flat:hover{box-shadow:var(--sh1)}
-.card.accent{border-left:4px solid var(--teal)}
-.card.tight{border-radius:12px}
-.hero{background:var(--navy);color:#fff;border:0;border-radius:16px;padding:18px 20px;box-shadow:var(--sh3)}
-.hero h2,.hero h1,.hero h3,.hero h4{color:#fff}
-.hero .muted{color:rgba(255,255,255,.74)}
-.hero .kpi{background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.14);border-radius:12px;padding:11px 13px}
-.hero .kpi .t{font-size:.72rem;text-transform:uppercase;letter-spacing:.09em;color:rgba(255,255,255,.7);font-weight:700}
-.hero .kpi .v{font-size:1.28rem;font-weight:700;margin-top:2px;line-height:1.2}
-.hero .bar{background:rgba(255,255,255,.18)}
-.hero .bar > i{background:var(--teal)}
-.stat{display:flex;gap:11px;align-items:center}
-.stat .ic{flex:0 0 38px;height:38px;border-radius:11px;background:#EAF6F6;display:grid;place-items:center}
-.stat .n{font-size:1.5rem;font-weight:700;color:var(--navy);line-height:1.1}
-.stat .l{font-size:.78rem;color:var(--muted)}
-.eyebrow{font-size:.71rem;font-weight:700;letter-spacing:.11em;text-transform:uppercase;color:var(--teal);margin-bottom:3px}
-.btn{border-radius:10px;box-shadow:var(--sh1)}
-.btn.sec{box-shadow:none}
-.tabs{gap:7px;padding:4px;background:#EEF1F6;border-radius:24px;display:inline-flex;max-width:100%;overflow-x:auto;scrollbar-width:none}
-.tabs::-webkit-scrollbar{display:none}
-.tab{border:0;background:transparent;white-space:nowrap}
-.tab[aria-selected="true"]{background:#fff;color:var(--navy);box-shadow:var(--sh1)}
-.bar{height:7px}
-.bar > i{background:var(--blue)}
-
-/* ---- week timeline ---- */
-.tl{background:#fff;border:1px solid var(--line);border-radius:14px;padding:16px 4px 8px;box-shadow:var(--sh1);margin-bottom:14px}
-.tl-scroll{overflow-x:auto;padding:0 14px 8px;scrollbar-width:thin}
-.tl-track{position:relative;display:flex;gap:0;min-width:900px;padding-top:26px}
-.tl-line{position:absolute;left:3.85%;right:3.85%;top:39px;height:4px;background:var(--line2);border-radius:4px}
-.tl-fill{position:absolute;left:3.85%;top:39px;height:4px;background:var(--teal);border-radius:4px;transition:width .3s ease}
-.tl-node{position:relative;flex:1 1 0;background:none;border:0;font:inherit;cursor:pointer;padding:0 2px;text-align:center;color:inherit}
-.tl-dot{width:30px;height:30px;border-radius:50%;background:#fff;border:3px solid var(--line);margin:0 auto;
-  display:grid;place-items:center;font-size:.78rem;font-weight:700;color:var(--muted);position:relative;z-index:2;
-  transition:transform .14s ease,border-color .14s ease}
-.tl-node:hover .tl-dot{transform:scale(1.14)}
-.tl-node.open .tl-dot{border-color:var(--blue);color:var(--blue)}
-.tl-node.closed .tl-dot{background:var(--green);border-color:var(--green);color:#fff}
-.tl-node.cur .tl-dot{border-color:var(--blue);background:var(--blue);color:#fff;box-shadow:0 0 0 5px rgba(36,107,206,.16)}
-.tl-node .tl-lb{font-size:.71rem;font-weight:700;color:var(--ink);margin-top:7px;line-height:1.25}
-.tl-node .tl-sb{font-size:.67rem;color:var(--muted);line-height:1.2;margin-top:1px}
-.tl-node.locked .tl-lb,.tl-node.locked .tl-sb{color:#9AA3B5}
-.tl-phase{position:absolute;top:0;font-size:.66rem;font-weight:700;letter-spacing:.06em;text-transform:uppercase;
-  color:var(--muted);background:#F3F6FA;border:1px solid var(--line2);border-radius:20px;padding:2px 9px;white-space:nowrap}
-.tl-legend{display:flex;gap:16px;flex-wrap:wrap;font-size:.76rem;color:var(--muted);padding:6px 16px 4px;border-top:1px solid var(--line2)}
-.tl-legend span i{display:inline-block;width:10px;height:10px;border-radius:50%;margin-right:5px;vertical-align:-1px}
-.wkgrid{display:grid;gap:10px;grid-template-columns:repeat(auto-fill,minmax(196px,1fr))}
-.wkcard{text-align:left;font:inherit;color:inherit;background:#fff;border:1px solid var(--line);border-radius:12px;
-  padding:11px;cursor:pointer;transition:transform .14s ease,box-shadow .14s ease,border-color .14s ease}
-.wkcard:hover{transform:translateY(-2px);box-shadow:var(--sh2);border-color:#C9DBF6}
-.wkcard.done{border-color:#BFE3D0;background:#F6FCF9}
 .wkcard.locked{background:#F7F8FA;color:var(--muted)}
 .wkcard .wn{font-size:.7rem;font-weight:700;letter-spacing:.09em;text-transform:uppercase;color:var(--muted)}
 .wkcard .wt{font-weight:650;color:var(--navy);margin:1px 0 4px;font-size:.93rem}
@@ -364,12 +311,6 @@ h2{letter-spacing:-.01em}
 .qrank{flex:0 0 28px;height:28px;border-radius:50%;background:var(--blue);color:#fff;display:grid;place-items:center;font-size:.82rem;font-weight:700}
 .qtx{flex:1 1 auto;font-size:.95rem}
 .qtick{flex:0 0 auto;opacity:.9}
-/* Score badge on each option */
-.qsc{flex:0 0 auto;font-size:.75rem;font-weight:700;color:var(--muted);background:var(--paper2);
-  border:1px solid var(--line2);border-radius:4px;padding:2px 6px;min-width:22px;text-align:center}
-.qopt.on .qsc{background:var(--blue);color:#fff;border-color:var(--blue)}
-/* Score bar below selected choices */
-.qscorebar{display:flex;gap:10px;flex-wrap:wrap;margin:10px 0 2px;padding:8px 10px;background:#F8F9FB;border-radius:8px;border:1px solid var(--line2)}
 .qsel{margin-top:12px;font-size:.85rem;display:flex;gap:6px;flex-wrap:wrap;align-items:center}
 .qextra{margin-top:14px;border:1px solid var(--line2);border-radius:11px;padding:10px 13px;background:#FBFCFE}
 .qextra > summary{cursor:pointer;font-weight:600;font-size:.88rem;color:var(--muted)}
@@ -953,20 +894,20 @@ input[type=range]::-moz-range-thumb{background:var(--brass);border-color:#fff}
 <script>
 "use strict";
 /* =========================================================================
-  WinGroX AI — Individual Growth Intelligence System
+   WinGroX AI — Individual Growth Intelligence System (prototype)
    Single file. No frameworks, no network calls, no build step.
    All data is stored in this browser only (LocalStorage).
    ========================================================================= */
 
-/* ----------------------------- static seed data -------------------------- */
+/* ---------------------------- static demo data --------------------------- */
 
-var VERSION = "1.0";
+var VERSION = "1.0 (prototype)";
 
 var STAGES = [
   {n:1, key:"profile",    name:"Profile",           desc:"Details, documents and consent"},
   {n:2, key:"persona",    name:"Persona Discovery", desc:"Immersion call and first report"},
   {n:3, key:"validate",   name:"Validate",          desc:"Confirm or correct each insight"},
-  {n:4, key:"diagnostic", name:"Growth Diagnostic", desc:"Questions and Navigator report"},
+  {n:4, key:"diagnostic", name:"Growth Diagnostic", desc:"50 questions and Navigator report"},
   {n:5, key:"mirror",     name:"Growth Mirror",     desc:"Working view of your journey"},
   {n:6, key:"coach",      name:"Match Coach",       desc:"Review, meet and select a coach"},
   {n:7, key:"journey",    name:"Growth Journey",    desc:"Weeks 0 to 12 with evidence"}
@@ -999,7 +940,7 @@ var DPDP_TEXT = [
   "You control which information can be seen by the Growth Sprint Architect, selected coach or programme sponsor.",
   "You may request access, correction, completion, updating or erasure of your personal information. Where processing is based on consent, you may withdraw consent. Withdrawal may limit or end parts of the service that require the information.",
   "We will retain information only for the stated purpose or where retention is required by law. Do not upload another person's information unless you have authority to share it.",
-  "For production use, replace this notice with a legally reviewed version containing the Data Fiduciary's identity, contact person, retention periods, processors, grievance process, security practices and applicable legal terms."
+  "For production use, replace this prototype notice with a legally reviewed notice containing the Data Fiduciary's identity, contact person, retention periods, processors, grievance process, security practices and applicable legal terms."
 ];
 
 /* ---- Persona Discovery report content ---- */
@@ -1059,12 +1000,6 @@ var PRIORITY = ["Critical","High","Low"];
 var VISIBILITY = ["Private to me","Architect only","Architect and coach","Summary to sponsor"];
 
 /* ---- Step 4: the 50-question Growth Diagnostic bank ---- */
-/* Resolve active question bank: participant-uploaded JSON takes priority over default QB */
-function activeQB(){ return (S.diagnostic && S.diagnostic.questionBank && S.diagnostic.questionBank.length) ? S.diagnostic.questionBank : QB; }
-
-function activeSection(id){ var bank=activeQB(), total=bank.length, slen=Math.ceil(total/10);
-  for(var i=0;i<SECTIONS.length;i++){ if(id>=SECTIONS[i].from && id<=SECTIONS[i].to) return SECTIONS[i]; }
-  return SECTIONS[SECTIONS.length-1]; }
 var SECTIONS = [
   {k:"A", t:"Present identity and life stage", from:1,  to:5},
   {k:"B", t:"Aspirations and future self",     from:6,  to:10},
@@ -1770,31 +1705,31 @@ var PRIORITY_OPTIONS = [
  "Build ten case stories and three testimonials"
 ];
 
-/* ---- Step 6 coaches (illustrative profiles) ---- */
+/* ---- Step 6 coaches (illustrative demo profiles, not real people) ---- */
 var COACHES = [
- {id:"C1", n:"Coach A — Executive Growth Activation Coach", exp:"14 years working with mid-career leaders on behaviour change and career experiments.",
+ {id:"C1", n:"Coach A — Executive Growth Activation Coach", exp:"Demo profile. 14 years working with mid-career leaders on behaviour change and career experiments.",
   focus:["Behaviour change","Authority","Boundaries","Career experiments","Executive communication"],
-  style:"Direct, evidence-led, practises real conversations in session", langs:"English, Hindi, Marathi", loc:"Mumbai",
+  style:"Direct, evidence-led, practises real conversations in session", langs:"English, Hindi, Marathi", loc:"Mumbai (demo)",
   mode:"Video and in person", avail:"Two slots per month", price:"Price placeholder — set by programme",
   fit:"Works from an existing Growth Mirror and focuses on interrupting the Trusted Enabler Loop",
   mismatch:"Less focused on pricing, offer design and market testing",
-  reviews:["Kept me accountable to two protected blocks every week.","Helped me hold a boundary conversation I had avoided for a year."],
+  reviews:["Demo review: kept me accountable to two protected blocks every week.","Demo review: helped me hold a boundary conversation I had avoided for a year."],
   scores:{"Mid-career experience":5,"Behaviour-change skill":5,"Boundary coaching":5,"Commercial understanding":3,"Hosting and communication":3,"Career experiments":5,"Privacy practice":5,"Accountability style":5,"Participant preference":5}},
- {id:"C2", n:"Coach B — Portfolio Career and Commercial Coach", exp:"11 years supporting professionals building advisory and portfolio income.",
+ {id:"C2", n:"Coach B — Portfolio Career and Commercial Coach", exp:"Demo profile. 11 years supporting professionals building advisory and portfolio income.",
   focus:["Portfolio careers","Offer design","Pricing","Market tests","Income planning"],
-  style:"Structured, commercial, works from numbers and pipeline", langs:"English, Gujarati", loc:"Bengaluru",
+  style:"Structured, commercial, works from numbers and pipeline", langs:"English, Gujarati", loc:"Bengaluru (demo)",
   mode:"Video", avail:"Weekly slots", price:"Price placeholder — set by programme",
   fit:"Strong on converting judgment into a paid offer and testing demand safely",
   mismatch:"Less focused on boundaries, energy and personal identity work",
-  reviews:["My first paid pilot was priced properly.","Made me test demand before I built anything."],
+  reviews:["Demo review: my first paid pilot was priced properly.","Demo review: made me test demand before I built anything."],
   scores:{"Mid-career experience":4,"Behaviour-change skill":3,"Boundary coaching":3,"Commercial understanding":5,"Hosting and communication":3,"Career experiments":5,"Privacy practice":4,"Accountability style":4,"Participant preference":4}},
- {id:"C3", n:"Coach C — Voice and Executive Presence Coach", exp:"9 years coaching hosts, moderators and senior speakers.",
+ {id:"C3", n:"Coach C — Voice and Executive Presence Coach", exp:"Demo profile. 9 years coaching hosts, moderators and senior speakers.",
   focus:["Hosting","Moderation","Interviews","Public communication","Value articulation"],
-  style:"Practice-based, uses recordings and live rehearsal", langs:"English, Hindi", loc:"Remote",
+  style:"Practice-based, uses recordings and live rehearsal", langs:"English, Hindi", loc:"Remote (demo)",
   mode:"Video", avail:"Fortnightly slots", price:"Price placeholder — set by programme",
   fit:"Useful for the hosted conversation experiment and value language",
   mismatch:"Less focused on career structure, boundaries and income planning",
-  reviews:["My interview questions improved after two sessions.","I stopped over-preparing and started hosting."],
+  reviews:["Demo review: my interview questions improved after two sessions.","Demo review: I stopped over-preparing and started hosting."],
   scores:{"Mid-career experience":4,"Behaviour-change skill":4,"Boundary coaching":3,"Commercial understanding":3,"Hosting and communication":5,"Career experiments":4,"Privacy practice":4,"Accountability style":3,"Participant preference":4}}
 ];
 var MATCH_FACTORS = ["Mid-career experience","Behaviour-change skill","Boundary coaching","Commercial understanding",
@@ -1886,7 +1821,7 @@ var WEEKS = [
 ];
 var FIT_AREAS = ["Energy","Family fit","Demand","Time","Income","Ownership"];
 
-/* ---- notification templates ---- */
+/* ---- demo notification templates ---- */
 var NOTES = {
  scheduled:"Your immersion call is scheduled.",
  personaReady:"Persona Discovery is ready.",
@@ -1951,13 +1886,13 @@ function defaultState(){
       about:"I understand people and situations and connect the right person, idea or opportunity to what is needed. My work has moved through fashion and textiles, retail, music and artist support, voice-over, social media, executive networks, leadership events and AI tools.",
       helpWith:"How can I convert the experience, trust and relationships I have built for others into a future that I also own?",
       language:"English", tz:"IST (UTC+5:30)",
-      career:"",
-      education:"",
-      achievements:"",
-      interests:"",
-      family:"",
-      goals:"",
-      commStyle:"",
+      career:"Garment and apparel merchandising; retail management; music and artist marketing; freelance voice-over; regional administration for an executive network; VP Strategy and Client Engagement.",
+      education:"Retail Management; Garment and Apparel Merchandising",
+      achievements:"Rebuilt a high-profile speaker engagement by restructuring travel dates, bundling a workshop and reworking the ask rather than only negotiating the fee.",
+      interests:"Relationships, leadership, learning, music, voice, textiles, travel, spirituality, culture and family",
+      family:"Family is part of how I define success. Time and security for family are protected.",
+      goals:"Build one self-owned platform around context, conversations and human impact.",
+      commStyle:"Direct and warm. Prefers preparation before important conversations.",
       access:""
     },
     docs:[
@@ -1977,7 +1912,7 @@ function defaultState(){
       items:{}, privacyConfirmed:false, notesSaved:false, participantConfirmed:false, architectClosed:false,
       summary:{agreed:"", disagreed:"", changed:"", private:"", q1:"", q2:"", q3:"", g1:"", g2:"", g3:"", c1:"", c2:"", c3:"", next:""}
     },
-    diagnostic:{answers:{}, submitted:false, released:false, reportOpened:false, dims:{}, questionBank:null, questionBankName:""},
+    diagnostic:{answers:{}, submitted:false, released:false, reportOpened:false, dims:{}},
     mirror:{
       reviewed:false, identityText:MIRROR.identity, identityConfirmed:false,
       priority:"", accepted:false, privacyConfirmed:false, acks:{a0:false,a1:false,a2:false},
@@ -2001,7 +1936,7 @@ function defaultState(){
   });
   MIRROR.strengths.forEach(function(){});
   seedMirrorInsights(s);
-  s.notifications = [{id:uid(), t:"Welcome to your Growth Mirror. Start with your profile.", read:false, date:todayISO()}];
+  s.notifications = [{id:uid(), t:"Welcome to your Growth Mirror prototype. Start with your profile.", read:false, date:todayISO()}];
   return s;
 }
 
@@ -2076,21 +2011,13 @@ function buildRemoteDB(data){
   return db;
 }
 async function loadRemoteState(){
-  var ctrl = new AbortController();
-  var tid = window.setTimeout(function(){ ctrl.abort(); }, 5000);
-  try{
-    var res = await fetch("/api/prototype/state", {cache:"no-store", credentials:"same-origin", signal:ctrl.signal});
-    window.clearTimeout(tid);
-    if(!res.ok) throw new Error("Unable to load workspace state.");
-    var data = await res.json();
-    DB = buildRemoteDB(data);
-    bindState();
-    remoteReady = true;
-    try{ if(storageOK) window.localStorage.setItem(KEY, JSON.stringify(DB)); }catch(e){}
-  }catch(e){
-    window.clearTimeout(tid);
-    throw e;
-  }
+  var res = await fetch("/api/prototype/state", {cache:"no-store", credentials:"same-origin"});
+  if(!res.ok) throw new Error("Unable to load workspace state.");
+  var data = await res.json();
+  DB = buildRemoteDB(data);
+  bindState();
+  remoteReady = true;
+  try{ if(storageOK) window.localStorage.setItem(KEY, JSON.stringify(DB)); }catch(e){}
 }
 async function persistRemoteStateNow(){
   if(!remoteReady || !DB || !DB.session) return;
@@ -2205,7 +2132,7 @@ function ring(p,size){
     '<text x="50%" y="54%" text-anchor="middle" font-size="'+((size||64)/4)+'" font-weight="700" fill="#0B1736">'+p+'%</text></svg>';
 }
 function protoNote(text){
-  return "";
+  return '<p class="panelnote no-print">'+icon("info")+'<span class="tag a">Prototype Mode</span> '+esc(text||"This action is simulated in the browser. Nothing is sent anywhere.")+'</p>';
 }
 function icon(name,color){
   var c = color||"currentColor", s='width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="'+c+'" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"';
@@ -2269,7 +2196,7 @@ function stepChecks(n){
     c.push({l:"Architect closes validation", ok:S.validation.architectClosed});
   }
   if(n===4){
-    c.push({l:"All "+activeQB().length+" responses complete", ok:answeredCount()===activeQB().length});
+    c.push({l:"All 50 responses complete", ok:answeredCount()===50});
     c.push({l:"Questionnaire submitted", ok:S.diagnostic.submitted});
     c.push({l:"Growth Diagnostic released", ok:S.diagnostic.released});
     c.push({l:"Navigator report opened", ok:S.diagnostic.reportOpened});
@@ -2331,7 +2258,7 @@ function nextAction(){
 }
 function answeredCount(){
   var n = 0;
-  activeQB().forEach(function(q){
+  QB.forEach(function(q){
     var a = S.diagnostic.answers[q.id];
     if(a && a.choices && a.choices.length>0) n++;
   });
@@ -2748,7 +2675,7 @@ function loginView(){
          '<p class="lg-body">Seven steps, twelve weeks, and one working view of a career that keeps changing as the evidence arrives. Everything recorded here belongs to the person it describes.</p>'+
        '</div>'+
        '<footer class="lg-foot">'+
-         '<span>Confidential</span><span>Secure workspace</span><span>'+new Date().getFullYear()+'</span>'+ 
+         '<span>Confidential</span><span>Prototype build</span><span>'+new Date().getFullYear()+'</span>'+
        '</footer>'+
      '</div>'+
    '</aside>'+
@@ -2764,7 +2691,7 @@ function loginView(){
        '<input id="lg_p" type="password" value="'+esc(L.p)+'" data-login="p" autocomplete="current-password" placeholder="Enter your password"></div>'+
      '<button class="lg-btn" data-act="doLogin">Sign in'+icon("arrowr")+'</button>'+
 
-    '<details class="lg-keys"><summary><span>Available sign-ins</span>'+icon("chev")+'</summary>'+
+     '<details class="lg-keys"><summary><span>Demo sign-ins for this prototype</span>'+icon("chev")+'</summary>'+
        '<div class="lg-keylist">'+
        DB.accounts.filter(function(a){ return a.status==="Active"; }).map(function(a){
          return '<button class="lg-key" data-act="fillLogin" data-u="'+esc(a.u)+'">'+
@@ -2774,13 +2701,13 @@ function loginView(){
        '<p class="lg-note">Deliberately unlabelled. Sign in and see where each one lands.</p>'+
      '</details>'+
 
-    '<p class="lg-legal"><strong>Important.</strong> Use assigned credentials only and share account details through approved secure channels.</p>'+
+     '<p class="lg-legal"><strong>Prototype.</strong> This sign-in is simulated. There is no server, no account system and no encryption, and everything is stored in this browser alone. Do not enter a real password or real personal information.</p>'+
    '</div></main></div>';
 }
 function tryLogin(){
   var L = DB.login, u = (L.u||"").trim().toLowerCase(), pw = (L.p||"");
   var acc = DB.accounts.filter(function(a){ return a.u.toLowerCase()===u; })[0];
-  if(!acc){ L.err = "No account found with that username. Check the available sign-ins below."; return false; }
+  if(!acc){ L.err = "No account found with that username. Check the demo sign-ins below."; return false; }
   if(acc.status !== "Active"){ L.err = "That account has been suspended by the Growth Sprint Architect."; return false; }
   if(acc.p !== pw){ L.err = "That password does not match. Passwords are case sensitive."; return false; }
   acc.lastIn = new Date().toISOString();
@@ -2889,7 +2816,7 @@ function newUserModal(){
     '<div><label for="nu_role">Access</label><select id="nu_role" data-nu="role">'+
     '<option value="participant">Participant</option><option value="coach">Coach</option><option value="sponsor">Sponsor</option>'+
     '<option value="architect">Growth Sprint Architect</option></select></div></div>'+
-    '<div class="notice" style="margin-top:12px">'+icon("info")+' A password is generated for you and shown once. Share it securely with the intended user.</div>',
+    '<div class="notice" style="margin-top:12px">'+icon("info")+' A password is generated for you. It is stored in plain text in this browser because this is a prototype, not a product.</div>',
     '<button class="btn blue" data-act="admCreate">Create and show credentials</button>'+
     '<button class="btn sec" data-act="closeModal">Cancel</button>');
 }
@@ -2904,7 +2831,7 @@ function credsModal(id){
      '<div><span class="cl">Access</span><code>'+esc(a.role)+'</code></div>'+
     '</div>'+
     '<p class="muted" style="margin-top:12px">Copy these and pass them on yourself. The link is illustrative and does not resolve to anything.</p>'+
-    '<div class="notice">'+icon("info")+' No email is sent by this screen. Share credentials through your approved secure channel.</div>',
+    '<div class="notice">'+icon("info")+' <strong>Prototype Mode.</strong> No email or message is sent by this screen. There is no password reset, no expiry and no encryption.</div>',
     '<button class="btn sec" data-act="admResetPw" data-id="'+a.id+'">Generate a new password</button>'+
     '<button class="btn" data-act="closeModal">Done</button>');
 }
@@ -3032,28 +2959,16 @@ function adminPushes(){
     }) : '<p class="muted">Nothing to review yet. This fills in the moment the participant closes validation in Step 3.</p>')+
    '</div>'+
 
-  '<div class="card"><h3 style="margin-top:0">Step 4 — Growth Diagnostic '+gate(f.questionsPushed,"Not pushed")+'</h3>'+
-   '<p class="muted">Pushing the questionnaire makes all questions in the active bank visible to the participant. You see their answers when they submit.</p>'+
-
-    '<details style="margin-bottom:12px;border:1px solid var(--rule2);border-radius:4px"><summary style="cursor:pointer;padding:10px 14px;font-size:.82rem;font-weight:700;letter-spacing:.04em;text-transform:uppercase;color:var(--brass)">📋 Upload custom question bank (optional)</summary>'+
-    '<div style="padding:12px 14px 14px">'+
-    '<p style="font-size:.84rem;color:var(--slate);margin:0 0 10px">Upload a JSON file to replace the default 50 questions for <strong>'+esc(withPid(pid,function(){ return S.profile.fullName||pid; }))+'</strong>. If no custom bank is uploaded, the built-in 50 questions are used.</p>'+
-    '<p style="font-size:.78rem;color:var(--slate);margin:0 0 8px">Format: <code>[{"id":1,"q":"Question text","o":["Option A","Option B",...10 options]},...]</code></p>'+
-    (withPid(pid, function(){ return S.diagnostic.questionBank && S.diagnostic.questionBank.length ? '<p class="notice green" style="margin:0 0 8px">✓ Custom bank active: '+S.diagnostic.questionBank.length+' questions'+( S.diagnostic.questionBankName ? ' ('+esc(S.diagnostic.questionBankName)+')' : '')+'</p>' : '<p class="notice" style="margin:0 0 8px">Using default 50 questions.</p>'; }))+
-    '<div class="btnrow" style="margin-top:8px">'+
-    '<label style="cursor:pointer"><input type="file" accept=".json,application/json" data-qbupload="'+pid+'" style="display:none">'+
-    '<span class="btn sec sm">Choose JSON file</span></label>'+
-    (withPid(pid, function(){ return S.diagnostic.questionBank ? '<button class="btn sec sm" data-act="clearQB" data-pid="'+pid+'">Remove custom bank</button>' : ''; }))+
-    '</div></div></details>'+
-
+   '<div class="card"><h3 style="margin-top:0">Step 4 — Growth Diagnostic '+gate(f.questionsPushed,"Not pushed")+'</h3>'+
+    '<p class="muted">Pushing the questionnaire makes all fifty questions visible to the participant. You see their answers when they submit.</p>'+
     '<div class="btnrow">'+
      '<button class="btn '+(f.questionsPushed?"sec":"blue")+'" data-act="admPushQuestions" data-pid="'+pid+'"'+
-       (f.validationSubmitted?"":" disabled")+'>'+(f.questionsPushed?"Pushed":"Push the questions")+'</button>'+
+       (f.validationSubmitted?"":" disabled")+'>'+(f.questionsPushed?"Pushed":"Push the 50 questions")+'</button>'+
      '<button class="btn '+(f.diagnosticPushed?"sec":"green")+'" data-act="admPushDiagnostic" data-pid="'+pid+'"'+
        (f.answersSubmitted?"":" disabled")+'>'+(f.diagnosticPushed?"Report released":"Release the diagnostic report")+'</button></div>'+
     (!f.validationSubmitted? '<p class="muted" style="font-size:.84rem">Waiting for the participant to close validation in Step 3.</p>':'')+
     (f.validationSubmitted && !f.answersSubmitted? '<p class="muted" style="font-size:.84rem">'+
-      withPid(pid,function(){ return answeredCount(); })+' of '+withPid(pid,function(){ return activeQB().length; })+' answered so far.</p>':'')+
+      withPid(pid,function(){ return answeredCount(); })+' of 50 answered so far.</p>':'')+
     (f.answersSubmitted? withPid(pid, function(){
       var An = answerAnalysis();
       return '<div class="sep"></div><h4>What they actually chose</h4>'+
@@ -3107,7 +3022,7 @@ function coachPushPanel(){
 /* ======================= diagnostic answer analysis ====================== */
 function answerAnalysis(){
   var picked = {}, answered = 0, firstPicks = [];
-  activeQB().forEach(function(q){
+  QB.forEach(function(q){
     var a = S.diagnostic.answers[q.id];
     if(!a || !a.choices || !a.choices.length) return;
     answered++;
@@ -3235,7 +3150,7 @@ function sideNav(){
       '<p class="mini" style="margin:2px 6px 10px">Turn this off for sequential unlocking, where each step opens only when the one before it closes.</p>'+
       '<div class="btnrow" style="margin:0 6px">'+
       '<button class="btn sec sm" data-act="privacy">'+icon("shield")+' Privacy</button>'+
-      '<button class="btn sec sm" data-act="demoOpen">'+icon("play")+' Workflow Controls</button>'+
+      '<button class="btn sec sm" data-act="demoOpen">'+icon("play")+' Demo Controls</button>'+
       '<button class="btn sec sm" data-act="export">'+icon("down")+' Export</button></div></div>' : '')+
     '</nav>';
 }
@@ -3292,6 +3207,7 @@ function header(){
       '<path d="M7 10l4 12 5-9 5 9 4-12" fill="none" stroke="#fff" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"/></svg>'+
       '<div><span>WinGroX</span><span class="sub">Growth Intelligence</span></div>'+
     '</div>'+
+    '<span class="proto" title="Nothing here is sent, stored or booked outside this browser">Prototype</span>'+
     '<div class="hdr-sp"></div>'+
     '<span class="iconbtn ghost" style="cursor:default"><span class="rl">Signed in as</span> <strong>'+esc(roleName)+'</strong></span>'+
     '<button class="iconbtn ghost" data-act="notif" aria-label="Notifications, '+unread+' unread">'+icon("bell")+
@@ -3410,7 +3326,7 @@ function lockedCard(n){
     return '<div class="card"><h1>'+icon("lock")+' Step '+n+' is not open yet</h1><p>'+esc(g.why)+'</p>'+
      '<p class="muted">You will get a notification the moment it opens. Nothing is required from you until then.</p>'+
      '<div class="btnrow"><button class="btn sec" data-act="goStageForce" data-n="'+Math.max(1,n-1)+'">Go back to Step '+Math.max(1,n-1)+'</button>'+
-    '<button class="btn sec" data-act="demoOpen">Open Workflow Controls</button></div>'+ 
+     '<button class="btn sec" data-act="demoOpen">Open Demo Controls</button></div>'+
      protoNote("Demo Controls can simulate the release so you can review any stage.")+'</div>';
   }
   var prev = STAGES[n-2];
@@ -3418,7 +3334,7 @@ function lockedCard(n){
    '<p>Step '+n+' opens when Step '+(n-1)+' — '+esc(prev.name)+' is closed. These items are still open:</p>'+
    '<ul>'+stepChecks(n-1).filter(function(c){return !c.ok;}).map(function(c){return '<li>'+esc(c.l)+'</li>';}).join("")+'</ul>'+
    '<div class="btnrow"><button class="btn" data-act="goStage" data-n="'+(n-1)+'">Go to Step '+(n-1)+'</button>'+
-  '<button class="btn sec" data-act="demoOpen">Open Workflow Controls</button></div>'+
+   '<button class="btn sec" data-act="demoOpen">Open Demo Controls</button></div>'+
    protoNote("Demo Controls can mark milestones complete so you can review any stage.")+'</div>';
 }
 
@@ -3458,7 +3374,7 @@ function stepProfile(){
   return stageHead(1) +
   '<div class="grid g13">'+
    '<div class="card"><h2>Your details</h2>'+
-    '<p class="muted">Fields marked with an asterisk are required. Email and mobile start blank — add your own to close this step.</p>'+
+    '<p class="muted">Fields marked with an asterisk are required. Email and mobile are deliberately empty in the demo — add your own to close this step.</p>'+
     '<fieldset><legend>Required</legend><div class="fields two">'+
      field("fullName","Full name",true)+
      field("email","Email",true,"email","you@example.com")+
@@ -3473,13 +3389,13 @@ function stepProfile(){
     '</div>'+
     '<div class="fields" style="margin-top:12px">'+area("about","About me",true)+area("helpWith","What I want help with",true)+'</div></fieldset>'+
     '<fieldset><legend>Optional</legend><div class="fields">'+
-      area("career","Career history",false,"For example: major roles, industries, transitions, and key milestones.")+area("education","Education",false,"For example: degrees, certifications, executive programs, and ongoing learning.")+area("achievements","Achievements",false,"For example: measurable outcomes, recognition, and projects you are proud of.")+
-      area("interests","Interests",false,"For example: topics, causes, or domains you care about and enjoy.")+area("family","Family or life considerations I choose to share",false,"For example: schedule boundaries, location constraints, travel limits, or care responsibilities.")+
-      area("goals","Current goals",false,"For example: Build one self-owned platform around context, conversations and human impact.")+area("commStyle","Preferred communication style",false,"For example: Direct and warm; prefers preparation before important conversations.")+area("access","Accessibility needs",false,"Share any accessibility preference that would support your best participation.")+
+     area("career","Career history")+area("education","Education")+area("achievements","Achievements")+
+     area("interests","Interests")+area("family","Family or life considerations I choose to share")+
+     area("goals","Current goals")+area("commStyle","Preferred communication style")+area("access","Accessibility needs")+
     '</div></fieldset>'+
     '<div class="btnrow"><button class="btn green" data-act="saveProfile">Save profile</button>'+
     '<button class="btn sec" data-act="openDpdp">Read the DPDP notice</button></div>'+
-    (S.profileSaved?'<p class="notice green" style="margin-top:10px">Profile saved.</p>':'')+
+    (S.profileSaved?'<p class="notice green" style="margin-top:10px">Profile saved on this device.</p>':'')+
     protoNote("Saving writes to this browser only. There is no cloud storage, account or server in this prototype.")+
    '</div>'+
    '<div class="grid">'+
@@ -3580,7 +3496,7 @@ function personaSchedule(){
    '<div class="grid">'+
     '<div class="card"><h3>Your Growth Sprint Architect</h3>'+
      '<div style="display:flex;gap:10px;align-items:center"><span class="avatar" style="background:var(--blue)">GA</span>'+
-    '<div><strong>Architect profile</strong><div class="muted" style="font-size:.86rem">Runs the immersion call, drafts Persona Discovery and releases each report.</div></div></div>'+
+     '<div><strong>Architect (demo profile)</strong><div class="muted" style="font-size:.86rem">Runs the immersion call, drafts Persona Discovery and releases each report.</div></div></div>'+
      '<div class="sep"></div><h4>Agenda preview</h4><ul style="font-size:.92rem">'+
      ["Your career in your own words (15 min)","What has stayed the same across chapters (15 min)",
       "What you want to own next (15 min)","Boundaries, security and privacy (10 min)","Next steps (5 min)"].map(function(a){
@@ -3675,19 +3591,35 @@ function foreign(x,y,w,txt){
 }
 
 function personaReport(){
-  if(!S.persona.reportOpened){ S.persona.reportOpened = true; saveState(); }
-  return '<div class="card"><div style="text-align:center;padding:48px 24px">'+
-    '<div class="eyebrow" style="color:#C79A4E;margin-bottom:14px">Step 2 · Persona Discovery</div>'+
-    '<h2 style="font-size:1.6rem;margin:0 0 12px">'+esc(S.profile.fullName||"Dipti M")+'</h2>'+
-    '<p style="color:#57617A;max-width:38ch;margin:0 auto 28px;font-size:.93rem;line-height:1.55">'+
-      'Your Persona Discovery report is ready. It opens in a new window so you can keep your workflow open alongside it.'+
-    '</p>'+
-    '<a href="/prototype/dipti-persona-discovery.html" target="_blank" rel="noopener noreferrer" '+
-      'style="display:inline-flex;align-items:center;gap:8px;background:#246BCE;color:#fff;border:0;padding:12px 28px;border-radius:6px;font-family:var(--mono,monospace);font-size:12px;font-weight:600;letter-spacing:.08em;text-transform:uppercase;text-decoration:none;cursor:pointer">'+
-      icon("doc")+'Open Persona Discovery Report'+
-    '</a>'+
-    '<p style="margin-top:16px;font-size:.82rem;color:#9AA0B4">Opens in a new tab &mdash; released '+fmtDate(S.persona.releasedOn||todayISO())+'</p>'+
-  '</div></div>';
+  if(!S.persona.released){
+    return '<div class="card"><div class="empty"><h3>Report not ready</h3>'+
+      '<p>The Persona Discovery report appears after the immersion call is completed and the Architect releases it.</p>'+
+      '<div class="btnrow" style="justify-content:center"><button class="btn sec" data-act="tab" data-stage="2" data-k="schedule">Go to scheduling</button>'+
+      '<button class="btn sec" data-act="demoOpen">Open Demo Controls</button></div></div></div>';
+  }
+  if(!S.persona.reportOpened){ S.persona.reportOpened = true; notify("Persona Discovery is ready."); saveState(); }
+  return '<div class="card rpt"><div class="rptcover">'+
+    '<div class="eyebrow" style="color:#C79A4E">Step 2 report</div>'+
+    '<h2 style="margin:0 0 3px">Persona Discovery</h2>'+
+    '<p style="margin:0;opacity:.8;font-size:.9rem">'+esc(S.profile.fullName||"Dipti M")+' &middot; '+esc(S.profile.role||"VP Strategy and Client Engagement")+'</p>'+
+    '<div class="rptmeta"><span>Prepared by the Growth Sprint Architect</span><span>Released '+fmtDate(S.persona.releasedOn||todayISO())+'</span>'+
+    '<span>Confidential to Dipti</span></div></div>'+
+    '<div class="hd" style="margin-top:14px">'+
+    '<p class="muted" style="margin:0;max-width:46ch;font-size:.9rem">A working view built from the immersion call and the documents shared. Every statement is labelled so you can challenge it.</p>'+
+    '<div class="btnrow no-print" style="margin:0">'+
+     '<button class="btn blue sm" data-act="openPdf" data-key="persona">'+icon("doc")+' Download the PDF</button>'+
+     '<button class="btn sec sm" data-act="savePdf" data-report="persona">Save this page as PDF</button>'+
+     '<button class="btn sec sm" data-act="print" data-report="persona">'+icon("print")+' Print</button>'+
+     '<button class="btn sec sm" data-act="addPersonaNote">Add a note</button>'+
+     '<button class="btn sec sm" data-act="requestCorrection">Request correction</button>'+
+     '<button class="btn blue sm" data-act="goStage" data-n="3">Continue to Validation</button></div></div>'+
+    pdfPanel("persona","Persona Discovery report")+
+    personaBody()+
+    (S.persona.participantNotes.length? '<div class="sep"></div><h4>Your notes</h4><ul class="list">'+
+      S.persona.participantNotes.map(function(n){return '<li>'+esc(n.t)+' <span class="muted" style="font-size:.82rem">'+fmtDate(n.date)+'</span></li>';}).join("")+'</ul>':'')+
+    (S.persona.corrections.length? '<h4>Corrections requested</h4><ul class="list">'+
+      S.persona.corrections.map(function(n){return '<li>'+esc(n.t)+' <span class="tag a">Sent to Architect (simulated)</span></li>';}).join("")+'</ul>':'')+
+    '</div>';
 }
 function personaBody(){
   return '<h3>A. Dipti in one line</h3><p class="notice blue">'+esc(PERSONA.oneLine)+'</p>'+
@@ -3767,7 +3699,7 @@ function nudgeCard(){
   if(done===0 || done%5!==0) return "";
   if(S.ui.lastNudge===done) { /* still show, it is the current milestone */ }
   var msg = NUDGES[Math.min(9, done/5 - 1)];
-  var full = (done===activeQB().length);
+  var full = (done===50);
   var secLine = "";
   for(var i=0;i<SECTIONS.length;i++){
     var sc = SECTIONS[i], all = true;
@@ -3780,11 +3712,11 @@ function nudgeCard(){
     (secLine?'<div class="muted" style="font-size:.86rem">'+esc(secLine)+'</div>':'')+
     (full?'<div class="btnrow" style="margin-top:8px"><button class="btn green sm" data-act="submitQ">Submit questionnaire</button></div>':'')+
     '</div>'+
-    '<span class="np">'+done+'/'+activeQB().length+'</span></div>';
+    '<span class="np">'+done+'/50</span></div>';
 }
 function questionView(){
-  var id = Math.min(activeQB().length, Math.max(1, S.ui.qIndex||1));
-  var q = activeQB()[id-1], a = ansOf(id), sec = activeSection(id);
+  var id = Math.min(50, Math.max(1, S.ui.qIndex||1));
+  var q = QB[id-1], a = ansOf(id), sec = sectionOf(id);
   var secDone = 0, secTotal = sec.to - sec.from + 1;
   for(var i=sec.from;i<=sec.to;i++){ if(qComplete(i)) secDone++; }
   var done = answeredCount();
@@ -3796,8 +3728,7 @@ function questionView(){
     return '<button class="qopt'+(r>=0?" on":"")+(last?" qother":"")+'" data-act="choose" data-q="'+id+'" data-o="'+n+'" aria-pressed="'+(r>=0)+'">'+
       (r>=0 ? '<span class="qrank">'+(r+1)+'</span>' : '<span class="qbox">'+String.fromCharCode(64+n)+'</span>')+
       '<span class="qtx'+(last && !nonEmpty(a.other) ? " qplace" : "")+'">'+esc(label)+'</span>'+
-      (r>=0 ? '<span class="qtick">'+icon("check","#10736B")+'</span>' : '')+
-    '</button>';
+      (r>=0 ? '<span class="qtick">'+icon("check","#10736B")+'</span>' : '')+'</button>';
   }).join("");
   var otherBox = (a.choices.indexOf(10)>=0 || nonEmpty(a.other))
     ? '<input class="qotherin" type="text" value="'+esc(a.other)+'" data-qother="'+id+'" '+
@@ -3812,10 +3743,10 @@ function questionView(){
   return '<div class="qwrap">'+
     nudgeCard()+
     '<div class="qtop">'+
-      '<div class="qprog"><i style="width:'+pct(done,activeQB().length)+'%"></i></div>'+
-      '<div class="qmeta"><span><strong>Question '+id+'</strong> of '+activeQB().length+'</span>'+
+      '<div class="qprog"><i style="width:'+pct(done,50)+'%"></i></div>'+
+      '<div class="qmeta"><span><strong>Question '+id+'</strong> of 50</span>'+
         '<span class="qsec">Section '+sec.k+' &middot; '+esc(sec.t)+' &middot; '+secDone+' of '+secTotal+'</span>'+
-        '<span>'+pct(done,activeQB().length)+'% complete</span></div>'+
+        '<span>'+pct(done,50)+'% complete</span></div>'+
       '<div class="qdots">'+dots+'</div>'+
     '</div>'+
 
@@ -3832,15 +3763,15 @@ function questionView(){
       '<div class="qnav">'+
         '<button class="btn sec" data-act="qgo" data-n="'+(id-1)+'"'+(id===1?" disabled":"")+'>'+icon("arrowl")+' Back</button>'+
         '<div class="qnav-r">'+
-          (id<activeQB().length ? '<button class="btn sec" data-act="qgo" data-n="'+(id+1)+'">Skip for now</button>' : '')+
+          (id<50 ? '<button class="btn sec" data-act="qgo" data-n="'+(id+1)+'">Skip for now</button>' : '')+
           '<button class="btn '+(ready?"blue":"")+'" data-act="qsave" data-n="'+(id+1)+'">'+
-            (id===activeQB().length?"Save and finish":"Save and continue")+' '+icon("arrowr")+'</button>'+
+            (id===50?"Save and finish":"Save and continue")+' '+icon("arrowr")+'</button>'+
         '</div>'+
       '</div>'+
       (ready?'':'<p class="panelnote">'+icon("info")+'Pick at least one choice to count this question as answered. You can still move on and come back.</p>')+
     '</div>'+
 
-    '<details class="card qmap"><summary><strong>All questions and section progress</strong></summary>'+
+    '<details class="card qmap"><summary><strong>All 50 questions and section progress</strong></summary>'+
       '<div class="sep"></div>'+
       SECTIONS.map(function(sc){
         var dn=0; for(var i2=sc.from;i2<=sc.to;i2++){ if(qComplete(i2)) dn++; }
@@ -3854,7 +3785,7 @@ function questionView(){
           '<div class="chips" style="grid-column:1/-1;margin:2px 0 0">'+chips+'</div></div>';
       }).join("")+
       '<div class="btnrow"><button class="btn sec" data-act="qjump">Jump to next unanswered</button>'+
-      '<button class="btn blue" data-act="submitQ"'+(done===activeQB().length&&!S.diagnostic.submitted?"":" disabled")+'>Submit questionnaire</button></div>'+
+      '<button class="btn blue" data-act="submitQ"'+(done===50&&!S.diagnostic.submitted?"":" disabled")+'>Submit questionnaire</button></div>'+
     '</details></div>';
 }
 function diagnosticBody(editable){
@@ -4073,7 +4004,7 @@ function mirrorControls(){
    '<p class="muted">Confirm, edit, reject, mark private, add evidence, remove an insight, choose who can see it and view its history. Nothing is overwritten: every change is added to the history.</p>'+
    '<div class="btnrow"><button class="btn sec" data-act="export">'+icon("down")+' Export my data as JSON</button>'+
    '<button class="btn sec" data-act="privacy">Open privacy and consent</button></div>'+
-  '<div class="sep"></div>'+(rows||'<div class="empty">No insights left in the Mirror. Reset workspace data to restore the original set.</div>')+'</div>';
+   '<div class="sep"></div>'+(rows||'<div class="empty">No insights left in the Mirror. Reset the demo to restore the original set.</div>')+'</div>';
 }
 function mirrorReview(){
   var mq = ["What did I learn about myself?","Which assumption was confirmed?","Which assumption was wrong?",
@@ -4167,7 +4098,7 @@ function coachList(){
         MATCH_FACTORS.map(function(f){ return '<tr><td>'+esc(f)+'</td>'+
           COACHES.map(function(c){ return '<td>'+matchDots(c.scores[f]*20)+' <span class="muted">'+c.scores[f]+'/5</span></td>'; }).join("")+'</tr>'; }).join("")+
         '</tbody></table></div>'+
-      protoNote("Coaches are illustrative profiles. No coach is verified, contacted or booked.")+
+      protoNote("Coaches are illustrative demo profiles. No coach is verified, contacted or booked.")+
     '</details></div>';
 }
 function chemView(){
@@ -4475,8 +4406,8 @@ function demoDrawer(){
     ["dc4","Complete validation"],["dc5","Complete questionnaire"],["dc6","Release diagnostic"],
     ["dc7","Accept Growth Mirror"],["dc8","Complete coach match"],["dc9","Complete current week"]
   ];
-  return '<aside class="drawer no-print" role="region" aria-label="Workflow controls">'+
-   '<div class="dh"><strong>'+icon("play")+' Workflow Controls</strong>'+
+  return '<aside class="drawer no-print" role="region" aria-label="Demo controls">'+
+   '<div class="dh"><strong>'+icon("play")+' Demo Controls <span class="tag a">Prototype</span></strong>'+
    '<button class="btn sec sm" data-act="demoToggle" aria-expanded="'+open+'">'+(open?"Hide":"Show")+'</button></div>'+
    (open? '<div class="db"><p class="muted" style="font-size:.86rem">These buttons mark milestones complete so you can review any stage. They exist for demonstration only.</p>'+
     '<div class="btnrow">'+buttons.map(function(b){
@@ -4527,22 +4458,22 @@ function privacyModal(){
    '<button class="btn" data-act="closeModal">Close</button>');
 }
 function resetModal(){
-  return modal("Reset workspace data?",
-   '<p>This clears every answer, note, document name, consent, coach choice and week in this browser and restores the original seed data.</p>'+
+  return modal("Reset the demo?",
+   '<p>This clears every answer, note, document name, consent, coach choice and week in this browser and restores the original Dipti M demo data.</p>'+
    '<p class="notice red">This cannot be undone. Export your data first if you want to keep it.</p>',
    '<button class="btn danger" data-act="resetDo">Yes, reset all data</button>'+
    '<button class="btn sec" data-act="closeModal">Cancel</button>');
 }
 function profileModal(){
   return modal("Profile menu",
-  '<dl class="kv"><dt>Signed in as</dt><dd>'+esc(S.profile.fullName)+' (participant account)</dd>'+
+   '<dl class="kv"><dt>Signed in as</dt><dd>'+esc(S.profile.fullName)+' (demo participant, no authentication)</dd>'+
    '<dt>Current view</dt><dd>'+esc({participant:"Participant",architect:"Growth Sprint Architect",coach:"Coach",sponsor:"Sponsor"}[S.role])+'</dd>'+
    '<dt>Overall progress</dt><dd>'+overallPct()+'%</dd><dt>Last updated</dt><dd>'+fmtDateTime(S.lastUpdated)+'</dd>'+
    '<dt>Local saving</dt><dd>'+(storageOK?"Working in this browser":"Blocked by this browser")+'</dd></dl>'+
    '<div class="btnrow"><button class="btn sec sm" data-act="goStage" data-n="1">Edit profile</button>'+
    '<button class="btn sec sm" data-act="privacy">Privacy and consent</button>'+
    '<button class="btn sec sm" data-act="export">Export data</button>'+
-  '<button class="btn danger sm" data-act="resetAsk">Reset workspace data</button></div>'+
+   '<button class="btn danger sm" data-act="resetAsk">Reset demo</button></div>'+
    protoNote("There is no sign-in, account or password in this prototype."),
    '<button class="btn" data-act="closeModal">Close</button>');
 }
@@ -4578,7 +4509,7 @@ var REPORTS = {
   submitted:{t:"Diagnostic answers as submitted", b:function(){
     var A = answerAnalysis();
     if(!A.answered) return '<p>No answers have been submitted.</p>';
-    return '<p>'+A.answered+' of '+activeQB().length+' questions answered.</p>'+
+    return '<p>'+A.answered+' of 50 questions answered.</p>'+
       '<h3>Most frequently ranked choices</h3><table><thead><tr><th>Choice</th><th>Weighted count</th></tr></thead><tbody>'+
       A.top.map(function(x){ return '<tr><td>'+esc(x.t)+'</td><td>'+x.v+'</td></tr>'; }).join("")+'</tbody></table>'+
       '<h3>First choice on every question</h3><table><thead><tr><th>#</th><th>Question</th><th>First choice</th></tr></thead><tbody>'+
@@ -4650,7 +4581,7 @@ function printReport(key){
     area.innerHTML = '<div class="p-hd"><div class="t">'+esc(r.t)+'</div>'+
       '<div class="p-meta">Participant: '+esc(S.profile.fullName)+' · Version '+esc(VERSION)+' · Printed '+fmtDate(new Date().toISOString())+'</div></div>'+
       r.b()+
-      '<div class="p-conf">Confidential. Prepared for '+esc(S.profile.fullName)+' within the WinGroX AI Individual Growth Intelligence System. '+
+      '<div class="p-conf">Confidential. Prepared for '+esc(S.profile.fullName)+' within the WinGroX AI Individual Growth Intelligence System prototype. '+
       'Contains AI-assisted observations that are working assumptions until confirmed. Not a medical, psychological or clinical diagnosis. Do not circulate without the participant\u2019s consent.</div>';
     document.body.classList.add("printing");
     window.setTimeout(function(){
@@ -4740,31 +4671,6 @@ document.addEventListener("input", function(e){
 });
 document.addEventListener("change", function(e){
   var t = e.target;
-
-  /* ---- Question bank JSON upload ---- */
-  if(t && t.getAttribute && t.getAttribute("data-qbupload")){
-    var qbfile = t.files && t.files[0];
-    if(!qbfile) return;
-    var qbpid = t.getAttribute("data-qbupload");
-    var qbrd = new FileReader();
-    qbrd.onload = function(){
-      try{
-        var bank = JSON.parse(qbrd.result);
-        if(!Array.isArray(bank) || !bank.length || !bank[0].q || !bank[0].o){
-          toast("Invalid format. JSON must be an array of {id, q, o} objects."); return;
-        }
-        /* Ensure every entry has an id */
-        bank = bank.map(function(b,ix){ return {id:b.id||ix+1, q:b.q, o:b.o}; });
-        DB.participants[qbpid].diagnostic.questionBank = bank;
-        DB.participants[qbpid].diagnostic.questionBankName = qbfile.name;
-        toast("Custom bank loaded: "+bank.length+" questions from "+qbfile.name);
-        saveState(); render();
-      }catch(err){ toast("Could not parse JSON: "+err.message); }
-    };
-    qbrd.readAsText(qbfile);
-    return;
-  }
-
   if(t && t.getAttribute && t.getAttribute("data-upl")){
     var file = t.files && t.files[0];
     if(!file) return;
@@ -4890,7 +4796,7 @@ document.addEventListener("click", function(e){
     case "admConfirmCall": {
       var t1 = DB.participants[d.pid]; t1.flow.callConfirmed = true;
       t1.notifications.unshift({id:uid(), t:"Your immersion call slot is confirmed.", read:false, date:todayISO()});
-      toast("Slot confirmed. The participant has been notified."); break;
+      toast("Slot confirmed. The participant has been notified in the prototype."); break;
     }
     case "admCallNotes": openModal(callNotesModal(d.pid)); re = false; break;
     case "admCallDone": {
@@ -4916,13 +4822,8 @@ document.addEventListener("click", function(e){
     }
     case "admPushQuestions": {
       var t6 = DB.participants[d.pid]; t6.flow.questionsPushed = true; t6.flow.questionsPushedOn = todayISO();
-      t6.notifications.unshift({id:uid(), t:"Your diagnostic questions are ready in Step 4.", read:false, date:todayISO()});
+      t6.notifications.unshift({id:uid(), t:"Your fifty diagnostic questions are ready in Step 4.", read:false, date:todayISO()});
       toast("Questions pushed."); break;
-    }
-    case "clearQB": {
-      var cqb = DB.participants[d.pid];
-      cqb.diagnostic.questionBank = null; cqb.diagnostic.questionBankName = "";
-      toast("Custom question bank removed. Default 50 questions will be used."); break;
     }
     case "admPushDiagnostic": {
       var t7 = DB.participants[d.pid]; t7.flow.diagnosticPushed = true; t7.diagnostic.released = true;
@@ -4974,7 +4875,7 @@ document.addEventListener("click", function(e){
       toast("Validation submitted."); break;
     case "submitAnswers":
       S.flow.answersSubmitted = true;
-      notify("Your diagnostic answers have been submitted.");
+      notify("Your fifty answers have been submitted.");
       toast("Answers submitted. The Architect can now build your report."); break;
     case "openPdf": {
       var key = d.key, f0 = (S.files||{})[key];
@@ -5174,29 +5075,29 @@ document.addEventListener("click", function(e){
       else { toast("You can rank three choices. Remove one first."); re = false; break; }
       break;
     }
-    case "qgo": S.ui.qIndex = Math.min(activeQB().length, Math.max(1, parseInt(d.n,10))); S.ui.tab[4] = "questions"; break;
+    case "qgo": S.ui.qIndex = Math.min(50, Math.max(1, parseInt(d.n,10))); S.ui.tab[4] = "questions"; break;
     case "qsave": {
-      S.ui.qIndex = Math.min(activeQB().length, parseInt(d.n,10));
-      toast("Saved. "+answeredCount()+" of "+activeQB().length+" complete.");
-      if(answeredCount()===activeQB().length) notify("All "+activeQB().length+" diagnostic answers are complete.");
+      S.ui.qIndex = Math.min(50, parseInt(d.n,10));
+      toast("Saved. "+answeredCount()+" of 50 complete.");
+      if(answeredCount()===50) notify("All 50 diagnostic answers are complete.");
       break;
     }
     case "qjump": {
       var nx = 0;
-      for(var qi=1; qi<=activeQB().length; qi++){ if(!qComplete(qi)){ nx = qi; break; } }
+      for(var qi=1; qi<=50; qi++){ if(!qComplete(qi)){ nx = qi; break; } }
       if(nx){ S.ui.qIndex = nx; S.ui.tab[4]="questions"; toast("Jumped to question "+nx+"."); }
       else toast("Every question is complete.");
       break;
     }
     case "submitQ":
-      if(answeredCount()<activeQB().length){ toast("Complete all questions first."); re=false; break; }
+      if(answeredCount()<50){ toast("Complete all 50 questions first."); re=false; break; }
       openModal(modal("Submit the questionnaire?",
         '<p>You can still open your answers afterwards, but the Architect will use this version to prepare the Growth Diagnostic.</p>',
         '<button class="btn green" data-act="submitQDo">Submit</button><button class="btn sec" data-act="closeModal">Cancel</button>'));
       re = false; break;
     case "submitQDo":
       S.diagnostic.submitted = true; S.flow.answersSubmitted = true; S.ui.tab[4] = "submitted";
-      closeModal(); toast("Questionnaire submitted."); notify("All diagnostic answers submitted. The Architect is preparing your report."); break;
+      closeModal(); toast("Questionnaire submitted."); notify("All fifty answers submitted. The Architect is preparing your report."); break;
     case "releaseDiag": S.diagnostic.released = true; S.ui.tab[4]="report"; toast("Growth Diagnostic released."); notify("Your Growth Diagnostic is ready."); break;
 
     /* step 5 */
@@ -5264,7 +5165,7 @@ document.addEventListener("click", function(e){
        '<dt>Availability</dt><dd>'+esc(cc.avail)+'</dd><dt>Price</dt><dd>'+esc(cc.price)+'</dd>'+
        '<dt>Working match score</dt><dd>'+matchScore(cc)+'/100</dd></dl>'+
        '<h4>Why this coach may fit</h4><p>'+esc(cc.fit)+'</p><h4>Possible mismatch</h4><p>'+esc(cc.mismatch)+'</p>'+
-      protoNote("Profile preview. No coach is verified, contacted or booked."),
+       protoNote("Demo profile. No coach is verified, contacted or booked."),
        '<button class="btn" data-act="closeModal">Close</button>'));
       saveState(); render(); re = false; break;
     case "schedChem":
@@ -5343,12 +5244,12 @@ document.addEventListener("click", function(e){
        '<button class="btn" data-act="closeModal">Close</button>'));
       re = false; break;
 
-    /* workflow controls */
+    /* demo controls */
     case "dc1": demoProfile(); toast("Step 1 marked complete."); break;
     case "dc2": demoProfile(); demoImmersion(); toast("Immersion call scheduled and completed."); break;
     case "dc3": demoProfile(); demoImmersion(); S.persona.released = true; S.persona.reportOpened = true; toast("Persona report released."); break;
     case "dc4": demoProfile(); demoImmersion(); S.persona.released=true; S.persona.reportOpened=true; demoValidation(); toast("Validation complete."); break;
-    case "dc5": demoQuestionnaire(); toast("All diagnostic answers filled with sample responses."); break;
+    case "dc5": demoQuestionnaire(); toast("All 50 answers filled with the demo responses."); break;
     case "dc6": demoQuestionnaire(); S.diagnostic.released = true; S.diagnostic.reportOpened = true; toast("Diagnostic released."); break;
     case "dc7": demoMirror(); toast("Growth Mirror accepted."); break;
     case "dc8": demoCoach(); toast("Coach match complete."); break;
@@ -5361,7 +5262,7 @@ document.addEventListener("click", function(e){
     case "resetAsk": openModal(resetModal()); re = false; break;
     case "resetDo": {
       try{ if(storageOK) window.localStorage.removeItem(KEY); }catch(err){}
-      S = defaultState(); saveState(); closeModal(); render(); toast("Workspace data reset. Seed data restored."); re = false; break;
+      S = defaultState(); saveState(); closeModal(); render(); toast("Demo reset. Dipti M demo data restored."); re = false; break;
     }
     default: break;
   }
@@ -5433,7 +5334,7 @@ function demoValidation(){
   S.validation.participantConfirmed = true; S.validation.architectClosed = true;
 }
 function demoQuestionnaire(){
-  activeQB().forEach(function(q){
+  QB.forEach(function(q){
     var a = ansOf(q.id);
     var pr = PRESET_RANKS[q.id] || [1,2,3];
     a.choices = pr.slice(0,3);
@@ -5484,9 +5385,9 @@ function demoWeek(){
 function exportJSON(){
   try{
     var payload = {
-      product:"WinGroX AI — Individual Growth Intelligence System",
+      product:"WinGroX AI — Individual Growth Intelligence System (prototype)",
       version:VERSION, exported:new Date().toISOString(),
-      note:"Export from browser storage. No cloud copy exists.",
+      note:"Prototype export from browser storage. No cloud copy exists.",
       progress:{overall:overallPct(), steps:STAGES.map(function(s){ return {step:s.n, name:s.name, percent:stepPct(s.n), closed:stepDone(s.n)}; })},
       data:S
     };
@@ -5506,31 +5407,6 @@ function exportJSON(){
 }
 
 /* -------------------------------- init ----------------------------------- */
-
-/* Email → question bank file mapping. Add new entries here for each participant. */
-var QB_EMAIL_MAP = {
-  "shivanideepak@gmail.com": "/prototype/question-banks/shivani-deepak.json"
-};
-
-async function autoLoadQuestionBank(){
-  var email = (S.profile && S.profile.email || "").toLowerCase().trim();
-  if(!email) return;
-  var url = QB_EMAIL_MAP[email];
-  if(!url) return;
-  if(S.diagnostic && S.diagnostic.questionBank && S.diagnostic.questionBank.length) return;
-  try{
-    var res = await fetch(url, {cache:"no-store"});
-    if(!res.ok) return;
-    var bank = await res.json();
-    if(Array.isArray(bank) && bank.length){
-      S.diagnostic.questionBank = bank;
-      S.diagnostic.questionBankName = url.split("/").pop();
-      saveState();
-      render();
-    }
-  }catch(e){ /* silently skip — default QB will be used */ }
-}
-
 async function initApp(){
   var app = document.getElementById("app");
   if(app) app.innerHTML = '<main class="wrap"><div class="card"><h2>Loading workspace</h2><p class="muted">Restoring your saved prototype workflow from the secure app backend.</p></div></main>';
@@ -5538,15 +5414,17 @@ async function initApp(){
     await loadRemoteState();
   }catch(err){
     loadState();
+    if(!DB || !DB.session){
+      DB = defaultDB();
+    }
+    if(DB && !DB.session){
+      DB.session = {u:"user", role:"participant", name:"User", pid:Object.keys(DB.participants||{})[0]||"p_dipti", aid:""};
+      bindState();
+    }
   }
-  if(!DB){
-    DB = defaultDB();
-  }
-  bindState();
   if(!S.ui) S.ui = {stage:1, tab:{}, qIndex:1, notifOpen:false, demoOpen:false};
   if(!S.ui.tab) S.ui.tab = {};
   render();
-  await autoLoadQuestionBank();
 }
 void initApp();
 window.addEventListener("resize", function(){

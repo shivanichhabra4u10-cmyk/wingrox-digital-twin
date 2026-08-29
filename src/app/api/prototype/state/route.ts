@@ -73,11 +73,40 @@ type DocumentRow = {
   privacy: string;
 };
 
-const PROFILE_SELECT =
-  "id, full_name, email, role, mobile, country_code, city, country, linkedin_url, current_title, organization, about, help_with, preferred_language, timezone, career_history, education, achievements, interests, family_life_considerations, current_goals, preferred_communication_style, accessibility_needs";
+type DiagnosticQuestionnaireRow = {
+  id: string;
+  participant_id: string;
+  bank_name: string | null;
+  total_questions: number;
+  is_submitted: boolean;
+  is_released: boolean;
+  report_opened_at: string | null;
+};
 
-const PARTICIPANT_SELECT =
-  "id, owner_user_id, full_name, email, mobile, country_code, city, country, linkedin_url, current_title, organization, about, help_with, preferred_language, timezone, career_history, education, achievements, interests, family_life_considerations, current_goals, preferred_communication_style, accessibility_needs";
+type DiagnosticQuestionRow = {
+  questionnaire_id: string;
+  question_id: number;
+  display_order: number;
+  dimension: string | null;
+  question_text: string | null;
+  options: unknown;
+  scores: unknown;
+};
+
+type DiagnosticResponseRow = {
+  questionnaire_id: string;
+  participant_id: string;
+  question_id: number;
+  ranked_choices: unknown;
+  confidence: string | null;
+  comment: string | null;
+  other_text: string | null;
+  is_private: boolean;
+};
+
+const PROFILE_SELECT = "id, full_name, email, role";
+
+const PARTICIPANT_SELECT = "id, owner_user_id, full_name, email";
 
 const DOC_CATEGORY_MAP: Record<string, string> = {
   "resume": "resume",
@@ -189,25 +218,6 @@ async function ensureParticipantForUser(
       owner_user_id: userId,
       full_name: fullName,
       email: email ?? null,
-      mobile: profile?.mobile ?? null,
-      country_code: profile?.country_code ?? null,
-      city: profile?.city ?? null,
-      country: profile?.country ?? null,
-      linkedin_url: profile?.linkedin_url ?? null,
-      current_title: profile?.current_title ?? null,
-      organization: profile?.organization ?? null,
-      about: profile?.about ?? null,
-      help_with: profile?.help_with ?? null,
-      preferred_language: profile?.preferred_language ?? null,
-      timezone: profile?.timezone ?? null,
-      career_history: profile?.career_history ?? null,
-      education: profile?.education ?? null,
-      achievements: profile?.achievements ?? null,
-      interests: profile?.interests ?? null,
-      family_life_considerations: profile?.family_life_considerations ?? null,
-      current_goals: profile?.current_goals ?? null,
-      preferred_communication_style: profile?.preferred_communication_style ?? null,
-      accessibility_needs: profile?.accessibility_needs ?? null,
     })
     .select(PARTICIPANT_SELECT)
     .single<ParticipantRow>();
@@ -261,8 +271,215 @@ function asString(value: unknown) {
   return typeof value === "string" ? value : "";
 }
 
+function asBoolean(value: unknown) {
+  return value === true;
+}
+
 function asArray(value: unknown) {
   return Array.isArray(value) ? value : [];
+}
+
+function asNumberArray(value: unknown) {
+  if (!Array.isArray(value)) {
+    return [] as number[];
+  }
+
+  const out: number[] = [];
+  value.forEach((item) => {
+    if (typeof item === "number" && Number.isFinite(item)) {
+      out.push(item);
+      return;
+    }
+
+    if (typeof item === "string" && item.trim()) {
+      const parsed = Number(item);
+      if (Number.isFinite(parsed)) {
+        out.push(parsed);
+      }
+    }
+  });
+
+  return out;
+}
+
+function asPositiveInt(value: unknown) {
+  if (typeof value === "number" && Number.isInteger(value) && value > 0) {
+    return value;
+  }
+
+  if (typeof value === "string" && /^\d+$/.test(value.trim())) {
+    const parsed = Number.parseInt(value.trim(), 10);
+    return parsed > 0 ? parsed : null;
+  }
+
+  return null;
+}
+
+function asTrimmed(value: unknown) {
+  if (typeof value !== "string") {
+    return null;
+  }
+
+  const trimmed = value.trim();
+  return trimmed.length > 0 ? trimmed : null;
+}
+
+function normalizeChoices(value: unknown) {
+  const choices: number[] = [];
+  const seen = new Set<number>();
+
+  asArray(value).forEach((entry) => {
+    const parsed = asPositiveInt(entry);
+    if (!parsed || parsed > 100 || seen.has(parsed)) {
+      return;
+    }
+
+    seen.add(parsed);
+    choices.push(parsed);
+  });
+
+  return choices.slice(0, 10);
+}
+
+function normalizeScoreList(value: unknown) {
+  const out: number[] = [];
+  asArray(value).forEach((entry) => {
+    if (typeof entry === "number" && Number.isFinite(entry)) {
+      out.push(Math.round(entry * 1000) / 1000);
+      return;
+    }
+
+    if (typeof entry === "string" && entry.trim()) {
+      const parsed = Number(entry);
+      if (Number.isFinite(parsed)) {
+        out.push(Math.round(parsed * 1000) / 1000);
+      }
+    }
+  });
+
+  return out;
+}
+
+type DiagnosticQuestionRecord = {
+  questionId: number;
+  displayOrder: number;
+  dimension: string | null;
+  questionText: string | null;
+  options: string[];
+  scores: number[];
+  raw: Record<string, unknown>;
+};
+
+type DiagnosticResponseRecord = {
+  questionId: number;
+  rankedChoices: number[];
+  confidence: string | null;
+  comment: string | null;
+  otherText: string | null;
+  isPrivate: boolean;
+  answerPayload: Record<string, unknown>;
+  answeredAt: string | null;
+};
+
+type NormalizedDiagnostic = {
+  bankName: string | null;
+  totalQuestions: number;
+  isSubmitted: boolean;
+  isReleased: boolean;
+  reportOpened: boolean;
+  rawDiagnostic: Record<string, unknown>;
+  questions: DiagnosticQuestionRecord[];
+  responses: DiagnosticResponseRecord[];
+};
+
+function normalizeDiagnosticState(
+  state: Record<string, unknown>,
+  timestampIso: string
+): NormalizedDiagnostic | null {
+  const diagnostic = safeObject(state.diagnostic);
+  if (!diagnostic) {
+    return null;
+  }
+
+  const questionBank = asArray(diagnostic.questionBank);
+  const answers = safeObject(diagnostic.answers) ?? {};
+  const questionMap = new Map<number, DiagnosticQuestionRecord>();
+  const questions: DiagnosticQuestionRecord[] = [];
+
+  questionBank.forEach((entry, index) => {
+    const row = safeObject(entry);
+    if (!row) {
+      return;
+    }
+
+    const questionId = asPositiveInt(row.id) ?? index + 1;
+    if (!questionId || questionMap.has(questionId)) {
+      return;
+    }
+
+    const options = asArray(row.o)
+      .map((option) => asTrimmed(option))
+      .filter((option): option is string => Boolean(option));
+
+    const question: DiagnosticQuestionRecord = {
+      questionId,
+      displayOrder: index + 1,
+      dimension: asTrimmed(row.dimension),
+      questionText: asTrimmed(row.q),
+      options,
+      scores: normalizeScoreList(row.scores),
+      raw: row,
+    };
+
+    questionMap.set(questionId, question);
+    questions.push(question);
+  });
+
+  const responseRows: DiagnosticResponseRecord[] = [];
+  Object.entries(answers).forEach(([answerKey, answerValue]) => {
+    const questionId = asPositiveInt(answerKey);
+    const answer = safeObject(answerValue);
+    if (!questionId || !answer) {
+      return;
+    }
+
+    const rankedChoices = normalizeChoices(answer.choices);
+    const confidence = asTrimmed(answer.conf);
+    const comment = asTrimmed(answer.comment);
+    const otherText = asTrimmed(answer.other);
+    const isPrivate = asBoolean(answer.priv);
+
+    responseRows.push({
+      questionId,
+      rankedChoices,
+      confidence,
+      comment,
+      otherText,
+      isPrivate,
+      answerPayload: answer,
+      answeredAt:
+        rankedChoices.length > 0 || confidence || comment || otherText || isPrivate
+          ? timestampIso
+          : null,
+    });
+  });
+
+  const inferredTotal = Math.max(
+    questions.length,
+    ...responseRows.map((response) => response.questionId),
+    0
+  );
+
+  return {
+    bankName: asTrimmed(diagnostic.questionBankName),
+    totalQuestions: inferredTotal,
+    isSubmitted: asBoolean(diagnostic.submitted),
+    isReleased: asBoolean(diagnostic.released),
+    reportOpened: asBoolean(diagnostic.reportOpened),
+    rawDiagnostic: diagnostic,
+    questions,
+    responses: responseRows,
+  };
 }
 
 function normalizeDocCategory(value: unknown) {
@@ -276,8 +493,30 @@ function normalizePrivacy(value: unknown) {
 }
 
 function compactPrototypeState(state: Record<string, unknown>) {
-  // Keep full payload to guarantee no workflow fields are lost as UI evolves.
-  return { ...state };
+  // Diagnostic responses now persist in normalized relational tables.
+  // Keep only non-diagnostic workflow payloads in the legacy snapshot.
+  const compacted = { ...state };
+  const diagnostic = safeObject(compacted.diagnostic);
+
+  if (diagnostic) {
+    const copy = { ...diagnostic };
+    delete copy.answers;
+    delete copy.questionBank;
+    compacted.diagnostic = copy;
+  }
+
+  return compacted;
+}
+
+function stripLegacyDiagnosticPayload(diagnostic: Record<string, unknown> | null) {
+  if (!diagnostic) {
+    return {};
+  }
+
+  const copy = { ...diagnostic };
+  delete copy.answers;
+  delete copy.questionBank;
+  return copy;
 }
 
 function profileFromParticipant(participant: ParticipantRow) {
@@ -351,10 +590,13 @@ function restorePrototypeState(
   participant: ParticipantRow,
   baseState: Record<string, unknown> | null,
   consentMap: Map<string, Record<string, boolean>>,
-  documentMap: Map<string, Array<Record<string, unknown>>>
+  documentMap: Map<string, Array<Record<string, unknown>>>,
+  diagnosticMap: Map<string, Record<string, unknown>>
 ) {
   const baseProfile = safeObject(baseState?.profile);
   const baseConsents = safeObject(baseState?.consents);
+  const baseDiagnostic = safeObject(baseState?.diagnostic);
+  const safeBaseDiagnostic = stripLegacyDiagnosticPayload(baseDiagnostic);
   const baseDocs = asArray(baseState?.docs).filter((item) => Boolean(safeObject(item))) as Array<Record<string, unknown>>;
   const normalizedDocs = documentMap.get(participant.id) ?? [];
   const docsById = new Map<string, Record<string, unknown>>();
@@ -385,10 +627,62 @@ function restorePrototypeState(
       ...(baseConsents ?? {}),
       ...(consentMap.get(participant.id) ?? {}),
     },
+    diagnostic: {
+      ...safeBaseDiagnostic,
+      ...(diagnosticMap.get(participant.id) ?? {}),
+    },
     docs: mergedDocs,
   };
 
   return mergedState;
+}
+
+function buildDiagnosticSnapshot(
+  questionnaire: DiagnosticQuestionnaireRow | undefined,
+  questions: DiagnosticQuestionRow[],
+  responses: DiagnosticResponseRow[]
+) {
+  if (!questionnaire) {
+    return {
+      submitted: false,
+      released: false,
+      reportOpened: false,
+      questionBankName: "",
+      questionBank: null,
+      answers: {},
+    };
+  }
+
+  const questionBank = questions
+    .slice()
+    .sort((a, b) => a.display_order - b.display_order)
+    .map((row) => ({
+      id: row.question_id,
+      dimension: row.dimension,
+      q: row.question_text,
+      o: asArray(row.options),
+      scores: asNumberArray(row.scores),
+    }));
+
+  const answers: Record<string, unknown> = {};
+  responses.forEach((row) => {
+    answers[String(row.question_id)] = {
+      choices: asNumberArray(row.ranked_choices),
+      conf: row.confidence ?? "",
+      comment: row.comment ?? "",
+      other: row.other_text ?? "",
+      priv: Boolean(row.is_private),
+    };
+  });
+
+  return {
+    submitted: Boolean(questionnaire.is_submitted),
+    released: Boolean(questionnaire.is_released),
+    reportOpened: Boolean(questionnaire.report_opened_at),
+    questionBankName: questionnaire.bank_name ?? "",
+    questionBank,
+    answers,
+  };
 }
 
 async function syncPrototypeSnapshot(
@@ -460,6 +754,131 @@ async function syncDocumentsMetadata(
   }
 }
 
+async function syncDiagnosticResponses(
+  supabase: Awaited<ReturnType<typeof createClient>>,
+  participantId: string,
+  userId: string,
+  state: Record<string, unknown>
+) {
+  const nowIso = new Date().toISOString();
+  const normalized = normalizeDiagnosticState(state, nowIso);
+  if (!normalized) {
+    return;
+  }
+
+  const { data: questionnaire, error: questionnaireError } = await supabase
+    .from("diagnostic_questionnaires")
+    .upsert(
+      {
+        participant_id: participantId,
+        source: "prototype",
+        bank_name: normalized.bankName,
+        total_questions: normalized.totalQuestions,
+        is_submitted: normalized.isSubmitted,
+        submitted_at: normalized.isSubmitted ? nowIso : null,
+        is_released: normalized.isReleased,
+        released_at: normalized.isReleased ? nowIso : null,
+        report_opened_at: normalized.reportOpened ? nowIso : null,
+        raw_diagnostic: normalized.rawDiagnostic,
+        created_by: userId,
+        updated_by: userId,
+      },
+      {
+        onConflict: "participant_id,source",
+      }
+    )
+    .select("id")
+    .single<{ id: string }>();
+
+  // 42P01 = undefined_table. Keep prototype working if migration is not applied yet.
+  if (questionnaireError?.code === "42P01") {
+    return;
+  }
+
+  if (questionnaireError || !questionnaire) {
+    throw new Error(questionnaireError?.message ?? "Unable to save diagnostic questionnaire.");
+  }
+
+  const questionnaireId = questionnaire.id;
+
+  if (normalized.questions.length > 0) {
+    const { error: deleteQuestionError } = await supabase
+      .from("diagnostic_questions")
+      .delete()
+      .eq("questionnaire_id", questionnaireId);
+
+    if (deleteQuestionError) {
+      throw new Error(deleteQuestionError.message);
+    }
+
+    const { error: insertQuestionError } = await supabase
+      .from("diagnostic_questions")
+      .insert(
+        normalized.questions.map((question) => ({
+          questionnaire_id: questionnaireId,
+          question_id: question.questionId,
+          display_order: question.displayOrder,
+          dimension: question.dimension,
+          question_text: question.questionText,
+          options: question.options,
+          scores: question.scores,
+          metadata: question.raw,
+        }))
+      );
+
+    if (insertQuestionError) {
+      throw new Error(insertQuestionError.message);
+    }
+  }
+
+  if (normalized.responses.length === 0) {
+    await supabase
+      .from("diagnostic_question_responses")
+      .delete()
+      .eq("questionnaire_id", questionnaireId);
+    return;
+  }
+
+  const responseIds = normalized.responses.map((response) => response.questionId);
+  const responseFilter = `(${responseIds.join(",")})`;
+
+  const { error: deleteResponseError } = await supabase
+    .from("diagnostic_question_responses")
+    .delete()
+    .eq("questionnaire_id", questionnaireId)
+    .not("question_id", "in", responseFilter);
+
+  if (deleteResponseError) {
+    throw new Error(deleteResponseError.message);
+  }
+
+  const { error: upsertResponseError } = await supabase
+    .from("diagnostic_question_responses")
+    .upsert(
+      normalized.responses.map((response) => ({
+        questionnaire_id: questionnaireId,
+        participant_id: participantId,
+        question_id: response.questionId,
+        ranked_choices: response.rankedChoices,
+        confidence: response.confidence,
+        comment: response.comment,
+        other_text: response.otherText,
+        is_private: response.isPrivate,
+        answer_payload: response.answerPayload,
+        answered_at: response.answeredAt,
+        created_by: userId,
+        updated_by: userId,
+      })),
+      {
+        onConflict: "questionnaire_id,question_id",
+      }
+    );
+
+  if (upsertResponseError) {
+    throw new Error(upsertResponseError.message);
+  }
+}
+
 async function syncParticipantCore(
   supabase: Awaited<ReturnType<typeof createClient>>,
   participantId: string,
@@ -495,73 +914,94 @@ async function syncParticipantCore(
   }
 
   await syncDocumentsMetadata(supabase, participantId, userId, state.docs);
+  await syncDiagnosticResponses(supabase, participantId, userId, state);
   await syncPrototypeSnapshot(supabase, participantId, userId, state);
 }
 
 export async function GET() {
-  const { supabase, user, profile } = await getContext();
+  try {
+    const { supabase, user, profile } = await getContext();
 
-  if (!user || !profile) {
-    return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
-  }
+    if (!user || !profile) {
+      return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+    }
 
-  let visibleParticipants: ParticipantRow[] = [];
+    let visibleParticipants: ParticipantRow[] = [];
 
-  if (profile.role === "participant") {
-    const participant = await ensureParticipantForUser(
-      supabase,
-      user.id,
-      profile.full_name,
-      user.email,
-      profile
-    );
-    visibleParticipants = [participant];
-  } else {
-    const { data } = await supabase
-      .from("participants")
-      .select(PARTICIPANT_SELECT)
-      .order("updated_at", { ascending: false })
-      .limit(200);
+    if (profile.role === "participant") {
+      const participant = await ensureParticipantForUser(
+        supabase,
+        user.id,
+        profile.full_name,
+        user.email,
+        profile
+      );
+      visibleParticipants = [participant];
+    } else {
+      const { data } = await supabase
+        .from("participants")
+        .select(PARTICIPANT_SELECT)
+        .order("updated_at", { ascending: false })
+        .limit(200);
 
-    visibleParticipants = (data ?? []) as ParticipantRow[];
-  }
+      visibleParticipants = (data ?? []) as ParticipantRow[];
+    }
 
-  const participantIds = visibleParticipants.map((participant) => participant.id);
-  const snapshotMap = new Map<string, Record<string, unknown> | null>();
+    const participantIds = visibleParticipants.map((participant) => participant.id);
+    const snapshotMap = new Map<string, Record<string, unknown> | null>();
 
-  if (participantIds.length > 0) {
-    const { data: snapshotRows } = await supabase
-      .from("prototype_states")
-      .select("participant_id, state")
-      .in("participant_id", participantIds);
+    if (participantIds.length > 0) {
+      const { data: snapshotRows } = await supabase
+        .from("prototype_states")
+        .select("participant_id, state")
+        .in("participant_id", participantIds);
 
-    ((snapshotRows ?? []) as PrototypeStateRow[]).forEach((row) => {
-      snapshotMap.set(row.participant_id, safeObject(row.state));
-    });
-  }
+      ((snapshotRows ?? []) as PrototypeStateRow[]).forEach((row) => {
+        snapshotMap.set(row.participant_id, safeObject(row.state));
+      });
+    }
 
-  const consentMap = new Map<string, Record<string, boolean>>();
-  const documentMap = new Map<string, Array<Record<string, unknown>>>();
+    const consentMap = new Map<string, Record<string, boolean>>();
+    const documentMap = new Map<string, Array<Record<string, unknown>>>();
+    const diagnosticMap = new Map<string, Record<string, unknown>>();
 
-  if (participantIds.length > 0) {
-    const [{ data: consentRows }, { data: documentRows }] = await Promise.all([
-      supabase
-        .from("consents")
-        .select("participant_id, consent_key, accepted")
-        .in("participant_id", participantIds),
-      supabase
-        .from("documents")
-        .select("participant_id, id, file_name, category, privacy")
-        .in("participant_id", participantIds)
-        .like("storage_path", "prototype/%")
-        .order("created_at", { ascending: true }),
-    ]);
+    if (participantIds.length > 0) {
+      const [
+        { data: consentRows },
+        { data: documentRows },
+        { data: questionnaireRows },
+        { data: questionRows },
+        { data: responseRows },
+      ] = await Promise.all([
+        supabase
+          .from("consents")
+          .select("participant_id, consent_key, accepted")
+          .in("participant_id", participantIds),
+        supabase
+          .from("documents")
+          .select("participant_id, id, file_name, category, privacy")
+          .in("participant_id", participantIds)
+          .like("storage_path", "prototype/%")
+          .order("created_at", { ascending: true }),
+        supabase
+          .from("diagnostic_questionnaires")
+          .select("id, participant_id, bank_name, total_questions, is_submitted, is_released, report_opened_at")
+          .in("participant_id", participantIds)
+          .eq("source", "prototype"),
+        supabase
+          .from("diagnostic_questions")
+          .select("questionnaire_id, question_id, display_order, dimension, question_text, options, scores"),
+        supabase
+          .from("diagnostic_question_responses")
+          .select("questionnaire_id, participant_id, question_id, ranked_choices, confidence, comment, other_text, is_private")
+          .in("participant_id", participantIds),
+      ]);
 
-    ((consentRows ?? []) as ConsentRow[]).forEach((row) => {
-      const existing = consentMap.get(row.participant_id) ?? {};
-      existing[row.consent_key] = Boolean(row.accepted);
-      consentMap.set(row.participant_id, existing);
-    });
+      ((consentRows ?? []) as ConsentRow[]).forEach((row) => {
+        const existing = consentMap.get(row.participant_id) ?? {};
+        existing[row.consent_key] = Boolean(row.accepted);
+        consentMap.set(row.participant_id, existing);
+      });
 
     ((documentRows ?? []) as DocumentRow[]).forEach((row) => {
       const list = documentMap.get(row.participant_id) ?? [];
@@ -573,64 +1013,114 @@ export async function GET() {
       });
       documentMap.set(row.participant_id, list);
     });
+
+    const questionnaireByParticipantId = new Map<string, DiagnosticQuestionnaireRow>();
+    ((questionnaireRows ?? []) as DiagnosticQuestionnaireRow[]).forEach((row) => {
+      questionnaireByParticipantId.set(row.participant_id, row);
+    });
+
+    const questionnaireIdSet = new Set(
+      Array.from(questionnaireByParticipantId.values()).map((row) => row.id)
+    );
+
+    const questionsByQuestionnaireId = new Map<string, DiagnosticQuestionRow[]>();
+    ((questionRows ?? []) as DiagnosticQuestionRow[]).forEach((row) => {
+      if (!questionnaireIdSet.has(row.questionnaire_id)) {
+        return;
+      }
+
+      const list = questionsByQuestionnaireId.get(row.questionnaire_id) ?? [];
+      list.push(row);
+      questionsByQuestionnaireId.set(row.questionnaire_id, list);
+    });
+
+    const responsesByParticipantId = new Map<string, DiagnosticResponseRow[]>();
+    ((responseRows ?? []) as DiagnosticResponseRow[]).forEach((row) => {
+      const list = responsesByParticipantId.get(row.participant_id) ?? [];
+      list.push(row);
+      responsesByParticipantId.set(row.participant_id, list);
+    });
+
+    participantIds.forEach((participantId) => {
+      const questionnaire = questionnaireByParticipantId.get(participantId);
+      if (!questionnaire) {
+        return;
+      }
+
+      const questions = questionsByQuestionnaireId.get(questionnaire.id) ?? [];
+      const responses = (responsesByParticipantId.get(participantId) ?? []).filter(
+        (row) => row.questionnaire_id === questionnaire.id
+      );
+
+      const diagnostic = buildDiagnosticSnapshot(questionnaire, questions, responses);
+      if (diagnostic) {
+        diagnosticMap.set(participantId, diagnostic);
+      }
+    });
   }
 
-  const selectedPid =
-    profile.role === "participant"
-      ? visibleParticipants[0]?.id ?? null
-      : visibleParticipants[0]?.id ?? null;
+    const selectedPid =
+      profile.role === "participant"
+        ? visibleParticipants[0]?.id ?? null
+        : visibleParticipants[0]?.id ?? null;
 
-  return NextResponse.json({
-    session: {
-      u: sessionUsername(user.email),
-      role: profile.role,
-      name: profile.full_name,
-      email: user.email ?? null,
-      pid: selectedPid,
-      aid: user.id,
-    },
-    adminPid: selectedPid,
-    accounts: [
-      {
-        id: `user-${user.id}`,
+    return NextResponse.json({
+      session: {
         u: sessionUsername(user.email),
-        p: "",
         role: profile.role,
         name: profile.full_name,
+        email: user.email ?? null,
         pid: selectedPid,
-        status: "Active",
-        created: new Date().toISOString().slice(0, 10),
-        lastIn: "",
+        aid: user.id,
       },
-      ...visibleParticipants.map(accountFromParticipant),
-    ],
-    participants: visibleParticipants.map((participant) => ({
-      id: participant.id,
-      fullName: participant.full_name,
-      email: participant.email,
-      snapshot: restorePrototypeState(
-        participant,
-        snapshotMap.get(participant.id) ?? null,
-        consentMap,
-        documentMap
-      ),
-    })),
-  });
+      adminPid: selectedPid,
+      accounts: [
+        {
+          id: `user-${user.id}`,
+          u: sessionUsername(user.email),
+          p: "",
+          role: profile.role,
+          name: profile.full_name,
+          pid: selectedPid,
+          status: "Active",
+          created: new Date().toISOString().slice(0, 10),
+          lastIn: "",
+        },
+        ...visibleParticipants.map(accountFromParticipant),
+      ],
+      participants: visibleParticipants.map((participant) => ({
+        id: participant.id,
+        fullName: participant.full_name,
+        email: participant.email,
+        snapshot: restorePrototypeState(
+          participant,
+          snapshotMap.get(participant.id) ?? null,
+          consentMap,
+          documentMap,
+          diagnosticMap
+        ),
+      })),
+    });
+  } catch (error) {
+    console.error("Prototype state load failed", error);
+    return NextResponse.json({ error: "Prototype state load failed." }, { status: 500 });
+  }
 }
 
 export async function POST(request: Request) {
-  const { supabase, user, profile } = await getContext();
+  try {
+    const { supabase, user, profile } = await getContext();
 
-  if (!user || !profile) {
-    return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
-  }
+    if (!user || !profile) {
+      return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+    }
 
-  const body = await request.json().catch(() => null);
-  const participantsPayload = safeObject(body)?.participants;
+    const body = await request.json().catch(() => null);
+    const participantsPayload = safeObject(body)?.participants;
 
-  if (!participantsPayload) {
-    return NextResponse.json({ error: "Invalid payload" }, { status: 400 });
-  }
+    if (!participantsPayload) {
+      return NextResponse.json({ error: "Invalid payload" }, { status: 400 });
+    }
 
   let allowedParticipants: ParticipantRow[] = [];
 
@@ -671,5 +1161,9 @@ export async function POST(request: Request) {
     );
   }
 
-  return NextResponse.json({ ok: true, saved: entries.length });
+    return NextResponse.json({ ok: true, saved: entries.length });
+  } catch (error) {
+    console.error("Prototype state save failed", error);
+    return NextResponse.json({ error: "Prototype state save failed." }, { status: 500 });
+  }
 }

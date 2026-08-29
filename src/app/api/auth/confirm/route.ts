@@ -9,7 +9,7 @@ import { createClient } from "@/lib/supabase/server";
  */
 export async function GET(request: NextRequest) {
   const { searchParams } = new URL(request.url);
-  const next = searchParams.get("next") ?? "/prototype/index.html";
+  const next = searchParams.get("next") ?? "/app";
 
   const supabase = await createClient();
   const { data: { session } } = await supabase.auth.getSession();

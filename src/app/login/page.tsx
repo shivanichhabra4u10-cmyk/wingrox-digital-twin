@@ -82,7 +82,7 @@ export default async function LoginPage({ searchParams }: LoginPageProps) {
         <div style={{width:"100%",maxWidth:378}}>
           <div style={{fontSize:"0.68rem",letterSpacing:"0.15em",textTransform:"uppercase",color:brass,fontWeight:700,marginBottom:10}}>Programme access</div>
           <h1 style={{fontFamily:serif,fontSize:"2.05rem",fontWeight:600,margin:"0 0 6px",color:ink}}>Sign in</h1>
-          <p style={{color:slate,fontSize:"0.9rem",margin:"0 0 26px"}}>Your email and password decide which screen opens.</p>
+          <p style={{color:slate,fontSize:"0.9rem",margin:"0 0 26px"}}>Your username or email and password decide which screen opens.</p>
 
           {error && (
             <div style={{display:"flex",gap:9,alignItems:"flex-start",background:"#FAF0F0",borderLeft:`2px solid #C0392B`,borderRadius:"0 4px 4px 0",padding:"10px 13px",fontSize:"0.87rem",color:"#7C2C2B",marginBottom:18}}>
@@ -92,8 +92,8 @@ export default async function LoginPage({ searchParams }: LoginPageProps) {
 
           <form action={signInAction}>
             <div style={{marginBottom:15}}>
-              <label style={{display:"block",fontSize:"0.68rem",letterSpacing:"0.15em",textTransform:"uppercase",color:slate,marginBottom:7,fontWeight:700}}>Email</label>
-              <input name="email" type="email" required placeholder="e.g. dipti@example.com" autoComplete="email"
+              <label style={{display:"block",fontSize:"0.68rem",letterSpacing:"0.15em",textTransform:"uppercase",color:slate,marginBottom:7,fontWeight:700}}>Username or email</label>
+              <input name="identifier" type="text" required placeholder="e.g. dipti or dipti@example.com" autoComplete="username"
                 style={{width:"100%",fontSize:"0.98rem",padding:"11px 2px",border:0,borderBottom:`1px solid #D1D9E0`,borderRadius:0,background:"transparent",outline:"none",color:ink}}
               />
             </div>
@@ -143,6 +143,9 @@ export default async function LoginPage({ searchParams }: LoginPageProps) {
 
           <p style={{marginTop:22,fontSize:"0.76rem",lineHeight:1.6,color:slate,borderLeft:`2px solid #E4EAF0`,paddingLeft:12}}>
             <strong style={{color:ink}}>Important.</strong> Use assigned credentials only and share account details through approved secure channels.
+          </p>
+          <p style={{marginTop:10,fontSize:"0.76rem",lineHeight:1.6,color:slate}}>
+            Demo usernames supported here: dipti, architect, coach, sponsor.
           </p>
         </div>
       </main>
