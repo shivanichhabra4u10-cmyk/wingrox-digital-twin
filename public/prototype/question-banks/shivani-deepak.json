@@ -1,0 +1,362 @@
+[
+  {
+    "id": 1,
+    "dimension": "Identity clarity",
+    "q": "Which statement best describes how clearly you can explain your professional identity today?",
+    "o": [
+      "I have a sharp, confident answer that I give consistently",
+      "I know what I do but struggle to explain why it matters",
+      "My identity changes depending on who I am speaking to",
+      "I define myself through my current role and organisation",
+      "I have multiple identities that feel disconnected",
+      "I am in the middle of redefining who I am professionally",
+      "I have a clear identity in one area but not across all I do",
+      "Others define me more clearly than I define myself",
+      "I have the raw material but have not yet shaped it into a clear statement",
+      "I am unsure what my professional identity actually is"
+    ],
+    "scores": [10, 7, 4, 3, 4, 6, 6, 3, 7, 2]
+  },
+  {
+    "id": 2,
+    "dimension": "North Star clarity",
+    "q": "How clearly defined is your five-year professional direction?",
+    "o": [
+      "I have a written North Star that guides every major decision",
+      "I have a strong sense of direction even if not written down",
+      "I know the general area but not the specific destination",
+      "I have several directions competing for my attention",
+      "My direction is shaped more by opportunity than by intention",
+      "I am actively working to clarify it right now",
+      "My direction is clear for work but not for life as a whole",
+      "I know what I want to move away from but not toward",
+      "I revisit it regularly and adjust as I learn",
+      "I have no defined direction and operate reactively"
+    ],
+    "scores": [10, 8, 6, 4, 3, 7, 5, 4, 8, 1]
+  },
+  {
+    "id": 3,
+    "dimension": "Strength use",
+    "q": "How well do your daily activities use your strongest capabilities?",
+    "o": [
+      "Most of my time is spent using strengths I genuinely enjoy",
+      "I use key strengths daily but they are overused in narrow ways",
+      "I have strengths that my role rarely calls on",
+      "I spend significant time on tasks that drain me",
+      "My strengths are recognised but not leveraged strategically",
+      "I know my strengths but have not aligned my work to them",
+      "My role uses some strengths and suppresses others",
+      "I am still discovering which strengths matter most",
+      "I use different strengths in different contexts effectively",
+      "I rarely think about strengths in relation to my work"
+    ],
+    "scores": [10, 7, 5, 2, 5, 6, 5, 6, 8, 1]
+  },
+  {
+    "id": 4,
+    "dimension": "Self-owned priorities",
+    "q": "How much of your weekly time goes to goals you have chosen for yourself?",
+    "o": [
+      "I protect significant time each week for my own growth goals",
+      "I have self-owned goals but they lose out to other demands",
+      "My calendar is mostly shaped by others' expectations",
+      "I have goals but rarely get to them in any given week",
+      "I have built a system that defends my own priority time",
+      "I say yes to others before protecting time for myself",
+      "I work on my own goals at the edges — evenings or weekends",
+      "I treat my own growth as flexible, not fixed",
+      "I recently started protecting time and am building the habit",
+      "I have no self-owned growth goals in my current schedule"
+    ],
+    "scores": [10, 6, 2, 4, 10, 3, 5, 3, 7, 1]
+  },
+  {
+    "id": 5,
+    "dimension": "Boundaries",
+    "q": "How consistently do you evaluate requests before accepting them?",
+    "o": [
+      "I have a clear decision rule and apply it consistently",
+      "I pause and evaluate but still say yes more than I should",
+      "I say yes by default and regret it regularly",
+      "I find it difficult to say no to people I respect",
+      "I am selective but my criteria are not explicit",
+      "I have scripts or frameworks for declining gracefully",
+      "I over-commit in short bursts and then withdraw",
+      "I accept responsibility and later resent it",
+      "I am working on this and improving",
+      "I have no structured way to evaluate or decline requests"
+    ],
+    "scores": [10, 6, 2, 4, 5, 9, 3, 2, 7, 1]
+  },
+  {
+    "id": 6,
+    "dimension": "Energy management",
+    "q": "How intentionally do you manage your energy across the week?",
+    "o": [
+      "I track what gives and drains energy and act on the pattern",
+      "I know what drains me but have not structured a response",
+      "I manage energy reactively — after I feel depleted",
+      "I protect peak hours for the work that matters most",
+      "My energy fluctuates widely and I cannot predict it",
+      "I confuse busyness with productivity",
+      "I take regular steps to renew energy before it drops",
+      "I have identified my energy drains but have not removed them",
+      "I am beginning to notice patterns and adjust",
+      "I have never thought systematically about energy management"
+    ],
+    "scores": [10, 6, 3, 9, 3, 2, 10, 5, 7, 1]
+  },
+  {
+    "id": 7,
+    "dimension": "Relationship capital",
+    "q": "How would you describe the depth and breadth of your professional network?",
+    "o": [
+      "Wide, deep and organised with clear purpose for each connection",
+      "Wide but not organised by what I am building",
+      "Deep in one area but limited across others",
+      "Strong historically but not actively maintained",
+      "Built on giving rather than on mutual growth",
+      "I have access to senior people but rarely activate it",
+      "My network is strong but exists mainly inside one organisation",
+      "I am rebuilding after a period of reduced activity",
+      "Quality relationships, limited in number",
+      "Largely transactional with few deep professional relationships"
+    ],
+    "scores": [10, 7, 6, 5, 5, 7, 4, 6, 7, 2]
+  },
+  {
+    "id": 8,
+    "dimension": "Relationship activation",
+    "q": "How effectively do you activate your network for your own growth?",
+    "o": [
+      "My network actively supports what I am building",
+      "I give generously but rarely ask for what I need",
+      "Contacts do not know what I am working on",
+      "I have conversations but do not translate them into opportunities",
+      "I activate my network strategically with a clear ask",
+      "I keep relationships warm but do not take them further",
+      "I feel awkward asking contacts for support",
+      "I recently began having more intentional growth conversations",
+      "I activate relationships well in moments of need",
+      "I rely on chance encounters rather than planned conversations"
+    ],
+    "scores": [10, 5, 3, 4, 10, 5, 3, 7, 6, 2]
+  },
+  {
+    "id": 9,
+    "dimension": "Authority",
+    "q": "How well is your expertise visible and codified outside of your role?",
+    "o": [
+      "I have documented case studies, a method and testimonials",
+      "My expertise is recognised in my organisation but not outside it",
+      "People respect my judgment but cannot describe my method",
+      "I have the knowledge but have not recorded evidence of impact",
+      "I have started to codify my expertise recently",
+      "My reputation exists informally through word of mouth",
+      "I present my expertise through content regularly",
+      "My authority is tied to my title and disappears if I change roles",
+      "I know my subject deeply but struggle to articulate the framework",
+      "I have not thought about establishing expertise as a strategic asset"
+    ],
+    "scores": [10, 6, 5, 4, 7, 6, 8, 2, 5, 1]
+  },
+  {
+    "id": 10,
+    "dimension": "Visibility",
+    "q": "How consistently are you building a visible presence around one clear theme?",
+    "o": [
+      "I publish regularly on a clear theme and am known for it",
+      "I am active online but cover multiple themes with no clear thread",
+      "I post occasionally when inspired but have no consistent approach",
+      "I prefer to build visibility through relationships rather than content",
+      "I am visible in a small community but not more broadly",
+      "I have a theme in mind but have not started publishing",
+      "I have a following but it is not tied to what I am now building",
+      "I am developing my voice and testing formats",
+      "I am not sure what theme I want to be known for",
+      "I am not currently working on visibility"
+    ],
+    "scores": [10, 5, 4, 6, 6, 6, 4, 7, 3, 1]
+  },
+  {
+    "id": 11,
+    "dimension": "Commercial confidence",
+    "q": "How confidently do you price and present the value of your expertise?",
+    "o": [
+      "I price based on value delivered, not time or comparison",
+      "I know my value but discount it when asked",
+      "I charge for my time but not for my judgment",
+      "I am comfortable in commercial conversations",
+      "I avoid pricing conversations and let others set terms",
+      "I have defined a fee for a specific pilot or service",
+      "I need to separate my expertise from the organisation behind it",
+      "I am learning how to have commercial conversations",
+      "I have had commercial success but in a different context",
+      "I have not thought about independent commercial positioning"
+    ],
+    "scores": [10, 6, 5, 9, 2, 8, 5, 6, 6, 1]
+  },
+  {
+    "id": 12,
+    "dimension": "Ownership of assets",
+    "q": "Which best describes the assets you own independent of any employer?",
+    "o": [
+      "I have a knowledge base, audience, IP and documented methods",
+      "I have an audience or following that is independent of any role",
+      "I have a portfolio of documented outcomes and case stories",
+      "I have been building but the assets are still early",
+      "My assets live inside other people's platforms or organisations",
+      "I have relationships as assets but little else",
+      "I am beginning to build owned assets now",
+      "I have ideas for assets but have not built them yet",
+      "Most of what I have built benefits others not me",
+      "I have no self-owned professional assets"
+    ],
+    "scores": [10, 8, 8, 6, 3, 5, 6, 5, 2, 1]
+  },
+  {
+    "id": 13,
+    "dimension": "Focus and execution",
+    "q": "How well do you execute your own growth goals alongside professional commitments?",
+    "o": [
+      "I have a clear 90-day goal and a weekly review that keeps me on track",
+      "I execute well for others but my own goals lose momentum",
+      "I start strongly and lose consistency over time",
+      "I have an accountability partner who helps me stay on track",
+      "I struggle to separate growth work from operational work",
+      "I complete growth goals but they take longer than planned",
+      "I have recently built a rhythm that is beginning to work",
+      "I set goals but do not review them regularly",
+      "My growth work is squeezed out by immediate demands",
+      "I have no defined growth goals to execute against"
+    ],
+    "scores": [10, 4, 4, 9, 3, 5, 7, 4, 3, 1]
+  },
+  {
+    "id": 14,
+    "dimension": "AI and work systems",
+    "q": "How effectively are you using AI and systems to amplify your work?",
+    "o": [
+      "AI is integrated into my knowledge management, research and output",
+      "I use AI for individual tasks but have no integrated system",
+      "I have a central knowledge base that I maintain and use",
+      "I use standard tools but have not built a personal work system",
+      "I am experimenting with AI and finding useful applications",
+      "I use AI occasionally but default to manual processes",
+      "I have built a system that reduces repetitive work significantly",
+      "I am aware of what is possible but have not built habits yet",
+      "I find AI tools useful but not yet transformative",
+      "I do not currently use AI or work systems intentionally"
+    ],
+    "scores": [10, 6, 8, 4, 7, 4, 9, 5, 4, 1]
+  },
+  {
+    "id": 15,
+    "dimension": "Creative expression",
+    "q": "How much space does creative expression have in your professional and personal life?",
+    "o": [
+      "Creativity is central to both my work and my life",
+      "I have a creative practice that is separate from work",
+      "Creativity was important previously but has reduced",
+      "I express creativity through my work in some areas",
+      "I have creative interests that I want to reconnect with",
+      "I keep creative ideas but rarely act on them",
+      "I am actively rebuilding space for creative work",
+      "My definition of creative expression is still forming",
+      "I do not consider creativity a professional priority",
+      "Creativity is absent from my current life"
+    ],
+    "scores": [10, 8, 5, 7, 6, 4, 7, 5, 3, 1]
+  },
+  {
+    "id": 16,
+    "dimension": "Family and life fit",
+    "q": "How well does your current work pattern fit the life you want to protect?",
+    "o": [
+      "My work and life boundaries are intentional and mostly respected",
+      "I protect time for family and personal life consistently",
+      "Work expands and squeezes personal priorities regularly",
+      "I have defined clear limits on travel, hours and commitments",
+      "I sacrifice personal priorities more than I intend to",
+      "I manage the balance but it requires constant adjustment",
+      "A career change could affect life balance and I need to plan for it",
+      "I have not yet defined what life fit means to me explicitly",
+      "Life fit matters to me but I have not made it a decision criterion",
+      "Work dominates and I have accepted it as necessary"
+    ],
+    "scores": [10, 9, 4, 9, 3, 6, 7, 5, 5, 2]
+  },
+  {
+    "id": 17,
+    "dimension": "Meaning and purpose",
+    "q": "How clearly connected is your work to a sense of meaning and contribution?",
+    "o": [
+      "My work has strong meaning and I can explain why it matters",
+      "I feel useful and connected to contribution most days",
+      "Meaning comes from relationships, not from the work itself",
+      "I am doing meaningful work in parts but not as a whole",
+      "I have lost the sense of meaning that once drove me",
+      "I am searching for work that aligns with what I care about",
+      "Meaning comes from impact on individuals, not from organisations",
+      "I know what gives meaning but have not aligned my work to it",
+      "Purpose is something I think about but have not acted on",
+      "I do not currently experience my work as meaningful"
+    ],
+    "scores": [10, 8, 6, 6, 3, 7, 7, 6, 5, 1]
+  },
+  {
+    "id": 18,
+    "dimension": "Support and accountability",
+    "q": "What level of structured support do you have for your growth journey?",
+    "o": [
+      "I have a coach, thinking partners and a review rhythm",
+      "I have a mentor who provides guidance when I need it",
+      "I have peers I can think out loud with",
+      "I carry the growth plan alone with no external accountability",
+      "I have a sponsor who opens doors for me",
+      "I am in a community with others on similar journeys",
+      "I have support but it is informal and inconsistent",
+      "I have started looking for the right support structure",
+      "I have had support before and know its value but do not have it now",
+      "I have no structured support for my professional growth"
+    ],
+    "scores": [10, 7, 6, 2, 7, 7, 5, 6, 6, 1]
+  },
+  {
+    "id": 19,
+    "dimension": "Career-option evidence",
+    "q": "How much real evidence do you have for the career options you are considering?",
+    "o": [
+      "I have tested at least one option and have evidence of demand",
+      "I have had conversations that confirm interest from others",
+      "Options remain ideas that I have not yet tested",
+      "I have begun one experiment to generate evidence",
+      "I have done the work but have not documented the evidence",
+      "I can point to outcomes that support a specific direction",
+      "I am waiting for the right moment to start testing",
+      "My evidence is strong in my current area, not in the new one",
+      "I have informal signals but no structured proof",
+      "I have no evidence for any of the options I am considering"
+    ],
+    "scores": [10, 7, 3, 8, 6, 8, 3, 5, 5, 1]
+  },
+  {
+    "id": 20,
+    "dimension": "Financial transition readiness",
+    "q": "How prepared are you financially to make a career transition if you chose to?",
+    "o": [
+      "I have a clear financial baseline and runway to make choices",
+      "I have savings but have not calculated a specific transition runway",
+      "I rely entirely on my current income with no safety net",
+      "I have begun building financial security for more choice",
+      "I know what I need to save but have not yet done it",
+      "Financial constraints are the main reason I have not moved",
+      "I have income security through multiple sources already",
+      "I have not done a detailed financial readiness review",
+      "Money is less important to me than freedom and meaning",
+      "I have never connected financial planning to career decisions"
+    ],
+    "scores": [10, 7, 2, 7, 6, 4, 9, 4, 6, 3]
+  }
+]

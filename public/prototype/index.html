@@ -5756,6 +5756,32 @@ function exportJSON(){
 }
 
 /* -------------------------------- init ----------------------------------- */
+
+/* Email → question bank file mapping. Add new entries here for each participant. */
+var QB_EMAIL_MAP = {
+  "shivanideepak@gmail.com": "/prototype/question-banks/shivani-deepak.json"
+};
+
+async function autoLoadQuestionBank(){
+  var email = (S.profile && S.profile.email || "").toLowerCase().trim();
+  if(!email) return;
+  var url = QB_EMAIL_MAP[email];
+  if(!url) return;
+  /* Skip if a custom bank is already loaded for this participant */
+  if(S.diagnostic && S.diagnostic.questionBank && S.diagnostic.questionBank.length) return;
+  try{
+    var res = await fetch(url, {cache:"no-store"});
+    if(!res.ok) return;
+    var bank = await res.json();
+    if(Array.isArray(bank) && bank.length){
+      S.diagnostic.questionBank = bank;
+      S.diagnostic.questionBankName = url.split("/").pop();
+      saveState();
+      render();
+    }
+  }catch(e){ /* silently skip — default QB will be used */ }
+}
+
 async function initApp(){
   /* Render immediately from local state — no loading screen */
   loadState();
@@ -5767,6 +5793,8 @@ async function initApp(){
     await loadRemoteState();
     render();
   }catch(err){ /* remote unavailable — local state is already shown */ }
+  /* Auto-load question bank by participant email */
+  await autoLoadQuestionBank();
 }
 void initApp();
 window.addEventListener("resize", function(){
