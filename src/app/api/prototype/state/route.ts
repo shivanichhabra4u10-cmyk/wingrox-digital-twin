@@ -917,6 +917,97 @@ async function syncPersonaStage(
   }
 }
 
+function normalizeJourneyWeeks(value: unknown) {
+  const source = safeObject(value) ?? {};
+  const normalized: Record<string, unknown> = {};
+
+  Object.entries(source).forEach(([weekKey, weekValue]) => {
+    const week = safeObject(weekValue);
+    if (!week) {
+      return;
+    }
+
+    const reqs = safeObject(week.reqs) ?? {};
+    const fit = safeObject(week.fit) ?? {};
+    normalized[weekKey] = {
+      reqs,
+      commitments: asArray(week.commitments),
+      notes: asString(week.notes).trim(),
+      coachSummary: asString(week.coachSummary).trim(),
+      coachComment: asString(week.coachComment).trim(),
+      energy: asString(week.energy).trim(),
+      confidence: asString(week.confidence).trim(),
+      boundary: asString(week.boundary).trim(),
+      relationship: asString(week.relationship).trim(),
+      evidence: asArray(week.evidence),
+      priv: asString(week.priv).trim() || "Architect and coach",
+      participantConfirmed: Boolean(week.participantConfirmed),
+      coachClosed: Boolean(week.coachClosed),
+      decision: asString(week.decision).trim(),
+      fit,
+    };
+  });
+
+  return normalized;
+}
+
+async function syncJourneyStage(
+  supabase: Awaited<ReturnType<typeof createClient>>,
+  participantId: string,
+  userId: string,
+  state: Record<string, unknown>
+) {
+  const journey = safeObject(state.journey);
+  if (!journey) {
+    return;
+  }
+
+  const weeks = normalizeJourneyWeeks(journey.weeks);
+  const current = asPositiveInt(journey.current) ?? 0;
+  const payload = {
+    current,
+    weeks,
+    updatedAt: new Date().toISOString(),
+    updatedBy: userId,
+  };
+
+  const { error } = await supabase.from("stage_payloads").upsert({
+    participant_id: participantId,
+    stage: "journey",
+    payload,
+  });
+
+  if (error) {
+    throw new Error(error.message);
+  }
+
+  const weekEntries = Object.entries(weeks);
+  const closedWeeks = weekEntries.filter(([, week]) => {
+    const row = safeObject(week);
+    return Boolean(row && (row.coachClosed || row.participantConfirmed || row.decision));
+  }).length;
+  const isComplete = weekEntries.length > 0 && closedWeeks >= Math.max(1, weekEntries.length);
+
+  const { error: progressError } = await supabase
+    .from("stage_progress")
+    .upsert(
+      {
+        participant_id: participantId,
+        stage: "journey",
+        is_complete: isComplete,
+        unlocked: weekEntries.length > 0 || current > 0,
+        released_by_architect: false,
+        updated_by: userId,
+        updated_at: new Date().toISOString(),
+      },
+      { onConflict: "participant_id,stage" }
+    );
+
+  if (progressError) {
+    throw new Error(progressError.message);
+  }
+}
+
 async function syncParticipantCore(
   supabase: Awaited<ReturnType<typeof createClient>>,
   participantId: string,
@@ -954,6 +1045,7 @@ async function syncParticipantCore(
   await syncDocumentsMetadata(supabase, participantId, userId, state.docs);
   await syncDiagnosticResponses(supabase, participantId, userId, state);
   await syncPersonaStage(supabase, participantId, userId, state);
+  await syncJourneyStage(supabase, participantId, userId, state);
   await syncPrototypeSnapshot(supabase, participantId, userId, state);
 }
 
