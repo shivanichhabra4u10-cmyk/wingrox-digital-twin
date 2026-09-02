@@ -246,7 +246,6 @@ create table if not exists public.diagnostic_response_snapshots (
   participant_id uuid not null references public.participants(id) on delete cascade,
   answers jsonb not null default '{}'::jsonb,
   answered_count integer not null default 0,
-  answered_at timestamptz,
   created_by uuid references auth.users(id) on delete set null,
   updated_by uuid references auth.users(id) on delete set null,
   created_at timestamptz not null default now(),
@@ -261,7 +260,7 @@ create index if not exists diagnostic_questionnaires_participant_idx
 create index if not exists diagnostic_questions_questionnaire_idx
   on public.diagnostic_questions (questionnaire_id, display_order);
 create index if not exists diagnostic_response_snapshots_participant_idx
-  on public.diagnostic_response_snapshots (participant_id, answered_at desc);
+  on public.diagnostic_response_snapshots (participant_id, updated_at desc);
 create index if not exists diagnostic_response_snapshots_answers_gin_idx
   on public.diagnostic_response_snapshots using gin (answers);
 

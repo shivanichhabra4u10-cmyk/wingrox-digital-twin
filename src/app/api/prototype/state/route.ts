@@ -265,6 +265,19 @@ function asString(value: unknown) {
   return typeof value === "string" ? value : "";
 }
 
+function extractTimeFromSlot(value: unknown): string {
+  if (typeof value !== "string") {
+    return "";
+  }
+
+  const match = value.match(/\b\d{1,2}:\d{2}\s*(?:AM|PM)?\b/i);
+  if (!match) {
+    return "";
+  }
+
+  return match[0].trim();
+}
+
 function asBoolean(value: unknown) {
   return value === true;
 }
@@ -370,7 +383,6 @@ type NormalizedDiagnostic = {
   isSubmitted: boolean;
   isReleased: boolean;
   reportOpened: boolean;
-  answeredAt: string | null;
   answeredCount: number;
   rawDiagnostic: Record<string, unknown>;
   questions: DiagnosticQuestionRecord[];
@@ -378,8 +390,7 @@ type NormalizedDiagnostic = {
 };
 
 function normalizeDiagnosticState(
-  state: Record<string, unknown>,
-  timestampIso: string
+  state: Record<string, unknown>
 ): NormalizedDiagnostic | null {
   const diagnostic = safeObject(state.diagnostic);
   if (!diagnostic) {
@@ -461,7 +472,6 @@ function normalizeDiagnosticState(
     isSubmitted: asBoolean(diagnostic.submitted),
     isReleased: asBoolean(diagnostic.released),
     reportOpened: asBoolean(diagnostic.reportOpened),
-    answeredAt: answeredCount > 0 ? timestampIso : null,
     answeredCount,
     rawDiagnostic: diagnostic,
     questions,
@@ -739,7 +749,7 @@ async function syncDiagnosticResponses(
   state: Record<string, unknown>
 ) {
   const nowIso = new Date().toISOString();
-  const normalized = normalizeDiagnosticState(state, nowIso);
+  const normalized = normalizeDiagnosticState(state);
   if (!normalized) {
     return;
   }
@@ -816,7 +826,6 @@ async function syncDiagnosticResponses(
         participant_id: participantId,
         answers: normalized.answersPayload,
         answered_count: normalized.answeredCount,
-        answered_at: normalized.answeredAt,
         created_by: userId,
         updated_by: userId,
       },
@@ -832,6 +841,79 @@ async function syncDiagnosticResponses(
 
   if (upsertSnapshotError) {
     throw new Error(upsertSnapshotError.message);
+  }
+}
+
+async function syncPersonaStage(
+  supabase: Awaited<ReturnType<typeof createClient>>,
+  participantId: string,
+  userId: string,
+  state: Record<string, unknown>
+) {
+  const persona = safeObject(state.persona);
+  if (!persona) {
+    return;
+  }
+
+  const scheduleSource = safeObject(persona.schedule) ?? persona;
+  const rawSlot = asString(scheduleSource.slot).trim();
+  const rawTime = asString(scheduleSource.time).trim();
+  const resolvedTime = rawTime || extractTimeFromSlot(rawSlot) || "";
+  const schedule = {
+    date: asString(scheduleSource.date).trim(),
+    time: resolvedTime,
+    tz: asString(scheduleSource.tz).trim() || "UTC",
+    mode: asString(scheduleSource.mode).trim() || "Video",
+    scheduled: Boolean(scheduleSource.scheduled),
+    completed: Boolean(scheduleSource.completed),
+    released: Boolean(scheduleSource.released),
+    reportOpened: Boolean(scheduleSource.reportOpened),
+    notes: asString(scheduleSource.notes).trim(),
+    slot: rawSlot || resolvedTime,
+  };
+
+  const payload = {
+    prepChecklist: safeObject(persona.prepChecklist) ?? {},
+    questions: asString(persona.questions).trim(),
+    notes: asString(persona.notes).trim(),
+    schedule,
+    participantNotes: asArray(persona.participantNotes),
+    corrections: asArray(persona.corrections),
+    updatedAt: new Date().toISOString(),
+    updatedBy: userId,
+  };
+
+  const { error } = await supabase.from("stage_payloads").upsert({
+    participant_id: participantId,
+    stage: "persona",
+    payload,
+  });
+
+  if (error) {
+    throw new Error(error.message);
+  }
+
+  const isComplete = Boolean(schedule.completed || persona.completed);
+  const isReleased = Boolean(schedule.released || persona.released);
+  const isUnlocked = Boolean(schedule.scheduled || persona.scheduled || isComplete || isReleased);
+
+  const { error: progressError } = await supabase
+    .from("stage_progress")
+    .upsert(
+      {
+        participant_id: participantId,
+        stage: "persona",
+        is_complete: isComplete,
+        unlocked: isUnlocked,
+        released_by_architect: isReleased,
+        updated_by: userId,
+        updated_at: new Date().toISOString(),
+      },
+      { onConflict: "participant_id,stage" }
+    );
+
+  if (progressError) {
+    throw new Error(progressError.message);
   }
 }
 
@@ -871,6 +953,7 @@ async function syncParticipantCore(
 
   await syncDocumentsMetadata(supabase, participantId, userId, state.docs);
   await syncDiagnosticResponses(supabase, participantId, userId, state);
+  await syncPersonaStage(supabase, participantId, userId, state);
   await syncPrototypeSnapshot(supabase, participantId, userId, state);
 }
 

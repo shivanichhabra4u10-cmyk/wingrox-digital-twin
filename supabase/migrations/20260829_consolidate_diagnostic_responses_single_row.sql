@@ -6,7 +6,6 @@ create table if not exists public.diagnostic_response_snapshots (
   participant_id uuid not null references public.participants(id) on delete cascade,
   answers jsonb not null default '{}'::jsonb,
   answered_count integer not null default 0,
-  answered_at timestamptz,
   created_by uuid references auth.users(id) on delete set null,
   updated_by uuid references auth.users(id) on delete set null,
   created_at timestamptz not null default now(),
@@ -32,11 +31,22 @@ begin
     alter table public.diagnostic_response_snapshots
       drop column if exists questionnaire_id cascade;
   end if;
+
+  if exists (
+    select 1
+    from information_schema.columns
+    where table_schema = 'public'
+      and table_name = 'diagnostic_response_snapshots'
+      and column_name = 'answered_at'
+  ) then
+    alter table public.diagnostic_response_snapshots
+      drop column if exists answered_at;
+  end if;
 end
 $$;
 
 create index if not exists diagnostic_response_snapshots_participant_idx
-  on public.diagnostic_response_snapshots (participant_id, answered_at desc);
+  on public.diagnostic_response_snapshots (participant_id, updated_at desc);
 create index if not exists diagnostic_response_snapshots_answers_gin_idx
   on public.diagnostic_response_snapshots using gin (answers);
 
@@ -54,7 +64,6 @@ begin
         participant_id,
         answers,
         answered_count,
-        answered_at,
         created_by,
         updated_by
       )
@@ -71,7 +80,6 @@ begin
             or dqr.other_text is not null
             or dqr.is_private
         )::integer as answered_count,
-        max(dqr.answered_at) as answered_at,
         (array_remove(array_agg(dqr.created_by), null))[1] as created_by,
         (array_remove(array_agg(dqr.updated_by), null))[1] as updated_by
       from public.diagnostic_question_responses dqr
@@ -80,7 +88,6 @@ begin
       do update set
         answers = excluded.answers,
         answered_count = excluded.answered_count,
-        answered_at = excluded.answered_at,
         updated_by = excluded.updated_by,
         updated_at = now();
     $sql$;
@@ -93,7 +100,6 @@ insert into public.diagnostic_response_snapshots (
   participant_id,
   answers,
   answered_count,
-  answered_at,
   created_by,
   updated_by
 )
@@ -117,11 +123,6 @@ select
     ),
     0
   ) as answered_count,
-  case
-    when jsonb_typeof(ps.state->'diagnostic'->'answers') = 'object'
-    then ps.updated_at
-    else null
-  end as answered_at,
   ps.updated_by,
   ps.updated_by
 from public.diagnostic_questionnaires dq

@@ -233,6 +233,104 @@ async function createNotification(params: {
   });
 }
 
+function toPlainObject(value: unknown): Record<string, unknown> | null {
+  return value !== null && typeof value === "object" && !Array.isArray(value)
+    ? (value as Record<string, unknown>)
+    : null;
+}
+
+function extractTimeFromSlot(value: unknown): string {
+  if (typeof value !== "string") {
+    return "";
+  }
+
+  const match = value.match(/\b\d{1,2}:\d{2}\s*(?:AM|PM)?\b/i);
+  if (!match) {
+    return "";
+  }
+
+  return match[0].trim();
+}
+
+function normalizePersonaSchedulePayload(value: unknown): Record<string, unknown> {
+  const source = toPlainObject(value) ?? {};
+  const date = typeof source.date === "string" ? source.date.trim() : "";
+  const rawTime = typeof source.time === "string" ? source.time.trim() : "";
+  const rawSlot = typeof source.slot === "string" ? source.slot.trim() : "";
+  const time = rawTime || extractTimeFromSlot(rawSlot) || "";
+  const tz = typeof source.tz === "string" ? source.tz.trim() : "UTC";
+  const mode = typeof source.mode === "string" ? source.mode.trim() : "Video";
+
+  return {
+    date,
+    time,
+    tz: tz || "UTC",
+    mode: mode || "Video",
+    scheduled: Boolean(source.scheduled),
+    completed: Boolean(source.completed),
+    released: Boolean(source.released),
+    reportOpened: Boolean(source.reportOpened),
+    notes: typeof source.notes === "string" ? source.notes.trim() : "",
+    slot: rawSlot || time,
+  };
+}
+
+async function upsertPersonaStagePayload(
+  participantId: string,
+  userId: string,
+  state: Record<string, unknown>
+) {
+  const { supabase } = await requireProfile();
+  const persona = toPlainObject(state.persona) ?? {};
+  const scheduleSource = toPlainObject(persona.schedule) ?? persona;
+  const schedule = normalizePersonaSchedulePayload(scheduleSource);
+  const prepChecklist = toPlainObject(persona.prepChecklist) ?? {};
+
+  const payload = {
+    prepChecklist,
+    questions: typeof persona.questions === "string" ? persona.questions.trim() : "",
+    notes: typeof persona.notes === "string" ? persona.notes.trim() : "",
+    schedule,
+    participantNotes: Array.isArray(persona.participantNotes) ? persona.participantNotes : [],
+    corrections: Array.isArray(persona.corrections) ? persona.corrections : [],
+    updatedAt: new Date().toISOString(),
+    updatedBy: userId,
+  };
+
+  const { error } = await supabase.from("stage_payloads").upsert({
+    participant_id: participantId,
+    stage: "persona",
+    payload,
+  });
+
+  if (error) {
+    throw new Error(error.message);
+  }
+
+  const isComplete = Boolean(schedule.completed || persona.completed);
+  const isReleased = Boolean(schedule.released || persona.released);
+  const isUnlocked = Boolean(schedule.scheduled || persona.scheduled || isComplete || isReleased);
+
+  const { error: progressError } = await supabase
+    .from("stage_progress")
+    .upsert(
+      {
+        participant_id: participantId,
+        stage: "persona",
+        is_complete: isComplete,
+        unlocked: isUnlocked,
+        released_by_architect: isReleased,
+        updated_by: userId,
+        updated_at: new Date().toISOString(),
+      },
+      { onConflict: "participant_id,stage" }
+    );
+
+  if (progressError) {
+    throw new Error(progressError.message);
+  }
+}
+
 export async function saveProfileAction(formData: FormData) {
   try {
     const parsed = profileSchema.safeParse({
@@ -519,6 +617,101 @@ export async function saveStageNoteAction(formData: FormData) {
     });
 
     await setFlashMessage("success", `Stage ${parsedStage.data} note saved.`);
+  } catch (error) {
+    await setFlashMessage("error", toErrorMessage(error));
+  }
+
+  revalidatePath("/app");
+}
+
+export async function savePersonaScheduleAction(formData: FormData) {
+  try {
+    const participantId = z.string().uuid().safeParse(formData.get("participantId"));
+    const date = z.string().trim().max(32).safeParse(formData.get("date") ?? "");
+    const rawTime =
+      formData.get("time") ??
+      formData.get("slot") ??
+      formData.get("scheduleTime") ??
+      formData.get("timeSlot") ??
+      "";
+    const time = z.string().trim().max(32).safeParse(rawTime);
+    const tz = z.string().trim().max(128).safeParse(formData.get("tz") ?? "UTC");
+    const mode = z.string().trim().max(64).safeParse(formData.get("mode") ?? "Video");
+    const scheduled = z.enum(["true", "false"]).safeParse(formData.get("scheduled") ?? "true");
+    const completed = z.enum(["true", "false"]).safeParse(formData.get("completed") ?? "false");
+    const released = z.enum(["true", "false"]).safeParse(formData.get("released") ?? "false");
+
+    if (
+      !participantId.success ||
+      !date.success ||
+      !time.success ||
+      !tz.success ||
+      !mode.success ||
+      !scheduled.success ||
+      !completed.success ||
+      !released.success
+    ) {
+      throw new Error("Invalid persona schedule payload.");
+    }
+
+    const { supabase, user, profile } = await requireProfile();
+
+    if (profile.role !== "participant" && profile.role !== "architect" && profile.role !== "admin") {
+      throw new Error("Only the participant or an assigned architect/admin can save the schedule.");
+    }
+
+    const hasScheduleAccess = await canManageParticipant(
+      participantId.data,
+      profile.role,
+      user.id,
+      ["participant", "architect", "admin"]
+    );
+
+    if (!hasScheduleAccess) {
+      throw new Error("You do not have permission to update this participant schedule.");
+    }
+
+    const resolvedTime = time.data || extractTimeFromSlot(formData.get("slot") ?? "") || "";
+
+    const state = {
+      persona: {
+        date: date.data,
+        time: resolvedTime,
+        tz: tz.data,
+        mode: mode.data,
+        scheduled: scheduled.data === "true",
+        completed: completed.data === "true",
+        released: released.data === "true",
+      },
+    } as Record<string, unknown>;
+
+    await upsertPersonaStagePayload(participantId.data, user.id, state);
+
+    await writeAuditLog({
+      actorUserId: user.id,
+      participantId: participantId.data,
+      action: "persona.schedule.saved",
+      entityName: "stage_payloads",
+      entityId: "persona",
+      metadata: {
+        date: date.data,
+        time: resolvedTime,
+        tz: tz.data,
+        mode: mode.data,
+        scheduled: scheduled.data === "true",
+        completed: completed.data === "true",
+        released: released.data === "true",
+      },
+    });
+
+    await createNotification({
+      participantId: participantId.data,
+      actorUserId: user.id,
+      targetRole: profile.role === "participant" ? "architect" : "participant",
+      message: `Persona Discovery schedule updated for ${date.data} at ${resolvedTime}.`,
+    });
+
+    await setFlashMessage("success", "Persona Discovery schedule saved.");
   } catch (error) {
     await setFlashMessage("error", toErrorMessage(error));
   }
