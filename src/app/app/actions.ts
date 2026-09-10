@@ -35,6 +35,7 @@ const docMetaSchema = z.object({
 
 const MAX_DOC_SIZE_BYTES = 10 * 1024 * 1024;
 const STAGE_ENUM = z.enum(STAGES.map((stage) => stage.key) as [string, ...string[]]);
+const participantIdSchema = z.string().uuid();
 
 type RoleName = "participant" | "architect" | "coach" | "sponsor" | "admin";
 
@@ -237,6 +238,92 @@ function toPlainObject(value: unknown): Record<string, unknown> | null {
   return value !== null && typeof value === "object" && !Array.isArray(value)
     ? (value as Record<string, unknown>)
     : null;
+}
+
+function toStringArray(value: FormDataEntryValue | null) {
+  if (typeof value !== "string") return [];
+  return value
+    .split(",")
+    .map((item) => item.trim())
+    .filter(Boolean)
+    .slice(0, 3);
+}
+
+async function resolveParticipantForMutation(formData: FormData, allowedMappedRoles: RoleName[]) {
+  const { supabase, user, profile } = await requireProfile();
+  const rawParticipantId = formData.get("participantId");
+
+  if (profile.role === "participant") {
+    const owned = await getOrCreateParticipantId();
+    if (typeof rawParticipantId === "string" && rawParticipantId && rawParticipantId !== owned.participantId) {
+      throw new Error("You can only update your own participant journey.");
+    }
+    return { supabase: owned.supabase, user: owned.user, profile: owned.profile, participantId: owned.participantId };
+  }
+
+  const participantId = participantIdSchema.safeParse(rawParticipantId);
+  if (!participantId.success) {
+    throw new Error("Invalid participant id.");
+  }
+
+  const canManage = await canManageParticipant(participantId.data, profile.role, user.id, allowedMappedRoles);
+  if (!canManage) {
+    throw new Error("You do not have permission to update this participant journey.");
+  }
+
+  return { supabase, user, profile, participantId: participantId.data };
+}
+
+async function readStagePayload(participantId: string, stage: z.infer<typeof STAGE_ENUM>) {
+  const { supabase } = await requireProfile();
+  const { data } = await supabase
+    .from("stage_payloads")
+    .select("payload")
+    .eq("participant_id", participantId)
+    .eq("stage", stage)
+    .maybeSingle<{ payload: Record<string, unknown> | null }>();
+
+  return data?.payload ?? {};
+}
+
+async function upsertStagePayload(params: {
+  participantId: string;
+  stage: z.infer<typeof STAGE_ENUM>;
+  payload: Record<string, unknown>;
+  userId: string;
+  isComplete?: boolean;
+  unlocked?: boolean;
+  released?: boolean;
+}) {
+  const { supabase } = await requireProfile();
+  const now = new Date().toISOString();
+
+  const { error } = await supabase.from("stage_payloads").upsert(
+    {
+      participant_id: params.participantId,
+      stage: params.stage,
+      payload: { ...params.payload, updatedAt: now, updatedBy: params.userId },
+    },
+    { onConflict: "participant_id,stage" }
+  );
+
+  if (error) throw new Error(error.message);
+
+  const progress: Record<string, unknown> = {
+    participant_id: params.participantId,
+    stage: params.stage,
+    updated_by: params.userId,
+    updated_at: now,
+  };
+  if (typeof params.isComplete === "boolean") progress.is_complete = params.isComplete;
+  if (typeof params.unlocked === "boolean") progress.unlocked = params.unlocked;
+  if (typeof params.released === "boolean") progress.released_by_architect = params.released;
+
+  const { error: progressError } = await supabase
+    .from("stage_progress")
+    .upsert(progress, { onConflict: "participant_id,stage" });
+
+  if (progressError) throw new Error(progressError.message);
 }
 
 function extractTimeFromSlot(value: unknown): string {
@@ -654,7 +741,7 @@ export async function savePersonaScheduleAction(formData: FormData) {
       throw new Error("Invalid persona schedule payload.");
     }
 
-    const { supabase, user, profile } = await requireProfile();
+    const { user, profile } = await requireProfile();
 
     if (profile.role !== "participant" && profile.role !== "architect" && profile.role !== "admin") {
       throw new Error("Only the participant or an assigned architect/admin can save the schedule.");
@@ -1131,6 +1218,240 @@ export async function markNotificationReadAction(formData: FormData) {
     if (error) {
       throw new Error(error.message);
     }
+  } catch (error) {
+    await setFlashMessage("error", toErrorMessage(error));
+  }
+
+  revalidatePath("/app");
+}
+
+export async function saveValidationInsightAction(formData: FormData) {
+  try {
+    const insightId = z.string().trim().min(2).max(16).safeParse(formData.get("insightId"));
+    const status = z.enum(["confirm", "partial", "reject", "unsure", "private"]).safeParse(formData.get("status"));
+    const priority = z.enum(["critical", "high", "low"]).safeParse(formData.get("priority"));
+    const note = z.string().trim().max(1200).safeParse(formData.get("note") ?? "");
+
+    if (!insightId.success || !status.success || !priority.success || !note.success) {
+      throw new Error("Invalid validation insight payload.");
+    }
+
+    const { user, participantId } = await resolveParticipantForMutation(formData, ["architect", "admin"]);
+    const existing = await readStagePayload(participantId, "validate");
+    const insights = toPlainObject(existing.insights) ?? {};
+    insights[insightId.data] = {
+      status: status.data,
+      priority: priority.data,
+      note: note.data,
+      updatedAt: new Date().toISOString(),
+      updatedBy: user.id,
+    };
+
+    const answeredCount = Object.keys(insights).length;
+    await upsertStagePayload({
+      participantId,
+      stage: "validate",
+      userId: user.id,
+      payload: { ...existing, insights, answeredCount },
+      unlocked: true,
+      isComplete: answeredCount >= 15,
+    });
+
+    await writeAuditLog({ actorUserId: user.id, participantId, action: "validation.insight.saved", entityName: "stage_payloads", entityId: insightId.data });
+    await setFlashMessage("success", "Validation response saved.");
+  } catch (error) {
+    await setFlashMessage("error", toErrorMessage(error));
+  }
+
+  revalidatePath("/app");
+}
+
+export async function saveDiagnosticAnswerAction(formData: FormData) {
+  try {
+    const questionId = z.coerce.number().int().min(1).max(50).safeParse(formData.get("questionId"));
+    const confidence = z.enum(["clear", "exploring", "unsure", "sensitive"]).safeParse(formData.get("confidence"));
+    const comment = z.string().trim().max(1200).safeParse(formData.get("comment") ?? "");
+    const choices = toStringArray(formData.get("choices"));
+
+    if (!questionId.success || !confidence.success || !comment.success || choices.length === 0) {
+      throw new Error("Choose at least one diagnostic option.");
+    }
+
+    const { supabase, user, participantId } = await resolveParticipantForMutation(formData, ["architect", "admin"]);
+    const now = new Date().toISOString();
+
+    const { data: snapshot } = await supabase
+      .from("diagnostic_response_snapshots")
+      .select("answers")
+      .eq("participant_id", participantId)
+      .maybeSingle<{ answers: Record<string, unknown> | null }>();
+
+    const answers = snapshot?.answers ?? {};
+    answers[String(questionId.data)] = { choices, confidence: confidence.data, comment: comment.data, updatedAt: now };
+    const answeredCount = Object.keys(answers).length;
+
+    const { error: questionnaireError } = await supabase.from("diagnostic_questionnaires").upsert(
+      {
+        participant_id: participantId,
+        source: "app",
+        bank_name: "Growth Diagnostic 50",
+        total_questions: 50,
+        raw_diagnostic: { source: "app", updatedAt: now },
+        updated_by: user.id,
+      },
+      { onConflict: "participant_id,source" }
+    );
+    if (questionnaireError) throw new Error(questionnaireError.message);
+
+    const { error } = await supabase.from("diagnostic_response_snapshots").upsert(
+      { participant_id: participantId, answers, answered_count: answeredCount, updated_by: user.id },
+      { onConflict: "participant_id" }
+    );
+    if (error) throw new Error(error.message);
+
+    await upsertStagePayload({
+      participantId,
+      stage: "diagnostic",
+      userId: user.id,
+      payload: { answeredCount, totalQuestions: 50 },
+      unlocked: true,
+      isComplete: answeredCount >= 50,
+    });
+
+    await writeAuditLog({ actorUserId: user.id, participantId, action: "diagnostic.answer.saved", entityName: "diagnostic_response_snapshots", entityId: String(questionId.data) });
+    await setFlashMessage("success", "Diagnostic answer saved.");
+  } catch (error) {
+    await setFlashMessage("error", toErrorMessage(error));
+  }
+
+  revalidatePath("/app");
+}
+
+export async function submitDiagnosticAction(formData: FormData) {
+  try {
+    const { supabase, user, participantId } = await resolveParticipantForMutation(formData, ["architect", "admin"]);
+    const now = new Date().toISOString();
+    const { data: snapshot } = await supabase
+      .from("diagnostic_response_snapshots")
+      .select("answered_count")
+      .eq("participant_id", participantId)
+      .maybeSingle<{ answered_count: number | null }>();
+
+    if ((snapshot?.answered_count ?? 0) < 50) {
+      throw new Error("All 50 diagnostic questions must be answered before submission.");
+    }
+
+    const { error } = await supabase
+      .from("diagnostic_questionnaires")
+      .update({ is_submitted: true, submitted_at: now, updated_by: user.id })
+      .eq("participant_id", participantId)
+      .eq("source", "app");
+    if (error) throw new Error(error.message);
+
+    await upsertStagePayload({ participantId, stage: "diagnostic", userId: user.id, payload: { answeredCount: 50, submittedAt: now }, unlocked: true, isComplete: true });
+    await setFlashMessage("success", "Growth Diagnostic submitted.");
+  } catch (error) {
+    await setFlashMessage("error", toErrorMessage(error));
+  }
+
+  revalidatePath("/app");
+}
+
+export async function saveMirrorAction(formData: FormData) {
+  try {
+    const identity = z.string().trim().min(10).max(1200).safeParse(formData.get("identity"));
+    const priority = z.string().trim().min(5).max(800).safeParse(formData.get("priority"));
+    const accepted = z.enum(["true", "false"]).safeParse(formData.get("accepted") ?? "false");
+    const privacyConfirmed = z.enum(["true", "false"]).safeParse(formData.get("privacyConfirmed") ?? "false");
+
+    if (!identity.success || !priority.success || !accepted.success || !privacyConfirmed.success) {
+      throw new Error("Invalid Growth Mirror payload.");
+    }
+
+    const { user, participantId } = await resolveParticipantForMutation(formData, ["architect", "admin"]);
+    const isComplete = accepted.data === "true" && privacyConfirmed.data === "true";
+    await upsertStagePayload({
+      participantId,
+      stage: "mirror",
+      userId: user.id,
+      payload: { identity: identity.data, priority: priority.data, accepted: accepted.data === "true", privacyConfirmed: privacyConfirmed.data === "true" },
+      unlocked: true,
+      isComplete,
+    });
+    await writeAuditLog({ actorUserId: user.id, participantId, action: "mirror.saved", entityName: "stage_payloads", entityId: "mirror" });
+    await setFlashMessage("success", "Growth Mirror saved.");
+  } catch (error) {
+    await setFlashMessage("error", toErrorMessage(error));
+  }
+
+  revalidatePath("/app");
+}
+
+export async function saveCoachSelectionAction(formData: FormData) {
+  try {
+    const coachId = z.string().trim().min(2).max(80).safeParse(formData.get("coachId"));
+    const objective = z.string().trim().min(10).max(1200).safeParse(formData.get("objective"));
+    const consent = z.enum(["true", "false"]).safeParse(formData.get("consent") ?? "false");
+
+    if (!coachId.success || !objective.success || !consent.success) {
+      throw new Error("Invalid coach selection payload.");
+    }
+
+    const { user, participantId } = await resolveParticipantForMutation(formData, ["architect", "coach", "admin"]);
+    await upsertStagePayload({
+      participantId,
+      stage: "coach",
+      userId: user.id,
+      payload: { coachId: coachId.data, objective: objective.data, consent: consent.data === "true" },
+      unlocked: true,
+      isComplete: consent.data === "true",
+    });
+    await writeAuditLog({ actorUserId: user.id, participantId, action: "coach.selection.saved", entityName: "stage_payloads", entityId: coachId.data });
+    await setFlashMessage("success", "Coach selection saved.");
+  } catch (error) {
+    await setFlashMessage("error", toErrorMessage(error));
+  }
+
+  revalidatePath("/app");
+}
+
+export async function saveJourneyWeekAction(formData: FormData) {
+  try {
+    const week = z.coerce.number().int().min(0).max(12).safeParse(formData.get("week"));
+    const commitments = z.string().trim().min(3).max(2000).safeParse(formData.get("commitments"));
+    const evidence = z.string().trim().max(2000).safeParse(formData.get("evidence") ?? "");
+    const reflection = z.string().trim().max(2000).safeParse(formData.get("reflection") ?? "");
+    const participantConfirmed = z.enum(["true", "false"]).safeParse(formData.get("participantConfirmed") ?? "false");
+    const coachClosed = z.enum(["true", "false"]).safeParse(formData.get("coachClosed") ?? "false");
+
+    if (!week.success || !commitments.success || !evidence.success || !reflection.success || !participantConfirmed.success || !coachClosed.success) {
+      throw new Error("Invalid journey week payload.");
+    }
+
+    const { user, participantId } = await resolveParticipantForMutation(formData, ["coach", "architect", "admin"]);
+    const existing = await readStagePayload(participantId, "journey");
+    const weeks = toPlainObject(existing.weeks) ?? {};
+    weeks[String(week.data)] = {
+      commitments: commitments.data,
+      evidence: evidence.data,
+      reflection: reflection.data,
+      participantConfirmed: participantConfirmed.data === "true",
+      coachClosed: coachClosed.data === "true",
+      updatedAt: new Date().toISOString(),
+      updatedBy: user.id,
+    };
+    const closedWeeks = Object.values(weeks).filter((item) => Boolean(toPlainObject(item)?.coachClosed)).length;
+
+    await upsertStagePayload({
+      participantId,
+      stage: "journey",
+      userId: user.id,
+      payload: { ...existing, weeks, closedWeeks },
+      unlocked: true,
+      isComplete: closedWeeks >= 13,
+    });
+    await writeAuditLog({ actorUserId: user.id, participantId, action: "journey.week.saved", entityName: "stage_payloads", entityId: String(week.data) });
+    await setFlashMessage("success", `Week ${week.data} saved.`);
   } catch (error) {
     await setFlashMessage("error", toErrorMessage(error));
   }

@@ -7,7 +7,7 @@ import { createClient } from "@/lib/supabase/server";
  * Fixes the race condition where redirect() in a Server Action sends the
  * 302 before Set-Cookie headers are committed.
  */
-export async function GET(request: NextRequest) {
+async function confirmSession(request: NextRequest) {
   const { searchParams } = new URL(request.url);
   const next = searchParams.get("next") ?? "/app";
 
@@ -21,4 +21,12 @@ export async function GET(request: NextRequest) {
   }
 
   return response;
+}
+
+export async function GET(request: NextRequest) {
+  return confirmSession(request);
+}
+
+export async function POST(request: NextRequest) {
+  return confirmSession(request);
 }

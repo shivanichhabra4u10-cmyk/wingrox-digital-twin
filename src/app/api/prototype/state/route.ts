@@ -193,8 +193,7 @@ async function ensureParticipantForUser(
   supabase: Awaited<ReturnType<typeof createClient>>,
   userId: string,
   fullName: string,
-  email?: string | null,
-  profile?: ProfileRow | null
+  email?: string | null
 ) {
   const { data: existing } = await supabase
     .from("participants")
@@ -1064,8 +1063,7 @@ export async function GET() {
         supabase,
         user.id,
         profile.full_name,
-        user.email,
-        profile
+        user.email
       );
       visibleParticipants = [participant];
     } else {
@@ -1255,8 +1253,7 @@ export async function POST(request: Request) {
       supabase,
       user.id,
       profile.full_name,
-      user.email,
-      profile
+      user.email
     );
     allowedParticipants = [participant];
   } else {
